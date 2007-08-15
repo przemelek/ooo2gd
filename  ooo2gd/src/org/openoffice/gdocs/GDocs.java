@@ -124,11 +124,14 @@ public final class GDocs extends WeakBase
 
                     
                     String path = xDoc.getURL();
-                    path=path.replaceAll("%20"," ");                    
-                    path=path.substring(8);                   
-                    //JOptionPane.showMessageDialog(null,path);
-                    new Thread(new Uploader(path)).start();
-                    //Uploader.performUpload(path);
+                    if (path!=null && !"".equals(path)) {
+                        path=path.replaceAll("%20"," ");                    
+                        path=path.substring(8);                   
+                        //JOptionPane.showMessageDialog(null,path);
+                        new Thread(new Uploader(path)).start();
+                    } else {
+                        JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
+                    }
                 } catch (Exception e) {};
                 return;
             }
