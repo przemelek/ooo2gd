@@ -11,7 +11,7 @@ package org.openoffice.gdocs.ui;
  * @author  rmk
  */
 public class Uploading extends javax.swing.JDialog {
-    
+        
     /** Creates new form Uploading */
     public Uploading() {
         super();
@@ -30,6 +30,7 @@ public class Uploading extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
+        setResizable(false);
         jLabel1.setText("Uploading in progres...");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -50,7 +51,6 @@ public class Uploading extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

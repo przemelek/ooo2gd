@@ -6,9 +6,7 @@
       <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
-          <value xml:lang="en">AddOn Menu</value>
-          <value xml:lang="en">AddOn Menu</value>
-          <value xml:lang="en">AddOn Menu</value>
+          <value xml:lang="en">Google Docs</value>
         </prop>
         <prop oor:name="Target" oor:type="xs:string">
           <value>_self</value>

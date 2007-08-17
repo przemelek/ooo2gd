@@ -6,20 +6,80 @@
 
 package org.openoffice.gdocs.ui;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.ByteOrder;
+import java.nio.CharBuffer;
+import java.util.Arrays;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author  rmk
  */
 public class UploadDialog extends javax.swing.JDialog {
     
+    public static final String CREDITIONALS_FILE = "gdocs.dat";
+    private static final String SECRET_PHRASE = "$ogorek#";
+    
     public UploadDialog() {
         super();
         initComponents();
+        readCreditionals();
     }
     /** Creates new form UploadDialog */
     public UploadDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        if (readCreditionals()) {            
+            rememberCheckBox.setSelected(true);
+        }
+    }
+    
+    private String xorString(String input,String key) {
+        char[] keyChars = key.toCharArray();
+        char[] inputChars = input.toCharArray();
+        for (int i=0; i<inputChars.length; i++) {
+            inputChars[i]^=keyChars[i%keyChars.length];
+        }
+        return new String(inputChars);
+    }
+    
+    private boolean readCreditionals() {
+        boolean result = false;
+        try {            
+            File file = new File(CREDITIONALS_FILE);            
+            if (file.exists()) {
+                FileReader fr = new FileReader(CREDITIONALS_FILE);                
+                BufferedReader br = new BufferedReader(fr);
+                char[] buf=new char[1024];
+                int length = br.read(buf);
+                buf = Arrays.copyOf(buf,length);
+                br.close();
+                String decoded = xorString(new String(buf),SECRET_PHRASE);
+                String[] lines = decoded.split("\n");
+                userNameField.setText(lines[0]);
+                passwordField.setText(lines[1]);
+                result=true;
+            }
+        } catch (Exception e) {};
+        return result;
+    }
+    
+    private void storeCreditionals() {
+        try {
+            FileWriter fw = new FileWriter(CREDITIONALS_FILE);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String password = getPassword();
+            String userName = getUserName();
+            String str = userName+"\n"+password;
+            bw.write(xorString(str,SECRET_PHRASE));
+            bw.close();
+        } catch (Exception e) {}
     }
     
     /** This method is called from within the constructor to
@@ -32,17 +92,22 @@ public class UploadDialog extends javax.swing.JDialog {
         message = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jTextField1 = new javax.swing.JTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        passwordField = new javax.swing.JPasswordField();
+        userNameField = new javax.swing.JTextField();
+        rememberCheckBox = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        docName = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Export to Google Docs");
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setModal(true);
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
                 formWindowActivated(evt);
@@ -63,9 +128,9 @@ public class UploadDialog extends javax.swing.JDialog {
 
         jLabel2.setText("Google Password:");
 
-        jCheckBox1.setText("Remember Password (It will be stored on local disk)");
-        jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        rememberCheckBox.setText("Remember Password (It will be stored on local disk)");
+        rememberCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rememberCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         jButton1.setText("OK");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -81,50 +146,77 @@ public class UploadDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel3.setText("Document name:");
+
+        jLabel4.setText("Google Account Info");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(message)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPasswordField1)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jCheckBox1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(passwordField)
+                                    .addComponent(userNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(15, 15, 15)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jButton1)
+                                        .addGap(82, 82, 82)
+                                        .addComponent(jButton2))
+                                    .addComponent(docName)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(106, 106, 106)
-                        .addComponent(jButton1)
-                        .addGap(82, 82, 82)
-                        .addComponent(jButton2)))
+                        .addGap(138, 138, 138)
+                        .addComponent(jLabel4))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(rememberCheckBox))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(message)
-                .addGap(17, 17, 17)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(userNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(rememberCheckBox)
+                .addGap(17, 17, 17)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(message)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(docName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGap(39, 39, 39))
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -148,6 +240,9 @@ public class UploadDialog extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         upload=true;
+        if (rememberCheckBox.isSelected()) {
+            storeCreditionals();
+        }
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
         
@@ -156,26 +251,38 @@ public class UploadDialog extends javax.swing.JDialog {
     }
     
     public String getUserName() {
-        return jTextField1.getText();
+        return userNameField.getText();
     }
     
     public String getPassword() {
-        return new String(jPasswordField1.getPassword());
+        return new String(passwordField.getPassword());
     }
     
     public boolean getUpload() {
         return upload;
     }
     
+    public void setDocumentTitle(String title) {
+        docName.setText(title);
+    }
+    
+    public String getDocumentTitle() {
+        return docName.getText();
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField docName;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel message;
+    private javax.swing.JPasswordField passwordField;
+    private javax.swing.JCheckBox rememberCheckBox;
+    private javax.swing.JTextField userNameField;
     // End of variables declaration//GEN-END:variables
     private boolean upload = false;
 }

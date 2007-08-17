@@ -117,20 +117,21 @@ public final class GDocs extends WeakBase
             if ( aURL.Path.compareTo("Export to Google Docs") == 0 )
             {
                 try {                    
-//                    XTextDocument xDoc = (XTextDocument) UnoRuntime.queryInterface(
-//                    XTextDocument.class, m_xFrame.getController().getModel());
                     XModel xDoc = (XModel) UnoRuntime.queryInterface(
                     XModel.class, m_xFrame.getController().getModel());
-
-                    
                     String path = xDoc.getURL();
                     if (path!=null && !"".equals(path)) {
                         path=path.replaceAll("%20"," ");                    
-                        path=path.substring(8);                   
-                        //JOptionPane.showMessageDialog(null,path);
+                        path=path.substring(8);
                         new Thread(new Uploader(path)).start();
                     } else {
-                        JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
+                        new Thread(new Runnable() {
+                            public void run() {
+                                JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");                                
+                            }
+                        }
+                        ).start();
+                        
                     }
                 } catch (Exception e) {};
                 return;

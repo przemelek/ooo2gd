@@ -34,12 +34,12 @@ public class Uploader implements Runnable {
 		service.setUserCredentials(userName,password);
 	}
 	
-	public boolean upload(String path) throws Exception {
+	public boolean upload(String path,String documentTitle) throws Exception {
               boolean result = false; 
               DocumentEntry newDocument = new DocumentEntry();
-              File documentFile = new File(path);
+              File documentFile = new File(path);              
               newDocument.setFile(documentFile);
-              newDocument.setTitle(new PlainTextConstruct(documentFile.getName()));
+              newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
               DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
                   newDocument);
@@ -70,16 +70,19 @@ public class Uploader implements Runnable {
         
         public void run() {
             UploadDialog form = new UploadDialog();
+            String docName = new File(pathName).getName();
             form.setMessageText("File "+pathName+" will be uploaded to Google Docs");
+            form.setDocumentTitle(docName);
             form.setModal(true);
             form.toFront();
             form.setVisible(true);
             Uploading uploading = new Uploading();
-            if (form.getUpload()) {               
-                try {                    
+            if (form.getUpload()) {
+                try {              
+                    docName=form.getDocumentTitle();
                     uploading.setVisible(true);
-                    login(form.getUserName(),form.getPassword());
-                    upload(pathName);
+                    login(form.getUserName(),form.getPassword());                    
+                    upload(pathName,docName);
                     JOptionPane.showMessageDialog(null,"File Uploaded");
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
