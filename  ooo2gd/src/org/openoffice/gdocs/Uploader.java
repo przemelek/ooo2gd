@@ -2,6 +2,7 @@ package org.openoffice.gdocs;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,10 +24,17 @@ public class Uploader implements Runnable {
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
         private String pathName;
+        private File file;
 	private DocsService service;
 	
         public Uploader(String pathName) {
             this.pathName = pathName;
+            this.file=new File(pathName);
+        }
+        
+        public Uploader(URI uri) {
+            this.file=new File(uri);
+            this.pathName=file.getName();
         }
         
 	public void login(String userName,String password) throws AuthenticationException {
@@ -37,7 +45,7 @@ public class Uploader implements Runnable {
 	public boolean upload(String path,String documentTitle) throws Exception {
               boolean result = false; 
               DocumentEntry newDocument = new DocumentEntry();
-              File documentFile = new File(path);              
+              File documentFile = this.file;
               newDocument.setFile(documentFile);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
