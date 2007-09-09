@@ -31,7 +31,7 @@ public class Uploading extends javax.swing.JDialog {
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setResizable(false);
-        jLabel1.setText("Uploading in progres...");
+        jLabel1.setText("Uploading in progress...");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -40,7 +40,7 @@ public class Uploading extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addComponent(jLabel1)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

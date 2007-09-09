@@ -13,6 +13,7 @@ import com.sun.star.lang.XSingleComponentFactory;
 import com.sun.star.registry.XRegistryKey;
 import com.sun.star.lib.uno.helper.WeakBase;
 import com.sun.star.xml.dom.XDocument;
+import java.net.URL;
 import javax.swing.JOptionPane;
 
 
@@ -120,10 +121,10 @@ public final class GDocs extends WeakBase
                     XModel xDoc = (XModel) UnoRuntime.queryInterface(
                     XModel.class, m_xFrame.getController().getModel());
                     String path = xDoc.getURL();
+                    URL url = new URL(path);                                                                                
+                    path=url.toURI().getPath();
                     if (path!=null && !"".equals(path)) {
-                        path=path.replaceAll("%20"," ");                    
-                        path=path.substring(8);
-                        new Thread(new Uploader(path)).start();
+                        new Thread(new Uploader(url.toURI())).start();
                     } else {
                         new Thread(new Runnable() {
                             public void run() {
