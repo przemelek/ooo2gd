@@ -45,7 +45,7 @@ public class Uploader implements Runnable {
 	public boolean upload(String path,String documentTitle) throws Exception {
               boolean result = false; 
               DocumentEntry newDocument = new DocumentEntry();
-              File documentFile = this.file;
+              File documentFile = this.file;              
               newDocument.setFile(documentFile);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
