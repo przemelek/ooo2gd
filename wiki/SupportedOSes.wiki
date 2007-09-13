@@ -1,0 +1,6 @@
+= Supported Operating Systems. =
+
+For now !AddOn works under Windows (tested under Windows XP Home/Pro in Polish and English edition).
+
+!AddOn should also works under Linux and other non-Microsoft systems, but it is not tested. If somebody tried it under any of non-Microsoft OSes please inform [http://przemelek.googlepages.com/kontakt me].
+
