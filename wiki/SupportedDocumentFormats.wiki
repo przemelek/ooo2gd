@@ -1,0 +1,14 @@
+= Supported Document Formats =
+
+List of supported document formats for this !AddOn is an intersection between list of formats supported by OpenOffice.org and Google Docs.
+
+Documents:
+* !OpenDocument Text (.odt)
+* !StarOffice (.sxw)
+* Microsoft Word (.doc, but not MS XML)
+* Rich Text (.rtf)
+
+Spreadsheets:
+* !OpenDocument Spreadsheet (.ods)
+* Microsoft Excel (.xls)
+Comma Separated Value (.csv)
