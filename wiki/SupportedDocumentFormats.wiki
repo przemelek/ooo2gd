@@ -1,6 +1,6 @@
 = Supported Document Formats =
 
-List of supported document formats for this !AddOn is an intersection between list of formats supported by OpenOffice.org and Google Docs.
+List of supported document formats for this !AddOn is an intersection between list of formats supported by !OpenOffice.org and Google Docs.
 
 Documents:
   * !OpenDocument Text (.odt)
