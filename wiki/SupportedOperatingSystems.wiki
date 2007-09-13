@@ -1,4 +1,3 @@
-#Information about supported operating systems.
 = Supported Operating Systems. =
 
 For now !AddOn works under Windows (tested under Windows XP Home/Pro in Polish and English edition).
