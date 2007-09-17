@@ -4,5 +4,7 @@ For now !AddOn works under:
   * Windows (tested under Windows XP Home/Pro in Polish and English edition).
   * Linux (tested on Ubuntu 7.04 with Java 6)
 
-!AddOn should also works under systems, but it is not tested. If somebody tried it under any other OS please inform [http://przemelek.googlepages.com/kontakt me].
+!AddOn should also works under other systems. 
+If somebody tried it under any other OS please inform [http://przemelek.googlepages.com/kontakt me].
+ 
  
