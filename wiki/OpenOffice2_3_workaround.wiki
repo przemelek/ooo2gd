@@ -1,0 +1,23 @@
+#labels Phase-Deploy
+In !OpenOffice.org 2.3 !AddOn doesn't work after simple installing of OXT file.
+
+Until more comfortable solution won't be available pleas use this workaround.
+
+Install !AddOn (from [http://code.google.com/p/ooo2gd/downloads/list here])
+
+Download file [http://ooo2gd.googlecode.com/files/libs.zip libs.zip] and extract it into some directory (assume that it will be (under Windows) C:\Program Files\GDOCS\), after this you should have in this directory files:
+  * gdata-client-1.0.jar
+  * gdata-docs-1.0.jar
+  * gdata-spreadsheet-1.0.jar
+  * mail-1.4.jar
+
+Start !OpenOffice.org Writer.
+
+From menu choose Tools -> Options -> Java -> Class Path. Add all files from libs.zip to Class Path. Click OK and OK, and restart !OpenOffice.org (you must also exit from Quickstarter).
+
+After this start again !OpenOffice.org, everything should works well.
+ 
+ 
+ 
+ 
+ 
