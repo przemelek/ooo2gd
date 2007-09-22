@@ -26,7 +26,7 @@
               <value>_self</value>
             </prop>
             <prop oor:name="Context" oor:type="xs:string">
-              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument</value>
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>
             </prop>
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
@@ -49,7 +49,7 @@
           <value>_self</value>
         </prop>
         <prop oor:name="Context" oor:type="xs:string">
-          <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument</value>
+          <value/>
         </prop>
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
