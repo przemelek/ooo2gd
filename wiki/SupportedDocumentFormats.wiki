@@ -12,3 +12,7 @@ Spreadsheets:
   * !OpenDocument Spreadsheet (.ods)
   * Microsoft Excel (.xls)
   * Comma Separated Value (.csv)
+
+Presentations:
+  * Microsoft PowerPoint (.ppt, .pps)
+ 
