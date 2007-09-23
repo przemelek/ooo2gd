@@ -1,4 +1,4 @@
-#labels Phase-Deploy
+#labels Phase-Deploy,Featured
 In !OpenOffice.org 2.3 !AddOn doesn't work after simple installing of OXT file.
 
 Until more comfortable solution won't be available pleas use this workaround.
@@ -19,6 +19,7 @@ After this start again !OpenOffice.org, everything should works well.
 
  
 [http://docs.google.com/TeamPresent?fs=true&docid=ajg23wkfz9qn_449gt2kn8&skipauth=true Here you may find presentation describing whole process of workaround] - presentation hosted on Google Docs
+ 
  
  
  
