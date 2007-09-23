@@ -13,12 +13,13 @@ Download file [http://ooo2gd.googlecode.com/files/libs.zip libs.zip] and extract
 
 Start !OpenOffice.org Writer.
 
-From menu choose Tools -> Options -> Java -> Class Path. Add all files from libs.zip to Class Path. Click OK and OK, and restart !OpenOffice.org (you must also exit from Quickstarter).
+From menu choose Tools -> Options -> Java -> Class Path. Add all files from libs.zip to Class Path (as a result you should see 4 JAR files in Window with Class Path). Click OK and OK, and restart !OpenOffice.org (you must also exit from Quickstarter).
 
 After this start again !OpenOffice.org, everything should works well.
 
  
 [http://docs.google.com/TeamPresent?fs=true&docid=ajg23wkfz9qn_449gt2kn8&skipauth=true Here you may find presentation describing whole process of workaround] - presentation hosted on Google Docs
+ 
  
  
  
