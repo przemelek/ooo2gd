@@ -118,7 +118,7 @@ public final class GDocs extends WeakBase
         {
             if ( aURL.Path.compareTo("Export to Google Docs") == 0 )
             {
-                try {                    
+                try {
                     XModel xDoc = (XModel) UnoRuntime.queryInterface(
                     XModel.class, m_xFrame.getController().getModel());
                     String path = xDoc.getURL();
@@ -126,7 +126,9 @@ public final class GDocs extends WeakBase
                         URL url = new URL(path);                                                                                
                         File file = new File(url.toURI());                   
                         if (file.isFile()) {
-                            new Thread(new Uploader(url.toURI())).start();
+                            Thread thread = new Thread(new Uploader(url.toURI()));
+                            thread.setContextClassLoader(this.getClass().getClassLoader());
+                            thread.start();
                         }                        
                     } else {
                         new Thread(new Runnable() {
