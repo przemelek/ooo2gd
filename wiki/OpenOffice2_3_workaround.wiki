@@ -1,8 +1,6 @@
 #labels Phase-Deploy,Deprecated
-This page describe steps needed to proper work of older !AddOn versions with !OOo 2.3.
-Instead of read how to make older versions work you better download newest possible version of !AddOn from [http://code.google.com/p/ooo2gd/downloads/list here]
-
-
+*This page describe steps needed to proper work of older !AddOn versions with !OOo 2.3.
+Instead of read how to make older versions work you better download newest possible version of !AddOn from [http://code.google.com/p/ooo2gd/downloads/list here]*
 
 
 In !OpenOffice.org 2.3 !AddOn doesn't work after simple installing of OXT file.
