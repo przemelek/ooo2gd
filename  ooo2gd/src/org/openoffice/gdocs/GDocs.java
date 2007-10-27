@@ -1,5 +1,6 @@
 package org.openoffice.gdocs;
 
+import com.google.gdata.data.docs.DocumentListEntry;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.comp.helper.Bootstrap;
 import com.sun.star.frame.XDesktop;
@@ -15,7 +16,11 @@ import com.sun.star.lib.uno.helper.WeakBase;
 import com.sun.star.xml.dom.XDocument;
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import javax.swing.JOptionPane;
+import org.openoffice.gdocs.ui.ImportDialog;
+import org.openoffice.gdocs.ui.UploadDialog;
+import org.openoffice.gdocs.ui.Uploading;
 
 
 public final class GDocs extends WeakBase
@@ -78,6 +83,8 @@ public final class GDocs extends WeakBase
         {
             if ( aURL.Path.compareTo("Export to Google Docs") == 0 )
                 return this;
+            if ( aURL.Path.compareTo("Import from Google Docs") == 0 )
+                return this;
         }
         return null;
     }
@@ -139,6 +146,37 @@ public final class GDocs extends WeakBase
                         ).start();
                     } 
                 } catch (Exception e) {};
+                return;
+            }
+            if ( aURL.Path.compareTo("Import from Google Docs") == 0 )
+            {
+                //JOptionPane.showMessageDialog(null,"Be carefull!!! It's experimental feature!!!");
+                Thread thread = new Thread(new Uploader("") {
+                    public void run() {
+                        try {
+/*                            UploadDialog form = new UploadDialog();
+                            form.setVisibleForDocName(false);
+                            form.setModal(true);
+                            form.toFront();
+                            form.setVisible(true);
+                            login(form.getUserName(),form.getPassword());
+                            List<DocumentListEntry> list = getListOfDocs();
+                            String str = "<html>";
+                            for (DocumentListEntry entry:list) {                                
+                                str+="<a href=\""+entry.getHtmlLink().getHref()+"\">"+entry.getTitle().getPlainText()+"</a>"+"\n";
+                            }
+                            str+="</html>";
+                            Uploading uploading = new Uploading();
+                            uploading.setMessage(str);
+                            uploading.setVisible(true); */
+                            new ImportDialog(null,true).setVisible(true);
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null,e.getMessage());
+                        }
+                    }
+                });
+                thread.setContextClassLoader(this.getClass().getClassLoader());
+                thread.start();
                 return;
             }
         }

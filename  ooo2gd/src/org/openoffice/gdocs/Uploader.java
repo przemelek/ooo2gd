@@ -30,11 +30,21 @@ public class Uploader implements Runnable {
         public Uploader(String pathName) {
             this.pathName = pathName;
             this.file=new File(pathName);
+            
+/*            new DocsService(APP_NAME) {
+                public void toster() {
+                    service
+                }
+            };*/
         }
         
         public Uploader(URI uri) {
             this.file=new File(uri);
             this.pathName=file.getName();
+        }
+        
+        public DocsService getService() {
+            return service;
         }
         
 	public void login(String userName,String password) throws AuthenticationException {
@@ -78,6 +88,7 @@ public class Uploader implements Runnable {
         
         public void run() {
             UploadDialog form = new UploadDialog();
+            form.setVisibleForDocName(true);
             String docName = new File(pathName).getName();
             form.setMessageText("File "+pathName+" will be uploaded to Google Docs");
             form.setDocumentTitle(docName);
