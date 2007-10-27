@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.util.Arrays;
@@ -29,15 +30,11 @@ public class UploadDialog extends javax.swing.JDialog {
     public UploadDialog() {
         super();
         initComponents();
-        readCreditionals();
     }
     /** Creates new form UploadDialog */
     public UploadDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        if (readCreditionals()) {            
-            rememberCheckBox.setSelected(true);
-        }
     }
     
     private String xorString(String input,String key) {
@@ -47,39 +44,10 @@ public class UploadDialog extends javax.swing.JDialog {
             inputChars[i]^=keyChars[i%keyChars.length];
         }
         return new String(inputChars);
-    }
+    }    
     
-    private boolean readCreditionals() {
-        boolean result = false;
-        try {            
-            File file = new File(CREDITIONALS_FILE);            
-            if (file.exists()) {
-                FileReader fr = new FileReader(CREDITIONALS_FILE);                
-                BufferedReader br = new BufferedReader(fr);
-                char[] buf=new char[1024];
-                int length = br.read(buf);
-                buf = Arrays.copyOf(buf,length);
-                br.close();
-                String decoded = xorString(new String(buf),SECRET_PHRASE);
-                String[] lines = decoded.split("\n");
-                userNameField.setText(lines[0]);
-                passwordField.setText(lines[1]);
-                result=true;
-            }
-        } catch (Exception e) {};
-        return result;
-    }
-    
-    private void storeCreditionals() {
-        try {
-            FileWriter fw = new FileWriter(CREDITIONALS_FILE);
-            BufferedWriter bw = new BufferedWriter(fw);
-            String password = getPassword();
-            String userName = getUserName();
-            String str = userName+"\n"+password;
-            bw.write(xorString(str,SECRET_PHRASE));
-            bw.close();
-        } catch (Exception e) {}
+    public void setVisibleForDocName(boolean visible) {
+        documentNamePanel.setVisible(visible);
     }
     
     /** This method is called from within the constructor to
@@ -89,18 +57,14 @@ public class UploadDialog extends javax.swing.JDialog {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        message = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        passwordField = new javax.swing.JPasswordField();
-        userNameField = new javax.swing.JTextField();
-        rememberCheckBox = new javax.swing.JCheckBox();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        documentNamePanel = new javax.swing.JPanel();
         docName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
+        message = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Export to Google Docs");
@@ -122,15 +86,34 @@ public class UploadDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel3.setText("Document name:");
+
         message.setText("     ");
 
-        jLabel1.setText("Google User Name:");
-
-        jLabel2.setText("Google Password:");
-
-        rememberCheckBox.setText("Remember Password (It will be stored on local disk)");
-        rememberCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        rememberCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        javax.swing.GroupLayout documentNamePanelLayout = new javax.swing.GroupLayout(documentNamePanel);
+        documentNamePanel.setLayout(documentNamePanelLayout);
+        documentNamePanelLayout.setHorizontalGroup(
+            documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(documentNamePanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(documentNamePanelLayout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(docName, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                    .addComponent(message, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        documentNamePanelLayout.setVerticalGroup(
+            documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, documentNamePanelLayout.createSequentialGroup()
+                .addComponent(message)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(docName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(50, 50, 50))
+        );
 
         jButton1.setText("OK");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -146,77 +129,39 @@ public class UploadDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel3.setText("Document name:");
-
-        jLabel4.setText("Google Account Info");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(136, 136, 136)
+                        .addComponent(jButton1)
+                        .addGap(38, 38, 38)
+                        .addComponent(jButton2))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(passwordField)
-                                    .addComponent(userNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)))
-                            .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(15, 15, 15)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(10, 10, 10)
-                                        .addComponent(jButton1)
-                                        .addGap(82, 82, 82)
-                                        .addComponent(jButton2))
-                                    .addComponent(docName)))))
+                        .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(138, 138, 138)
-                        .addComponent(jLabel4))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(rememberCheckBox))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                        .addGap(21, 21, 21)
+                        .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4)
+                .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(userNameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rememberCheckBox)
-                .addGap(17, 17, 17)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(message)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(docName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
+                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addGap(39, 39, 39))
+                .addContainerGap())
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -240,9 +185,6 @@ public class UploadDialog extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         upload=true;
-        if (rememberCheckBox.isSelected()) {
-            storeCreditionals();
-        }
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
         
@@ -251,11 +193,11 @@ public class UploadDialog extends javax.swing.JDialog {
     }
     
     public String getUserName() {
-        return userNameField.getText();
+        return loginPanel1.getUserName();
     }
     
     public String getPassword() {
-        return new String(passwordField.getPassword());
+        return loginPanel1.getPassword();
     }
     
     public boolean getUpload() {
@@ -272,17 +214,13 @@ public class UploadDialog extends javax.swing.JDialog {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField docName;
+    private javax.swing.JPanel documentNamePanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JSeparator jSeparator1;
+    private org.openoffice.gdocs.ui.LoginPanel loginPanel1;
     private javax.swing.JLabel message;
-    private javax.swing.JPasswordField passwordField;
-    private javax.swing.JCheckBox rememberCheckBox;
-    private javax.swing.JTextField userNameField;
     // End of variables declaration//GEN-END:variables
     private boolean upload = false;
 }

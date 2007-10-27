@@ -18,6 +18,10 @@ public class Uploading extends javax.swing.JDialog {
         initComponents();
     }
     
+    public void setMessage(String message) {
+        jLabel1.setText(message);
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -40,7 +44,7 @@ public class Uploading extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addComponent(jLabel1)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
