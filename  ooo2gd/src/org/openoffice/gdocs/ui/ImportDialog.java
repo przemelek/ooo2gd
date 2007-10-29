@@ -21,7 +21,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
-import org.openoffice.gdocs.Uploader;
+import org.openoffice.gdocs.GoogleDocsWrapper;
 
 /**
  *
@@ -186,9 +186,9 @@ public class ImportDialog extends java.awt.Dialog {
             String id = entry.getId().split("%3A")[1];
             String type = entry.getId().split("%3A")[0];
             //JOptionPane.showMessageDialog(null,id);
-            Uploader uploader = new Uploader("");
+            GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
             try {
-                uploader.login(loginPanel1.getUserName(),loginPanel1.getPassword());
+                wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
             } catch (Exception e) {
                 
             }
@@ -238,9 +238,9 @@ public class ImportDialog extends java.awt.Dialog {
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Uploader uploader = new Uploader("");
+        GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
         try {
-            uploader.login(loginPanel1.getUserName(),loginPanel1.getPassword());
+            wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
         } catch (Exception e) {
             
         }
@@ -248,7 +248,7 @@ public class ImportDialog extends java.awt.Dialog {
         jButton3.setEnabled(true);
         List<DocumentElement> list = new ArrayList<DocumentElement>();
         DocumentsTableModel dtm = new DocumentsTableModel();        
-        for (DocumentListEntry entry:uploader.getListOfDocs()) {
+        for (DocumentListEntry entry:wrapper.getListOfDocs()) {
             if ( entry.getId().startsWith("document") ) {
                 dtm.add(entry);
             }
