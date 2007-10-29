@@ -6,26 +6,18 @@
 
 package org.openoffice.gdocs.ui;
 
-import com.google.gdata.client.Service;
-import com.google.gdata.data.TextConstruct;
-import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import java.awt.Desktop;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import org.openoffice.gdocs.GoogleDocsWrapper;
 
 /**
  *
- * @author  SG0891720
+ * @author  rmk
  */
 public class ImportDialog extends java.awt.Dialog {
     
