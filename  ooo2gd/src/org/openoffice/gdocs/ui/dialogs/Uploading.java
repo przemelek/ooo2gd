@@ -4,7 +4,7 @@
  * Created on 15 sierpieñ 2007, 15:58
  */
 
-package org.openoffice.gdocs.ui;
+package org.openoffice.gdocs.ui.dialogs;
 
 /**
  *

@@ -32,8 +32,7 @@
               <value/>
               <value xml:lang="en">Export to Google Docs</value>
             </prop>
-          </node>
-          
+          </node>          
           <node oor:name="m2" oor:op="replace">
             <prop oor:name="URL" oor:type="xs:string">
               <value>org.openoffice.gdocs.gdocs:Import from Google Docs</value>
@@ -56,7 +55,7 @@
       </node>
     </node>
     <node oor:name="OfficeToolBar">
-      <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">
+      <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">        
       <node oor:name="m1" oor:op="replace">
         <prop oor:name="URL" oor:type="xs:string">
           <value>org.openoffice.gdocs.gdocs:Export to Google Docs</value>
@@ -68,6 +67,7 @@
           <value>_self</value>
         </prop>
         <prop oor:name="Context" oor:type="xs:string">
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>            
           <value/>
         </prop>
         <prop oor:name="Title" oor:type="xs:string">
