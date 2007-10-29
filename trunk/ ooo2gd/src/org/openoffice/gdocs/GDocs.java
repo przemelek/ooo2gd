@@ -1,5 +1,6 @@
 package org.openoffice.gdocs;
 
+import com.sun.star.frame.XDispatch;
 import com.sun.star.frame.XModel;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
@@ -11,8 +12,8 @@ import java.awt.HeadlessException;
 import java.io.File;
 import java.net.URL;
 import javax.swing.JOptionPane;
-import org.openoffice.gdocs.ui.ImportDialog;
-import org.openoffice.gdocs.ui.UploadDialog;
+import org.openoffice.gdocs.ui.dialogs.ImportDialog;
+import org.openoffice.gdocs.ui.dialogs.UploadDialog;
 
 public final class GDocs extends WeakBase
    implements com.sun.star.lang.XServiceInfo,
@@ -72,8 +73,14 @@ public final class GDocs extends WeakBase
     {
         if ( aURL.Protocol.compareTo("org.openoffice.gdocs.gdocs:") == 0 )
         {
-            if ( aURL.Path.compareTo("Export to Google Docs") == 0 )
-                return this;
+            if ( aURL.Path.compareTo("Export to Google Docs") == 0 ) {
+                String path = getCurrentDocumentPath();
+                XDispatch result = null;
+                if (path!=null) {
+                    result = this;
+                }
+                return result;
+            }
             if ( aURL.Path.compareTo("Import from Google Docs") == 0 )
                 return this;
         }
@@ -128,34 +135,31 @@ public final class GDocs extends WeakBase
     }
 
     private void exportToGoogleDocs() {
-        XModel xDoc = (XModel) UnoRuntime.queryInterface(
-        XModel.class, m_xFrame.getController().getModel());
-        final String path = xDoc.getURL();
-        if ((path!=null) && (!"".equals(path))) {
-                Thread thread = new Thread(new Runnable() {
-                    public void run() {
-                      try {
-                        URL url = new URL(path);                                                                                
+        final String path = getCurrentDocumentPath();
+        startNewThread(new Runnable() {
+            public void run() {
+                if (!path.equals("")) {
+                    try {
+                        URL url = new URL(path);
                         File file = new File(url.toURI());
                         if (file.isFile()) {
-                            String pathName=file.getPath();                    
+                            String pathName=file.getPath();
                             new UploadDialog(pathName).setVisible(true);
                         } else {
                             JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
                         }
                       } catch (Exception e) {
-
+                            JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
                       }
-                    }
-                });
-                thread.setContextClassLoader(this.getClass().getClassLoader());
-                thread.start();
-            }                         
+                  } else {
+                      JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
+                  }
+            }
+        });
     }
 
     private void importFromGoogleDocs() throws HeadlessException {
-        Thread thread = new Thread(new Runnable() {
-
+        startNewThread(new Runnable() {
             public void run() {
                 try {
                     new ImportDialog(null,true).setVisible(true);
@@ -164,10 +168,20 @@ public final class GDocs extends WeakBase
                 }
             }
         });
-        thread.setContextClassLoader(this.getClass().getClassLoader());
-        thread.start();
     }
 
+    private void startNewThread(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        thread.setContextClassLoader(this.getClass().getClassLoader());
+        thread.start();        
+    }
+    
+    private String getCurrentDocumentPath() {
+        XModel xDoc = (XModel) UnoRuntime.queryInterface(
+        XModel.class, m_xFrame.getController().getModel());        
+        return xDoc.getURL();
+    }    
+    
     public void addStatusListener( com.sun.star.frame.XStatusListener xControl,
                                     com.sun.star.util.URL aURL )
     {

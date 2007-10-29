@@ -4,7 +4,7 @@
  * Created on October 7, 2007, 5:35 PM
  */
 
-package org.openoffice.gdocs.ui;
+package org.openoffice.gdocs.ui.dialogs;
 
 import com.google.gdata.data.docs.DocumentListEntry;
 import java.awt.Desktop;
@@ -13,63 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.AbstractTableModel;
 import org.openoffice.gdocs.GoogleDocsWrapper;
+import org.openoffice.gdocs.ui.*;
+import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 
 /**
  *
  * @author  rmk
  */
 public class ImportDialog extends java.awt.Dialog {
-    
-    private class DocumentsTableModel extends AbstractTableModel {
-
-        private List<DocumentListEntry> list = new ArrayList<DocumentListEntry>();
-        
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            DocumentListEntry entry = list.get(rowIndex);
-            Object obj = null;            
-            switch (columnIndex) {
-                case 0: obj = entry.getTitle().getPlainText(); break;
-                case 1: obj = entry.getUpdated().toStringRfc822(); break;
-            }
-            if (obj==null) obj="none";
-            return obj;
-        }
-
-        public int getColumnCount() {
-            return 2;
-        }
-
-        public int getRowCount() {
-            int result = 0;
-            if (list!=null) {
-                result = list.size();
-            }
-            return result;
-        }
-
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            return false;
-        }
-
-        public String getColumnName(int column) {
-            switch (column) {
-                case 0: return "Document Title";
-                case 1: return "Published";
-            }
-            return "";
-        }
-       
-        public void add(DocumentListEntry entry) {
-            list.add(entry);
-        }
-
-        public DocumentListEntry getEntry(int idx) {            
-            return list.get(idx);
-        }
-        
-    }
     
     /** Creates new form ImportDialog */
     public ImportDialog(java.awt.Frame parent, boolean modal) {
@@ -90,12 +42,12 @@ public class ImportDialog extends java.awt.Dialog {
         jPanel1 = new javax.swing.JPanel();
         loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
         jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
-        jButton1 = new javax.swing.JButton();
+        getListButton = new javax.swing.JButton();
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel3 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
+        openButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -111,40 +63,40 @@ public class ImportDialog extends java.awt.Dialog {
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
 
-        jButton2.setText("Close");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        closeButton.setText("Close");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                closeButtonActionPerformed(evt);
             }
         });
 
-        jPanel2.add(jButton2);
+        jPanel2.add(closeButton);
 
         add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jButton1.setText("Get list");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        getListButton.setText("Get list");
+        getListButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                getListButtonActionPerformed(evt);
             }
         });
 
-        jSplitPane1.setTopComponent(jButton1);
+        jSplitPane1.setTopComponent(getListButton);
 
         jSplitPane2.setDividerLocation(300);
         jSplitPane2.setFocusCycleRoot(true);
         jSplitPane2.setPreferredSize(new java.awt.Dimension(300, 134));
         jPanel3.setMaximumSize(new java.awt.Dimension(71, 33));
-        jButton3.setText("Open");
-        jButton3.setEnabled(false);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        openButton.setText("Open");
+        openButton.setEnabled(false);
+        openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                openButtonActionPerformed(evt);
             }
         });
 
-        jPanel3.add(jButton3);
+        jPanel3.add(openButton);
 
         jSplitPane2.setRightComponent(jPanel3);
 
@@ -159,6 +111,7 @@ public class ImportDialog extends java.awt.Dialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.setMinimumSize(new java.awt.Dimension(200, 64));
         jScrollPane1.setViewportView(jTable1);
 
         jSplitPane2.setLeftComponent(jScrollPane1);
@@ -170,7 +123,7 @@ public class ImportDialog extends java.awt.Dialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         try {
             
             DocumentElement entry = new DocumentElement(((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
@@ -190,11 +143,11 @@ public class ImportDialog extends java.awt.Dialog {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,e.getMessage());
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_openButtonActionPerformed
     
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_closeButtonActionPerformed
     
     private class DocumentElement {
         private DocumentListEntry entry;
@@ -212,25 +165,26 @@ public class ImportDialog extends java.awt.Dialog {
         }
     }
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
         GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
         try {
             wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
-        } catch (Exception e) {
-            
-        }
-        jTable1.setEnabled(true);
-        jButton3.setEnabled(true);
-        List<DocumentElement> list = new ArrayList<DocumentElement>();
-        DocumentsTableModel dtm = new DocumentsTableModel();        
-        for (DocumentListEntry entry:wrapper.getListOfDocs()) {
-            if ( entry.getId().startsWith("document") ) {
-                dtm.add(entry);
+            jTable1.setEnabled(true);
+            openButton.setEnabled(true);
+            List<DocumentElement> list = new ArrayList<DocumentElement>();
+            DocumentsTableModel dtm = new DocumentsTableModel();        
+            for (DocumentListEntry entry:wrapper.getListOfDocs()) {
+                if ( entry.getId().startsWith("document") ) {
+                    dtm.add(entry);
+                }
             }
+            jTable1.setModel(dtm);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,"Problem: "+e.getMessage());
         }
-        jTable1.setModel(dtm);
+
         this.repaint();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_getListButtonActionPerformed
     
     /** Closes the dialog */
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
@@ -251,9 +205,8 @@ public class ImportDialog extends java.awt.Dialog {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton closeButton;
+    private javax.swing.JButton getListButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -262,6 +215,7 @@ public class ImportDialog extends java.awt.Dialog {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTable jTable1;
     private org.openoffice.gdocs.ui.LoginPanel loginPanel1;
+    private javax.swing.JButton openButton;
     // End of variables declaration//GEN-END:variables
 
 }

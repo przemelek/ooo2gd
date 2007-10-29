@@ -4,11 +4,12 @@
  * Created on 15 sierpieñ 2007, 12:47
  */
 
-package org.openoffice.gdocs.ui;
+package org.openoffice.gdocs.ui.dialogs;
 
 import java.io.File;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.GoogleDocsWrapper;
+import org.openoffice.gdocs.ui.*;
 
 /**
  *
@@ -55,8 +56,8 @@ public class UploadDialog extends javax.swing.JDialog {
         docName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         message = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
         loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -108,17 +109,17 @@ public class UploadDialog extends javax.swing.JDialog {
                 .addGap(50, 50, 50))
         );
 
-        jButton1.setText("OK");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                okButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Cancel");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
@@ -130,9 +131,9 @@ public class UploadDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(136, 136, 136)
-                        .addComponent(jButton1)
+                        .addComponent(okButton)
                         .addGap(38, 38, 38)
-                        .addComponent(jButton2))
+                        .addComponent(cancelButton))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -152,8 +153,8 @@ public class UploadDialog extends javax.swing.JDialog {
                 .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(okButton)
+                    .addComponent(cancelButton))
                 .addContainerGap())
         );
         pack();
@@ -171,12 +172,12 @@ public class UploadDialog extends javax.swing.JDialog {
         this.toFront();
     }//GEN-LAST:event_formComponentShown
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         upload=false;
         this.setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         upload=true;
         this.setVisible(false);
         final Uploading uploading = new Uploading();
@@ -197,7 +198,7 @@ public class UploadDialog extends javax.swing.JDialog {
                 }        
             }
         }).start();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_okButtonActionPerformed
         
     public void setMessageText(String messageText) {
         message.setText(messageText);
@@ -224,14 +225,14 @@ public class UploadDialog extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cancelButton;
     private javax.swing.JTextField docName;
     private javax.swing.JPanel documentNamePanel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
     private org.openoffice.gdocs.ui.LoginPanel loginPanel1;
     private javax.swing.JLabel message;
+    private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
     private boolean upload = false;
 }
