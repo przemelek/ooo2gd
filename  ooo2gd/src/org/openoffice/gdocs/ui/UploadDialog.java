@@ -15,9 +15,7 @@ import org.openoffice.gdocs.GoogleDocsWrapper;
  * @author  rmk
  */
 public class UploadDialog extends javax.swing.JDialog {
-    
-    public static final String CREDITIONALS_FILE = "gdocs.dat";
-    private static final String SECRET_PHRASE = "$ogorek#";
+  
     private String pathName;
     
     public UploadDialog(String pathName) {
@@ -181,20 +179,24 @@ public class UploadDialog extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         upload=true;
         this.setVisible(false);
-        Uploading uploading = new Uploading();
-        try {            
-            GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
-            String docName=getDocumentTitle();
-            uploading.setVisible(true);
-            wrapper.login(getUserName(),getPassword());                    
-            wrapper.upload(pathName,docName);
-            JOptionPane.showMessageDialog(null,"File Uploaded");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
-        }
-        finally {
-            uploading.setVisible(false);
-        }        
+        final Uploading uploading = new Uploading();
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
+                    String docName=getDocumentTitle();
+                    uploading.setVisible(true);
+                    wrapper.login(getUserName(),getPassword());                    
+                    wrapper.upload(pathName,docName);
+                    JOptionPane.showMessageDialog(null,"File Uploaded");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
+                }
+                finally {
+                    uploading.setVisible(false);
+                }        
+            }
+        }).start();
     }//GEN-LAST:event_jButton1ActionPerformed
         
     public void setMessageText(String messageText) {
