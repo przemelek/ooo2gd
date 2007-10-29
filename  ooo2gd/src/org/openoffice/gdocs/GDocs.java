@@ -1,28 +1,18 @@
 package org.openoffice.gdocs;
 
-import com.google.gdata.data.docs.DocumentListEntry;
-import com.sun.star.beans.PropertyValue;
-import com.sun.star.comp.helper.Bootstrap;
-import com.sun.star.frame.XDesktop;
 import com.sun.star.frame.XModel;
-import com.sun.star.lang.XMultiComponentFactory;
-import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.lib.uno.helper.Factory;
 import com.sun.star.lang.XSingleComponentFactory;
 import com.sun.star.registry.XRegistryKey;
 import com.sun.star.lib.uno.helper.WeakBase;
-import com.sun.star.xml.dom.XDocument;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.net.URL;
-import java.util.List;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.ui.ImportDialog;
 import org.openoffice.gdocs.ui.UploadDialog;
-import org.openoffice.gdocs.ui.Uploading;
-
 
 public final class GDocs extends WeakBase
    implements com.sun.star.lang.XServiceInfo,

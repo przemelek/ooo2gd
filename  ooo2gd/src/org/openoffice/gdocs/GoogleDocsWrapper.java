@@ -1,15 +1,9 @@
 package org.openoffice.gdocs;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JDialog;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.PlainTextConstruct;
@@ -17,8 +11,6 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
-import org.openoffice.gdocs.ui.UploadDialog;
-import org.openoffice.gdocs.ui.Uploading;
 
 public class GoogleDocsWrapper {	
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
