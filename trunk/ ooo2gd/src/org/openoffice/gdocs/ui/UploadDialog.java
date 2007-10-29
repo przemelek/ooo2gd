@@ -17,6 +17,7 @@ import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
+import org.openoffice.gdocs.GoogleDocsWrapper;
 
 /**
  *
@@ -26,15 +27,18 @@ public class UploadDialog extends javax.swing.JDialog {
     
     public static final String CREDITIONALS_FILE = "gdocs.dat";
     private static final String SECRET_PHRASE = "$ogorek#";
+    private String pathName;
     
-    public UploadDialog() {
+    public UploadDialog(String pathName) {
         super();
+        this.pathName = pathName;
         initComponents();
-    }
-    /** Creates new form UploadDialog */
-    public UploadDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+        String docName = new File(pathName).getName();            
+        setVisibleForDocName(true);            
+        setMessageText("File "+pathName+" will be uploaded to Google Docs");
+        setDocumentTitle(docName);
+        setModal(true);
+        toFront();        
     }
     
     private String xorString(String input,String key) {
@@ -186,6 +190,20 @@ public class UploadDialog extends javax.swing.JDialog {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         upload=true;
         this.setVisible(false);
+        Uploading uploading = new Uploading();
+        try {            
+            GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
+            String docName=getDocumentTitle();
+            uploading.setVisible(true);
+            wrapper.login(getUserName(),getPassword());                    
+            wrapper.upload(pathName,docName);
+            JOptionPane.showMessageDialog(null,"File Uploaded");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
+        }
+        finally {
+            uploading.setVisible(false);
+        }        
     }//GEN-LAST:event_jButton1ActionPerformed
         
     public void setMessageText(String messageText) {

@@ -20,27 +20,12 @@ import com.google.gdata.util.AuthenticationException;
 import org.openoffice.gdocs.ui.UploadDialog;
 import org.openoffice.gdocs.ui.Uploading;
 
-public class Uploader implements Runnable {	
+public class GoogleDocsWrapper {	
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
-        private String pathName;
-        private File file;
 	private DocsService service;
 	
-        public Uploader(String pathName) {
-            this.pathName = pathName;
-            this.file=new File(pathName);
-            
-/*            new DocsService(APP_NAME) {
-                public void toster() {
-                    service
-                }
-            };*/
-        }
-        
-        public Uploader(URI uri) {
-            this.file=new File(uri);
-            this.pathName=file.getName();
+        public GoogleDocsWrapper() {
         }
         
         public DocsService getService() {
@@ -55,7 +40,7 @@ public class Uploader implements Runnable {
 	public boolean upload(String path,String documentTitle) throws Exception {
               boolean result = false; 
               DocumentEntry newDocument = new DocumentEntry();
-              File documentFile = this.file;              
+              File documentFile = new File(path);
               newDocument.setFile(documentFile);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
@@ -84,35 +69,5 @@ public class Uploader implements Runnable {
 		}
 		return list;
 	}
-	        
-        
-        public void run() {
-            UploadDialog form = new UploadDialog();
-            form.setVisibleForDocName(true);
-            String docName = new File(pathName).getName();
-            form.setMessageText("File "+pathName+" will be uploaded to Google Docs");
-            form.setDocumentTitle(docName);
-            form.setModal(true);
-            form.toFront();
-            form.setVisible(true);
-            Uploading uploading = new Uploading();
-            if (form.getUpload()) {
-                try {              
-                    docName=form.getDocumentTitle();
-                    uploading.setVisible(true);
-                    login(form.getUserName(),form.getPassword());                    
-                    upload(pathName,docName);
-                    JOptionPane.showMessageDialog(null,"File Uploaded");
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
-                }
-                finally {
-                    uploading.setVisible(false);
-                }
-                
-            }
-        
-        }
-        
 	
 }

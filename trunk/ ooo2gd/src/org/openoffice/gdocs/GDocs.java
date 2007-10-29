@@ -14,6 +14,7 @@ import com.sun.star.lang.XSingleComponentFactory;
 import com.sun.star.registry.XRegistryKey;
 import com.sun.star.lib.uno.helper.WeakBase;
 import com.sun.star.xml.dom.XDocument;
+import java.awt.HeadlessException;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -125,61 +126,58 @@ public final class GDocs extends WeakBase
         {
             if ( aURL.Path.compareTo("Export to Google Docs") == 0 )
             {
-                try {
-                    XModel xDoc = (XModel) UnoRuntime.queryInterface(
-                    XModel.class, m_xFrame.getController().getModel());
-                    String path = xDoc.getURL();
-                    if ((path!=null) && (!"".equals(path))) {
-                        URL url = new URL(path);                                                                                
-                        File file = new File(url.toURI());                   
-                        if (file.isFile()) {
-                            Thread thread = new Thread(new Uploader(url.toURI()));
-                            thread.setContextClassLoader(this.getClass().getClassLoader());
-                            thread.start();
-                        }                        
-                    } else {
-                        new Thread(new Runnable() {
-                            public void run() {
-                                JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");                                
-                            }
-                        }
-                        ).start();
-                    } 
-                } catch (Exception e) {};
+                exportToGoogleDocs();
                 return;
             }
             if ( aURL.Path.compareTo("Import from Google Docs") == 0 )
             {
-                //JOptionPane.showMessageDialog(null,"Be carefull!!! It's experimental feature!!!");
-                Thread thread = new Thread(new Uploader("") {
-                    public void run() {
-                        try {
-/*                            UploadDialog form = new UploadDialog();
-                            form.setVisibleForDocName(false);
-                            form.setModal(true);
-                            form.toFront();
-                            form.setVisible(true);
-                            login(form.getUserName(),form.getPassword());
-                            List<DocumentListEntry> list = getListOfDocs();
-                            String str = "<html>";
-                            for (DocumentListEntry entry:list) {                                
-                                str+="<a href=\""+entry.getHtmlLink().getHref()+"\">"+entry.getTitle().getPlainText()+"</a>"+"\n";
-                            }
-                            str+="</html>";
-                            Uploading uploading = new Uploading();
-                            uploading.setMessage(str);
-                            uploading.setVisible(true); */
-                            new ImportDialog(null,true).setVisible(true);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null,e.getMessage());
-                        }
-                    }
-                });
-                thread.setContextClassLoader(this.getClass().getClassLoader());
-                thread.start();
+                importFromGoogleDocs();
                 return;
             }
         }
+    }
+
+    private void exportToGoogleDocs() {
+//        try {
+            XModel xDoc = (XModel) UnoRuntime.queryInterface(
+            XModel.class, m_xFrame.getController().getModel());
+            final String path = xDoc.getURL();
+            if ((path!=null) && (!"".equals(path))) {
+                    Thread thread = new Thread(new Runnable() {
+                        public void run() {
+                          try {
+                            URL url = new URL(path);                                                                                
+                            File file = new File(url.toURI());
+                            if (file.isFile()) {
+                                String pathName=file.getPath();                    
+                                new UploadDialog(pathName).setVisible(true);
+                            } else {
+                                JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
+                            }
+                          } catch (Exception e) {
+                              
+                          }
+                        }
+                    });
+                    thread.setContextClassLoader(this.getClass().getClassLoader());
+                    thread.start();
+                }                         
+//        } catch (Exception e) {};
+    }
+
+    private void importFromGoogleDocs() throws HeadlessException {
+        Thread thread = new Thread(new Runnable() {
+
+            public void run() {
+                try {
+                    new ImportDialog(null,true).setVisible(true);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,e.getMessage());
+                }
+            }
+        });
+        thread.setContextClassLoader(this.getClass().getClassLoader());
+        thread.start();
     }
 
     public void addStatusListener( com.sun.star.frame.XStatusListener xControl,
