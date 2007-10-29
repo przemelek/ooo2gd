@@ -11,6 +11,7 @@ import java.awt.Desktop;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.AbstractTableModel;
 import org.openoffice.gdocs.GoogleDocsWrapper;
@@ -31,7 +32,6 @@ public class ImportDialog extends java.awt.Dialog {
             switch (columnIndex) {
                 case 0: obj = entry.getTitle().getPlainText(); break;
                 case 1: obj = entry.getUpdated().toStringRfc822(); break;
-                //case 3: return entry.getAuthors();
             }
             if (obj==null) obj="none";
             return obj;
@@ -173,23 +173,11 @@ public class ImportDialog extends java.awt.Dialog {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
             
-            //DocumentElement entry = (DocumentElement)jList1.getSelectedValue();
             DocumentElement entry = new DocumentElement(((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
             String id = entry.getId().split("%3A")[1];
-            String type = entry.getId().split("%3A")[0];
-            //JOptionPane.showMessageDialog(null,id);
+            String type = entry.getId().split("%3A")[0];            
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
-            try {
-                wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
-            } catch (Exception e) {
-                
-            }
-            //URL url = new URL("http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo");
-            //Service.GDataRequest request = uploader.getService().createRequest(com.google.gdata.client.Service.GDataRequest.RequestType.QUERY,url,com.google.gdata.util.ContentType.MULTIPART_RELATED);
-            // http://spreadsheets.google.com/fm?id=o13574010685749958148.4092107507226618767.06588863554185365881.3080299690275689473&hl=en&fmcmd=13
-            // http://spreadsheets.google.com/fm?id=o13574010685749958148.4092107507226618767.06588863554185365881.8885257468043574331&hl=en&fmcmd=13
-            // http://spreadsheets.google.com/fm?id=o13574010685749958148.4092107507226618767.06588863554185365881.8885257468043574331&hl=en&fmcmd=4
-            // "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo"
+            wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
             String uriStr = "";
             if ("document".equals(type)) {
                 uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
@@ -199,13 +187,8 @@ public class ImportDialog extends java.awt.Dialog {
                 uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
             }
             Desktop.getDesktop().browse(new URI(uriStr));
-            
-            //InputStream stream = request.getResponseStream();
-            
-            //stream.read();
-            
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this,e.getMessage());
         }
     }//GEN-LAST:event_jButton3ActionPerformed
     

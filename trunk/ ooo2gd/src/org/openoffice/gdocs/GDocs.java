@@ -128,31 +128,29 @@ public final class GDocs extends WeakBase
     }
 
     private void exportToGoogleDocs() {
-//        try {
-            XModel xDoc = (XModel) UnoRuntime.queryInterface(
-            XModel.class, m_xFrame.getController().getModel());
-            final String path = xDoc.getURL();
-            if ((path!=null) && (!"".equals(path))) {
-                    Thread thread = new Thread(new Runnable() {
-                        public void run() {
-                          try {
-                            URL url = new URL(path);                                                                                
-                            File file = new File(url.toURI());
-                            if (file.isFile()) {
-                                String pathName=file.getPath();                    
-                                new UploadDialog(pathName).setVisible(true);
-                            } else {
-                                JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
-                            }
-                          } catch (Exception e) {
-                              
-                          }
+        XModel xDoc = (XModel) UnoRuntime.queryInterface(
+        XModel.class, m_xFrame.getController().getModel());
+        final String path = xDoc.getURL();
+        if ((path!=null) && (!"".equals(path))) {
+                Thread thread = new Thread(new Runnable() {
+                    public void run() {
+                      try {
+                        URL url = new URL(path);                                                                                
+                        File file = new File(url.toURI());
+                        if (file.isFile()) {
+                            String pathName=file.getPath();                    
+                            new UploadDialog(pathName).setVisible(true);
+                        } else {
+                            JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
                         }
-                    });
-                    thread.setContextClassLoader(this.getClass().getClassLoader());
-                    thread.start();
-                }                         
-//        } catch (Exception e) {};
+                      } catch (Exception e) {
+
+                      }
+                    }
+                });
+                thread.setContextClassLoader(this.getClass().getClassLoader());
+                thread.start();
+            }                         
     }
 
     private void importFromGoogleDocs() throws HeadlessException {
