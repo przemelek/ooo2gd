@@ -31,15 +31,6 @@ public class UploadDialog extends javax.swing.JDialog {
         toFront();        
     }
     
-    private String xorString(String input,String key) {
-        char[] keyChars = key.toCharArray();
-        char[] inputChars = input.toCharArray();
-        for (int i=0; i<inputChars.length; i++) {
-            inputChars[i]^=keyChars[i%keyChars.length];
-        }
-        return new String(inputChars);
-    }    
-    
     public void setVisibleForDocName(boolean visible) {
         documentNamePanel.setVisible(visible);
     }

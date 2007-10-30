@@ -21,12 +21,13 @@ public final class GDocs extends WeakBase
               com.sun.star.lang.XInitialization,
               com.sun.star.frame.XDispatch
 {
+    private static final String GDOCS_PROTOCOL = "org.openoffice.gdocs.gdocs:";
+    private static final String EXPORT_TO = "Export to Google Docs";
+    private static final String IMPORT_FROM = "Import from Google Docs";
     private final XComponentContext m_xContext;
     private com.sun.star.frame.XFrame m_xFrame;
     private static final String m_implementationName = GDocs.class.getName();
-    private static final String[] m_serviceNames = {
-        "com.sun.star.frame.ProtocolHandler" };
-
+    private static final String[] m_serviceNames = {"com.sun.star.frame.ProtocolHandler" };
 
     public GDocs( XComponentContext context )
     {
@@ -71,9 +72,9 @@ public final class GDocs extends WeakBase
                                                        String sTargetFrameName,
                                                        int iSearchFlags )
     {
-        if ( aURL.Protocol.compareTo("org.openoffice.gdocs.gdocs:") == 0 )
+        if ( aURL.Protocol.compareTo(GDOCS_PROTOCOL) == 0 )
         {
-            if ( aURL.Path.compareTo("Export to Google Docs") == 0 ) {
+            if ( aURL.Path.compareTo(EXPORT_TO) == 0 ) {
                 String path = getCurrentDocumentPath();
                 XDispatch result = null;
                 if (path!=null) {
@@ -81,7 +82,7 @@ public final class GDocs extends WeakBase
                 }
                 return result;
             }
-            if ( aURL.Path.compareTo("Import from Google Docs") == 0 )
+            if ( aURL.Path.compareTo(IMPORT_FROM) == 0 )
                 return this;
         }
         return null;
@@ -119,14 +120,14 @@ public final class GDocs extends WeakBase
      public void dispatch( com.sun.star.util.URL aURL,
                            com.sun.star.beans.PropertyValue[] aArguments )
     {
-         if ( aURL.Protocol.compareTo("org.openoffice.gdocs.gdocs:") == 0 )
+         if ( aURL.Protocol.compareTo(GDOCS_PROTOCOL) == 0 )
         {
-            if ( aURL.Path.compareTo("Export to Google Docs") == 0 )
+            if ( aURL.Path.compareTo(EXPORT_TO) == 0 )
             {
                 exportToGoogleDocs();
                 return;
             }
-            if ( aURL.Path.compareTo("Import from Google Docs") == 0 )
+            if ( aURL.Path.compareTo(IMPORT_FROM) == 0 )
             {
                 importFromGoogleDocs();
                 return;
