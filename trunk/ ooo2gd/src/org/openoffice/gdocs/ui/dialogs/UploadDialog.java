@@ -1,9 +1,7 @@
-/*
- * UploadDialog.java
- *
- * Created on 15 sierpieñ 2007, 12:47
- */
-
+// (c) 2007 by Przemyslaw Rumik
+// myBlog: http://przemelek.blogspot.com
+// project page: http://ooo2gd.googlecode.com
+// contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
 import java.io.File;

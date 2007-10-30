@@ -1,9 +1,7 @@
-/*
- * Uploading.java
- *
- * Created on 15 sierpieñ 2007, 15:58
- */
-
+// (c) 2007 by Przemyslaw Rumik
+// myBlog: http://przemelek.blogspot.com
+// project page: http://ooo2gd.googlecode.com
+// contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
 /**

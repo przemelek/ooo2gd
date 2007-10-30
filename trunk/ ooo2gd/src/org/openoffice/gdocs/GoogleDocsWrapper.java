@@ -1,3 +1,7 @@
+// (c) 2007 by Przemyslaw Rumik
+// myBlog: http://przemelek.blogspot.com
+// project page: http://ooo2gd.googlecode.com
+// contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs;
 
 import java.io.File;
