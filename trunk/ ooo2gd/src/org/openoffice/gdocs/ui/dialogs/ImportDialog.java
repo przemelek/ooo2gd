@@ -52,6 +52,7 @@ public class ImportDialog extends java.awt.Dialog {
         jTable1 = new javax.swing.JTable();
 
         setFocusTraversalPolicyProvider(true);
+        setLocationByPlatform(true);
         setTitle("Import from Google Docs");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
