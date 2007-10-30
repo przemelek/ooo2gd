@@ -85,6 +85,7 @@ public class ImportDialog extends java.awt.Dialog {
         jSplitPane1.setTopComponent(getListButton);
 
         jSplitPane2.setDividerLocation(300);
+        jSplitPane2.setResizeWeight(1.0);
         jSplitPane2.setFocusCycleRoot(true);
         jSplitPane2.setPreferredSize(new java.awt.Dimension(300, 134));
         jPanel3.setMaximumSize(new java.awt.Dimension(71, 33));
