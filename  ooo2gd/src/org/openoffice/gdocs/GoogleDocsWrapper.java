@@ -4,7 +4,9 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs;
 
+import com.google.gdata.util.ServiceException;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class GoogleDocsWrapper {
 		service.setUserCredentials(userName,password);
 	}
 	
-	public boolean upload(String path,String documentTitle) throws Exception {
+	public boolean upload(String path,String documentTitle) throws IOException, ServiceException {
               boolean result = false; 
               DocumentEntry newDocument = new DocumentEntry();
               File documentFile = new File(path);
@@ -46,24 +48,12 @@ public class GoogleDocsWrapper {
               return result;
 	}
 	
-	public List<DocumentListEntry> getListOfDocs() {
+	public List<DocumentListEntry> getListOfDocs() throws IOException, ServiceException {
 		List<DocumentListEntry> list = new LinkedList<DocumentListEntry>();
-		try {
-			URL documentFeedUrl = new URL(DOCS_FEED); 
-			DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
-			list=feed.getEntries();
-		} catch (Exception e) {
-				
-		}
+                URL documentFeedUrl = new URL(DOCS_FEED); 
+                DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
+                list=feed.getEntries();
 		return list;
-	}
-	
-	public List<String> list() {
-		List<String> list = new LinkedList<String>();
-		for (DocumentListEntry entry:getListOfDocs()) {
-			list.add(entry.getTitle().getPlainText());	
-		}
-		return list;
-	}
+	}	
 	
 }
