@@ -5,8 +5,11 @@
 package org.openoffice.gdocs.ui.dialogs;
 
 import com.google.gdata.data.docs.DocumentListEntry;
+import com.google.gdata.util.AuthenticationException;
 import java.awt.Desktop;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -125,25 +128,32 @@ public class ImportDialog extends java.awt.Dialog {
     
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         try {
-            
-            DocumentElement entry = new DocumentElement(((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-            String id = entry.getId().split("%3A")[1];
-            String type = entry.getId().split("%3A")[0];            
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
-            wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
-            String uriStr = "";
-            if ("document".equals(type)) {
-                uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
-            } else if ("spreadsheet".equals(type)) {
-                uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
-            } else if ("presentation".equals(type)) {
-                uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
-            }
-            Desktop.getDesktop().browse(new URI(uriStr));
-        } catch (Exception e) {
+            wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());            
+            DocumentElement entry = new DocumentElement(((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+            Desktop.getDesktop().browse( getUriForEntry(entry) );
+        } catch (AuthenticationException e) {
+            JOptionPane.showMessageDialog(this,"Invalid Creditionals.");
+        } catch (URISyntaxException e) {
             JOptionPane.showMessageDialog(this,e.getMessage());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
         }
     }//GEN-LAST:event_openButtonActionPerformed
+
+    private URI getUriForEntry(final DocumentElement entry) throws URISyntaxException {
+        String id = entry.getId().split("%3A")[1];
+        String type = entry.getId().split("%3A")[0];            
+        String uriStr = "";
+        if ("document".equals(type)) {
+            uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
+        } else if ("spreadsheet".equals(type)) {
+            uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
+        } else if ("presentation".equals(type)) {
+            uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+        }
+        return new URI(uriStr);
+    }
     
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         setVisible(false);
