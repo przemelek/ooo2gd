@@ -2,7 +2,7 @@
 // myBlog: http://przemelek.blogspot.com
 // project page: http://ooo2gd.googlecode.com
 // contact with me: http://przemelek.googlepages.com/kontakt
-package org.openoffice.gdocs;
+package org.openoffice.gdocs.util;
 
 import com.google.gdata.util.ServiceException;
 import java.io.File;
@@ -30,9 +30,9 @@ public class GoogleDocsWrapper {
             return service;
         }
         
-	public void login(String userName,String password) throws AuthenticationException {
+	public void login(Creditionals creditionals) throws AuthenticationException {
 		service = new DocsService(APP_NAME);
-		service.setUserCredentials(userName,password);
+		service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
 	}
 	
 	public boolean upload(String path,String documentTitle) throws IOException, ServiceException {
