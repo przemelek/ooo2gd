@@ -103,7 +103,7 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
-            <value/>
+              <value>%origin%/images/ooo2gd.png</value>
           </prop>
         </node>
       </node>

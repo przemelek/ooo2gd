@@ -12,11 +12,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import org.openoffice.gdocs.util.Creditionals;
 
 public class LoginPanel extends javax.swing.JPanel implements Serializable {
-
-    public static final String CREDITIONALS_FILE = "gdocs.dat";
-    private static final String SECRET_PHRASE = "$ogorek#";
     
     /** Creates new form LoginPanel */
     public LoginPanel() {
@@ -24,60 +22,31 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
         readCreditionals();
     }
     
-    public String getUserName() {
+    public Creditionals getCreditionals() {
+        Creditionals creditionals = new Creditionals(getUserName(),getPassword());
+        if (rememberCheckBox.isSelected()) {
+            storeCreditionals();
+        }                
+        return creditionals;
+    }
+    
+    private String getUserName() {
         return userNameField.getText();
     }
     
-    public String getPassword() {
-        if (rememberCheckBox.isSelected()) {
-            storeCreditionals();
-        }        
+    private String getPassword() {
         return new String(passwordField.getPassword());
     }
     
-        private String xorString(String input,String key) {
-        char[] keyChars = key.toCharArray();
-        char[] inputChars = input.toCharArray();
-        for (int i=0; i<inputChars.length; i++) {
-            inputChars[i]^=keyChars[i%keyChars.length];
-        }
-        return new String(inputChars);
-    }
-    
-    private boolean readCreditionals() {
-        boolean result = false;
-        try {            
-            File file = new File(CREDITIONALS_FILE);            
-            if (file.exists()) {
-                FileReader fr = new FileReader(CREDITIONALS_FILE);                
-                BufferedReader br = new BufferedReader(fr);
-                char[] buf=new char[1024];
-                int length = br.read(buf);
-                buf = Arrays.copyOf(buf,length);
-                br.close();
-                String decoded = xorString(new String(buf),SECRET_PHRASE);
-                String[] lines = decoded.split("\n");
-                userNameField.setText(lines[0]);
-                passwordField.setText(lines[1]);
-                result=true;
-            }
-        } catch (Exception e) {};
-        return result;
-    }
-    
     private void storeCreditionals() {
-        try {
-            FileWriter fw = new FileWriter(CREDITIONALS_FILE);
-            BufferedWriter bw = new BufferedWriter(fw);
-            String password = getPassword();
-            String userName = getUserName();
-            String str = userName+"\n"+password;
-            bw.write(xorString(str,SECRET_PHRASE));
-            bw.close();
-        } catch (IOException e) {
-            // Intentionaly left empty
-            // If IOException will be thrown we ignore this
-        }
+        Creditionals creditionals = getCreditionals();
+        creditionals.store();
+    }
+    
+    private void readCreditionals() {
+        Creditionals creditionals = new Creditionals();
+        userNameField.setText(creditionals.getUserName());
+        passwordField.setText(creditionals.getPassword());
     }
     
     /** This method is called from within the constructor to

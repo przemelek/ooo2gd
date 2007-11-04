@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import org.openoffice.gdocs.GoogleDocsWrapper;
+import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.ui.*;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 
@@ -129,7 +129,7 @@ public class ImportDialog extends java.awt.Dialog {
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         try {
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
-            wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());            
+            wrapper.login(loginPanel1.getCreditionals());
             DocumentElement entry = new DocumentElement(((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
             Desktop.getDesktop().browse( getUriForEntry(entry) );
         } catch (AuthenticationException e) {
@@ -178,7 +178,7 @@ public class ImportDialog extends java.awt.Dialog {
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
         GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
         try {
-            wrapper.login(loginPanel1.getUserName(),loginPanel1.getPassword());
+            wrapper.login(loginPanel1.getCreditionals());
             jTable1.setEnabled(true);
             openButton.setEnabled(true);
             List<DocumentElement> list = new ArrayList<DocumentElement>();

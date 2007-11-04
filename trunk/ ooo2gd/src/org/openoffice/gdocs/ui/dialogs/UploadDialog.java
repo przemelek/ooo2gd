@@ -6,7 +6,7 @@ package org.openoffice.gdocs.ui.dialogs;
 
 import java.io.File;
 import javax.swing.JOptionPane;
-import org.openoffice.gdocs.GoogleDocsWrapper;
+import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.ui.*;
 
 /**
@@ -176,7 +176,7 @@ public class UploadDialog extends javax.swing.JDialog {
                     GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
                     String docName=getDocumentTitle();
                     uploading.setVisible(true);
-                    wrapper.login(getUserName(),getPassword());                    
+                    wrapper.login(loginPanel1.getCreditionals());                    
                     wrapper.upload(pathName,docName);
                     JOptionPane.showMessageDialog(null,"File Uploaded");
                 } catch (Exception e) {
@@ -191,15 +191,7 @@ public class UploadDialog extends javax.swing.JDialog {
         
     public void setMessageText(String messageText) {
         message.setText(messageText);
-    }
-    
-    public String getUserName() {
-        return loginPanel1.getUserName();
-    }
-    
-    public String getPassword() {
-        return loginPanel1.getPassword();
-    }
+    }    
     
     public boolean getUpload() {
         return upload;
