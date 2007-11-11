@@ -143,7 +143,7 @@ public final class GDocs extends WeakBase
         final String path = getCurrentDocumentPath();
         startNewThread(new Runnable() {
             public void run() {
-                if (!path.equals("")) {
+                if (path!=null && !path.equals("")) {
                     try {
                         URL url = new URL(path);
                         File file = new File(url.toURI());
