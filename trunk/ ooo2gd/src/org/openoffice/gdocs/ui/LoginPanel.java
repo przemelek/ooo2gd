@@ -25,7 +25,7 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
     public Creditionals getCreditionals() {
         Creditionals creditionals = new Creditionals(getUserName(),getPassword());
         if (rememberCheckBox.isSelected()) {
-            storeCreditionals();
+            creditionals.store();
         }                
         return creditionals;
     }
@@ -38,13 +38,9 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
         return new String(passwordField.getPassword());
     }
     
-    private void storeCreditionals() {
-        Creditionals creditionals = getCreditionals();
-        creditionals.store();
-    }
-    
     private void readCreditionals() {
         Creditionals creditionals = new Creditionals();
+        rememberCheckBox.setSelected(creditionals.getWsCreditionalsReadedFromDisk());
         userNameField.setText(creditionals.getUserName());
         passwordField.setText(creditionals.getPassword());
     }
