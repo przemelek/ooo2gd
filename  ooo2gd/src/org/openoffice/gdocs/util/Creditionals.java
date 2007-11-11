@@ -16,13 +16,13 @@ public class Creditionals {
     
     private static final String CREDITIONALS_FILE = "gdocs.dat";
     private static final String SECRET_PHRASE = "$ogorek#";
-    
+    private boolean wasCreditionalsReadedFromDisk = false;
     private String userName;
     private String password;
 
     public Creditionals() {
         super();
-        readCreditionals();
+        setWasCreditionalReadFromDisk(readCreditionals());
     }    
     
     public Creditionals(String userName, String password) {
@@ -96,4 +96,11 @@ public class Creditionals {
         this.password = password;
     }
     
+    private void setWasCreditionalReadFromDisk(boolean flag) {
+        wasCreditionalsReadedFromDisk = flag;
+    }
+    
+    public boolean getWsCreditionalsReadedFromDisk() {
+        return wasCreditionalsReadedFromDisk;
+    }
 }
