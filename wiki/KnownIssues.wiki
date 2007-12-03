@@ -1,9 +1,12 @@
 #labels Featured
 *Known issues*
 
-After installation of version 0.5+ of !AddOn on some non-Windows systems it is possible that "Google Docs" menu isn't visible. 
+1) After installation of version 0.5+ of !AddOn on some non-Windows systems it is possible that "Google Docs" menu isn't visible. 
 To resolve this problem please open Extensions Manager (Menu Tools -> Extension Manger) and Disable and after this Enable !AddOn. Next restart !OpenOffice.org. Everything should works well.
 
-On some Ubuntu/Kubunut (probably also on some other non-windows systems) !AddOn menu "Google Docs" is visible but nothing happens then we try to click on options from this menu. If we look to console we may find information about error like this "Exception in thread "Thread-49" java.awt.AWTError: Cannot load AWT toolkit:".
+2) On some Ubuntu/Kubunut (probably also on some other non-windows systems) !AddOn menu "Google Docs" is visible but nothing happens then we try to click on options from this menu. If we look to console we may find information about error like this "Exception in thread "Thread-49" java.awt.AWTError: Cannot load AWT toolkit:".
 This problem is probably caused by the fact that instead of Sun Java !OpenOffice.org.org use GCJ to run Java programs. 
 To resolve this problem change used JVM to Sun Java (Menu Tools -> Options -> Java, and select Sun Java 1.6)
+
+3) On any operating system !AddOn menu is visible but nothing happens then we try to click on options from menu. 
+To resolve this problem try to set used by !OpenOffice JVM to Sun Java (Menu Tools -> Options -> Java and select Sun Java 1.6)
