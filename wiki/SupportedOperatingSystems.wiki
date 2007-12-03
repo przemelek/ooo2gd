@@ -7,4 +7,4 @@ For now !AddOn works under:
 !AddOn should also works under other systems. 
 If somebody tried it under any other OS please inform [http://przemelek.googlepages.com/kontakt me].
  
-For work !AddOn needs Sun Java 6, also !OpenOffice must be configured to use Sun Java 6.
+For work !AddOn needs Sun Java 6, also !OpenOffice must be configured to use Sun Java 6 (if you have more then one JVM in your system (very common situation) probably you need to set proper for !OpenOfficem, instruction how do it you may find in [KnownIssues])
