@@ -1,6 +1,8 @@
 #labels Featured
 *Known issues*
 
+0) Google Docs is still in beta, API for Google Docs is also in beta. This means that sometimes you may not log into account (I have had some problems with Google Apps account, never with Google account), uploading of some files may end with error results, some format may doesn't work even if was working yesterday. If error message says something about URI, URL or Enum this *in most of cases* was caused by Google Docs. Google Docs is very complicated and innovative tool so sometimes it may have no too so good day ;-)
+
 1) After installation of version 0.5+ of !AddOn on some non-Windows systems it is possible that "Google Docs" menu isn't visible. 
 To resolve this problem please open Extensions Manager (Menu Tools -> Extension Manger) and Disable and after this Enable !AddOn. Next restart !OpenOffice.org. Everything should works well.
 
