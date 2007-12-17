@@ -12,3 +12,6 @@ To resolve this problem change used JVM to Sun Java (Menu Tools -> Options -> Ja
 
 3) On any operating system !AddOn menu is visible but nothing happens then we try to click on options from menu. 
 To resolve this problem try to set used by !OpenOffice JVM to Sun Java (Menu Tools -> Options -> Java and select Sun Java 1.6)
+
+4) I can see message "Could not create Java implementation loader", what do do? 
+Simply use solution #3 :-)
