@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.openoffice.gdocs.util.GoogleDocsWrapper;
@@ -22,7 +23,7 @@ import org.openoffice.gdocs.ui.models.DocumentsTableModel;
  *
  * @author  rmk
  */
-public class ImportDialog extends java.awt.Dialog {
+public class ImportDialog extends JDialog {
     
     /** Creates new form ImportDialog */
     public ImportDialog(java.awt.Frame parent, boolean modal) {
@@ -40,10 +41,13 @@ public class ImportDialog extends java.awt.Dialog {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
         jPanel1 = new javax.swing.JPanel();
         loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
         jPanel2 = new javax.swing.JPanel();
         closeButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jSplitPane1 = new javax.swing.JSplitPane();
         getListButton = new javax.swing.JButton();
         jSplitPane2 = new javax.swing.JSplitPane();
@@ -65,6 +69,8 @@ public class ImportDialog extends java.awt.Dialog {
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
 
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
         closeButton.setText("Close");
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -72,7 +78,20 @@ public class ImportDialog extends java.awt.Dialog {
             }
         });
 
-        jPanel2.add(closeButton);
+        jPanel2.add(closeButton, new java.awt.GridBagConstraints());
+
+        jLabel1.setText("<html>(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></html>");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        jPanel2.add(jLabel1, gridBagConstraints);
 
         add(jPanel2, java.awt.BorderLayout.SOUTH);
 
@@ -125,6 +144,14 @@ public class ImportDialog extends java.awt.Dialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        try {
+            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
+        } catch (Exception e) {
+            // OK, it's not crutial problem, so we ignore it ;-)'
+        }
+    }//GEN-LAST:event_jLabel1MouseClicked
     
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         try {
@@ -217,6 +244,7 @@ public class ImportDialog extends java.awt.Dialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton getListButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
