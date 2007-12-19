@@ -6,7 +6,13 @@ package org.openoffice.gdocs.util;
 
 import com.google.gdata.util.ServiceException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,17 +42,45 @@ public class GoogleDocsWrapper {
 	}
 	
 	public boolean upload(String path,String documentTitle) throws IOException, ServiceException {
-              boolean result = false; 
-              DocumentEntry newDocument = new DocumentEntry();
-              File documentFile = new File(path);
-              newDocument.setFile(documentFile);
-              newDocument.setTitle(new PlainTextConstruct(documentTitle));
-              URL documentListFeedUrl = new URL(DOCS_FEED);
-              DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
-                  newDocument);
+              boolean result = false;
+              File documentFile = getFileForPath(path);               
+              uploadFile(documentFile, documentTitle);
               result=true;
               return result;
 	}
+
+         private File getFileForPath(final String path) throws FileNotFoundException, IOException {
+        
+            File documentFile = new File(path);
+        
+            if (path.split("\\.").length>2) {                
+                String ext = path.substring(path.lastIndexOf("."));                
+                String name = path.substring(path.lastIndexOf("\\")+1,path.lastIndexOf("."));
+                name = name.replaceAll("\\.","_");
+                File tmpFile = File.createTempFile(name,ext);
+                tmpFile.deleteOnExit();          
+                InputStream in = new FileInputStream(documentFile);
+                OutputStream out = new FileOutputStream(tmpFile);
+                byte[] buf = new byte[8192];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                in.close();
+                out.close();
+                documentFile = tmpFile;
+            } 
+            return documentFile;
+        }
+
+        private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
+            DocumentEntry newDocument = new DocumentEntry();
+            newDocument.setFile(documentFile);
+            newDocument.setTitle(new PlainTextConstruct(documentTitle));
+            URL documentListFeedUrl = new URL(DOCS_FEED);
+            DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
+                newDocument);
+        }
 	
 	public List<DocumentListEntry> getListOfDocs() throws IOException, ServiceException {
 		List<DocumentListEntry> list = new LinkedList<DocumentListEntry>();
