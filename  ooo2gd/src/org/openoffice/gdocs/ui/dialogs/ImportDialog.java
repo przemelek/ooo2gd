@@ -56,9 +56,9 @@ public class ImportDialog extends JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
+        setTitle("Import from Google Docs");
         setFocusTraversalPolicyProvider(true);
         setLocationByPlatform(true);
-        setTitle("Import from Google Docs");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 closeDialog(evt);
@@ -67,7 +67,7 @@ public class ImportDialog extends JDialog {
 
         jPanel1.add(loginPanel1);
 
-        add(jPanel1, java.awt.BorderLayout.NORTH);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.NORTH);
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
@@ -80,7 +80,7 @@ public class ImportDialog extends JDialog {
 
         jPanel2.add(closeButton, new java.awt.GridBagConstraints());
 
-        jLabel1.setText("<html>(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></html>");
+        jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -93,7 +93,7 @@ public class ImportDialog extends JDialog {
         gridBagConstraints.gridy = 1;
         jPanel2.add(jLabel1, gridBagConstraints);
 
-        add(jPanel2, java.awt.BorderLayout.SOUTH);
+        getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         getListButton.setText("Get list");
@@ -140,25 +140,17 @@ public class ImportDialog extends JDialog {
 
         jSplitPane1.setBottomComponent(jSplitPane2);
 
-        add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        try {
-            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
-        } catch (Exception e) {
-            // OK, it's not crutial problem, so we ignore it ;-)'
-        }
-    }//GEN-LAST:event_jLabel1MouseClicked
-    
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         try {
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
             wrapper.login(loginPanel1.getCreditionals());
-            DocumentElement entry = new DocumentElement(((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-            Desktop.getDesktop().browse( getUriForEntry(entry) );
+            DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+            Desktop.getDesktop().browse( wrapper.getUriForEntry(entry) );
         } catch (AuthenticationException e) {
             JOptionPane.showMessageDialog(this,"Invalid Creditionals.");
         } catch (URISyntaxException e) {
@@ -168,39 +160,18 @@ public class ImportDialog extends JDialog {
         }
     }//GEN-LAST:event_openButtonActionPerformed
 
-    private URI getUriForEntry(final DocumentElement entry) throws URISyntaxException {
-        String id = entry.getId().split("%3A")[1];
-        String type = entry.getId().split("%3A")[0];            
-        String uriStr = "";
-        if ("document".equals(type)) {
-            uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
-        } else if ("spreadsheet".equals(type)) {
-            uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
-        } else if ("presentation".equals(type)) {
-            uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        try {
+            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
+        } catch (Exception e) {
+            // OK, it's not crutial problem, so we ignore it ;-)'
         }
-        return new URI(uriStr);
-    }
-    
+    }//GEN-LAST:event_jLabel1MouseClicked
+        
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         setVisible(false);
     }//GEN-LAST:event_closeButtonActionPerformed
     
-    private class DocumentElement {
-        private DocumentListEntry entry;
-        public DocumentElement(DocumentListEntry entry) {
-            this.entry = entry;
-        }
-        public String getDocumentLink() {
-            return entry.getDocumentLink().getHref();
-        }
-        public String getId() {
-            return entry.getId();
-        }
-        public String toString() {
-            return entry.getTitle().getPlainText();
-        }
-    }
     
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
         GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
@@ -208,7 +179,7 @@ public class ImportDialog extends JDialog {
             wrapper.login(loginPanel1.getCreditionals());
             jTable1.setEnabled(true);
             openButton.setEnabled(true);
-            List<DocumentElement> list = new ArrayList<DocumentElement>();
+            List<DocumentListEntry> list = new ArrayList<DocumentListEntry>();
             DocumentsTableModel dtm = new DocumentsTableModel();        
             for (DocumentListEntry entry:wrapper.getListOfDocs()) {
                 if ( entry.getId().startsWith("document") ) {

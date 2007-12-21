@@ -46,7 +46,7 @@
                       <Component id="documentNamePanel" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="154" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="166" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -67,7 +67,7 @@
                   <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="10" max="32767" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -144,7 +144,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;(c) &lt;u&gt;&lt;font color=&quot;blue&quot;&gt;Przemyslaw Rumik&lt;/font&gt;&lt;/u&gt;&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;font size=&quot;1&quot;&gt;(c) &lt;u&gt;&lt;font color=&quot;blue&quot;&gt;Przemyslaw Rumik&lt;/font&gt;&lt;/u&gt;&lt;/font&gt;&lt;/html&gt;"/>
       </Properties>
       <Events>
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel1MouseClicked"/>

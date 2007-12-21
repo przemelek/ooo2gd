@@ -6,14 +6,18 @@ package org.openoffice.gdocs;
 
 import com.sun.star.frame.XDispatch;
 import com.sun.star.frame.XModel;
+import com.sun.star.frame.XStorable;
+import com.sun.star.io.IOException;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
 import com.sun.star.lib.uno.helper.Factory;
 import com.sun.star.lang.XSingleComponentFactory;
 import com.sun.star.registry.XRegistryKey;
 import com.sun.star.lib.uno.helper.WeakBase;
+import com.sun.star.util.XModifiable;
 import java.awt.HeadlessException;
 import java.io.File;
+import java.io.IOError;
 import java.net.URL;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.ui.dialogs.ImportDialog;
@@ -148,9 +152,24 @@ public final class GDocs extends WeakBase
                         URL url = new URL(path);
                         File file = new File(url.toURI());
                         if (file.isFile()) {
-                            String pathName=file.getPath();
-                            new UploadDialog(pathName).setVisible(true);
-                        } else {
+                            boolean doUpload = true;
+                            if (isModified()) {
+                                String notSavedMessage = "Your file was modified from the last save; only last saved version of file will be exported to Google Docs.\nWould you like to save this version and export?";
+                                int option = JOptionPane.showConfirmDialog(null,notSavedMessage);
+                                if (option == JOptionPane.YES_OPTION) {
+                                        if ( !storeToDisk() ) {
+                                            doUpload = false;
+                                            JOptionPane.showMessageDialog(null,"Cannot save file on disk....\nFile won't be uploaded.");
+                                        }
+                                } else if  (option == JOptionPane.CANCEL_OPTION) {
+                                    doUpload = false;
+                                }
+                            }
+                            if (doUpload) {
+                                String pathName=file.getPath();
+                                new UploadDialog(pathName).setVisible(true);
+                            }
+                        } else {                            
                             JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
                         }
                       } catch (Exception e) {
@@ -175,6 +194,19 @@ public final class GDocs extends WeakBase
         });
     }
 
+    private boolean storeToDisk() {
+        // OK, here we will have small sample of wrong behavior, this means exception driven control flow... but it's easier ;p
+        boolean result = true;
+        XStorable storable = (XStorable) UnoRuntime.queryInterface(
+                XStorable.class, m_xFrame.getController().getModel()) ;        
+        try {
+            storable.store();
+        } catch (IOException ioe) {
+            result = false;
+        }
+        return result;
+    }
+    
     private void startNewThread(Runnable runnable) {
         Thread thread = new Thread(runnable);
         thread.setContextClassLoader(this.getClass().getClassLoader());
@@ -183,9 +215,15 @@ public final class GDocs extends WeakBase
     
     private String getCurrentDocumentPath() {
         XModel xDoc = (XModel) UnoRuntime.queryInterface(
-        XModel.class, m_xFrame.getController().getModel());        
+        XModel.class, m_xFrame.getController().getModel());
         return xDoc.getURL();
     }    
+
+    private boolean isModified() throws HeadlessException {
+        XModifiable xModifable = (XModifiable) UnoRuntime.queryInterface(
+        XModifiable.class, m_xFrame.getController().getModel());
+        return xModifable.isModified();
+    }
     
     public void addStatusListener( com.sun.star.frame.XStatusListener xControl,
                                     com.sun.star.util.URL aURL )

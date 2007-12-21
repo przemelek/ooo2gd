@@ -115,7 +115,7 @@ public class UploadDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("<html>(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></html>");
+        jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
         jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel1MouseClicked(evt);
@@ -141,7 +141,7 @@ public class UploadDialog extends javax.swing.JDialog {
                         .addGap(21, 21, 21)
                         .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(154, 154, 154)
+                        .addGap(166, 166, 166)
                         .addComponent(jLabel1)))
                 .addContainerGap())
         );
@@ -157,7 +157,7 @@ public class UploadDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(okButton)
                     .addComponent(cancelButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
         pack();
