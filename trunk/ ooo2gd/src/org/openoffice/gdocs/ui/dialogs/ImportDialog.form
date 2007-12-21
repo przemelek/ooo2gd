@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.0" type="org.netbeans.modules.form.forminfo.DialogFormInfo">
+<Form version="1.0" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
+    <Property name="title" type="java.lang.String" value="Import from Google Docs"/>
     <Property name="focusTraversalPolicyProvider" type="boolean" value="true"/>
     <Property name="locationByPlatform" type="boolean" value="true"/>
-    <Property name="title" type="java.lang.String" value="Import from Google Docs"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -60,7 +60,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;(c) &lt;u&gt;&lt;font color=&quot;blue&quot;&gt;Przemyslaw Rumik&lt;/font&gt;&lt;/u&gt;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;font size=&quot;1&quot;&gt;(c) &lt;u&gt;&lt;font color=&quot;blue&quot;&gt;Przemyslaw Rumik&lt;/font&gt;&lt;/u&gt;&lt;/font&gt;&lt;/html&gt;"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
           </Properties>
           <Events>

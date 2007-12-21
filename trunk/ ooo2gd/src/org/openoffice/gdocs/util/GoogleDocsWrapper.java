@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -75,12 +77,12 @@ public class GoogleDocsWrapper {
 
         private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
             DocumentEntry newDocument = new DocumentEntry();
-            newDocument.setFile(documentFile);
-            newDocument.setTitle(new PlainTextConstruct(documentTitle));
-            URL documentListFeedUrl = new URL(DOCS_FEED);
-            DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
-                newDocument);
-        }
+              newDocument.setFile(documentFile);
+              newDocument.setTitle(new PlainTextConstruct(documentTitle));
+              URL documentListFeedUrl = new URL(DOCS_FEED);
+              DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
+                  newDocument);
+	}
 	
 	public List<DocumentListEntry> getListOfDocs() throws IOException, ServiceException {
 		List<DocumentListEntry> list = new LinkedList<DocumentListEntry>();
@@ -88,6 +90,20 @@ public class GoogleDocsWrapper {
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
                 list=feed.getEntries();
 		return list;
-	}	
+        }
+        
+        public URI getUriForEntry(final DocumentListEntry entry) throws URISyntaxException {
+            String id = entry.getId().split("%3A")[1];
+            String type = entry.getId().split("%3A")[0];            
+            String uriStr = "";
+            if ("document".equals(type)) {
+                uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
+            } else if ("spreadsheet".equals(type)) {
+                uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
+            } else if ("presentation".equals(type)) {
+                uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+            }
+            return new URI(uriStr);
+        }	
 	
 }
