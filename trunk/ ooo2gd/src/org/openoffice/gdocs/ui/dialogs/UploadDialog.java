@@ -8,8 +8,8 @@ import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 import javax.swing.JOptionPane;
+import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.GoogleDocsWrapper;
-import org.openoffice.gdocs.ui.*;
 
 /**
  *
@@ -28,7 +28,7 @@ public class UploadDialog extends javax.swing.JDialog {
         setMessageText("File "+pathName+" will be uploaded to Google Docs");
         setDocumentTitle(docName);
         setModal(true);
-        toFront();        
+        toFront();
     }
     
     public void setVisibleForDocName(boolean visible) {
@@ -53,7 +53,7 @@ public class UploadDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Export to Google Docs");
+        setTitle(Configuration.getResources().getString("Export_to_Google_Docs"));
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setModal(true);
@@ -72,7 +72,7 @@ public class UploadDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel3.setText("Document name:");
+        jLabel3.setText(Configuration.getResources().getString("Document_name:"));
 
         message.setText("     ");
 
@@ -101,14 +101,14 @@ public class UploadDialog extends javax.swing.JDialog {
                 .addGap(50, 50, 50))
         );
 
-        okButton.setText("OK");
+        okButton.setText(Configuration.getResources().getString("OK"));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
             }
         });
 
-        cancelButton.setText("Cancel");
+        cancelButton.setText(Configuration.getResources().getString("Cancel"));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelButtonActionPerformed(evt);
