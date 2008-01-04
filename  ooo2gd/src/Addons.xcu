@@ -7,6 +7,8 @@
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
           <value xml:lang="en">Google Docs</value>
+          <value xml:lang="pl">Google Docs</value>
+          <value xml:lang="de">Google Docs</value>
         </prop>
         <prop oor:name="Target" oor:type="xs:string">
           <value>_self</value>
@@ -31,6 +33,8 @@
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
               <value xml:lang="en">Export to Google Docs</value>
+              <value xml:lang="pl">Eksport do Google Docs</value>
+              <value xml:lang="de">Export nach Google Docs</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -49,8 +53,32 @@
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
               <value xml:lang="en">Import from Google Docs</value>
+              <value xml:lang="pl">Import z Google Docs</value>
+              <value xml:lang="de">Import von Google Docs</value>
             </prop>
           </node>          
+
+          <node oor:name="m3" oor:op="replace">
+            <prop oor:name="URL" oor:type="xs:string">
+              <value>org.openoffice.gdocs.gdocs:Configure</value>
+            </prop>
+            <prop oor:name="ImageIdentifier" oor:type="xs:string">
+              <value/>
+            </prop>
+            <prop oor:name="Target" oor:type="xs:string">
+              <value>_self</value>
+            </prop>
+            <prop oor:name="Context" oor:type="xs:string">
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>
+            </prop>
+            <prop oor:name="Title" oor:type="xs:string">
+              <value/>
+              <value xml:lang="en">Configuration</value>
+              <value xml:lang="pl">Konfiguracja</value>
+              <value xml:lang="de">Configuration</value>
+            </prop>
+          </node>          
+          
         </node>
       </node>
     </node>
@@ -73,6 +101,8 @@
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
           <value xml:lang="en">Export to Google Docs</value>
+          <value xml:lang="pl">Eksport do Google Docs</value>
+          <value xml:lang="de">Export nach Google Docs</value>
         </prop>
       </node>
       
@@ -92,10 +122,13 @@
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
           <value xml:lang="en">Import from Google Docs</value>
+          <value xml:lang="pl">Import z Google Docs</value>
+          <value xml:lang="de">Import von Google Docs</value>
         </prop>
       </node>      
       </node>
     </node>
+   
     <node oor:name="Images">
       <node oor:name="org.openoffice.gdocs.gdocs.export to google docs.images" oor:op="replace">
         <prop oor:name="URL" oor:type="xs:string">

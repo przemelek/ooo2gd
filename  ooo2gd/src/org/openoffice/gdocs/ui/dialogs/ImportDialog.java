@@ -15,8 +15,8 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.GoogleDocsWrapper;
-import org.openoffice.gdocs.ui.*;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 
 /**
@@ -56,7 +56,7 @@ public class ImportDialog extends JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
-        setTitle("Import from Google Docs");
+        setTitle(Configuration.getResources().getString("Import_from_Google_Docs"));
         setFocusTraversalPolicyProvider(true);
         setLocationByPlatform(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -71,7 +71,7 @@ public class ImportDialog extends JDialog {
 
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        closeButton.setText("Close");
+        closeButton.setText(Configuration.getResources().getString("Close"));
         closeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 closeButtonActionPerformed(evt);
@@ -96,7 +96,7 @@ public class ImportDialog extends JDialog {
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        getListButton.setText("Get list");
+        getListButton.setText(Configuration.getResources().getString("Get_list"));
         getListButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 getListButtonActionPerformed(evt);
@@ -110,7 +110,7 @@ public class ImportDialog extends JDialog {
         jSplitPane2.setFocusCycleRoot(true);
         jSplitPane2.setPreferredSize(new java.awt.Dimension(300, 134));
         jPanel3.setMaximumSize(new java.awt.Dimension(71, 33));
-        openButton.setText("Open");
+        openButton.setText(Configuration.getResources().getString("Open"));
         openButton.setEnabled(false);
         openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -150,7 +150,11 @@ public class ImportDialog extends JDialog {
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
             wrapper.login(loginPanel1.getCreditionals());
             DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-            Desktop.getDesktop().browse( wrapper.getUriForEntry(entry) );
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse( wrapper.getUriForEntry(entry) );
+            } else {
+                JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
+            }
         } catch (AuthenticationException e) {
             JOptionPane.showMessageDialog(this,"Invalid Creditionals.");
         } catch (URISyntaxException e) {

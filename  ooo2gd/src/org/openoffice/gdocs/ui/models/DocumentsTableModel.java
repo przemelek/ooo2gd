@@ -8,6 +8,7 @@ import com.google.gdata.data.docs.DocumentListEntry;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
+import org.openoffice.gdocs.configuration.Configuration;
 
 
 public class DocumentsTableModel extends AbstractTableModel {
@@ -43,8 +44,8 @@ public class DocumentsTableModel extends AbstractTableModel {
 
     public String getColumnName(int column) {
         switch (column) {
-            case 0: return "Document Title";
-            case 1: return "Published";
+            case 0: return Configuration.getResources().getString("Document_Title");
+            case 1: return Configuration.getResources().getString("Published");
         }
         return "";
     }

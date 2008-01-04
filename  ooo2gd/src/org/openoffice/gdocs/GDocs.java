@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOError;
 import java.net.URL;
 import javax.swing.JOptionPane;
+import org.openoffice.gdocs.configuration.Configuration;
+import org.openoffice.gdocs.ui.dialogs.ConfigDialog;
 import org.openoffice.gdocs.ui.dialogs.ImportDialog;
 import org.openoffice.gdocs.ui.dialogs.UploadDialog;
 
@@ -32,6 +34,7 @@ public final class GDocs extends WeakBase
     private static final String GDOCS_PROTOCOL = "org.openoffice.gdocs.gdocs:";
     private static final String EXPORT_TO = "Export to Google Docs";
     private static final String IMPORT_FROM = "Import from Google Docs";
+    private static final String CONFIGURE = "Configure";
     private final XComponentContext m_xContext;
     private com.sun.star.frame.XFrame m_xFrame;
     private static final String m_implementationName = GDocs.class.getName();
@@ -92,6 +95,8 @@ public final class GDocs extends WeakBase
             }
             if ( aURL.Path.compareTo(IMPORT_FROM) == 0 )
                 return this;
+            if ( aURL.Path.compareTo(CONFIGURE) == 0 )
+                return this;
         }
         return null;
     }
@@ -140,13 +145,27 @@ public final class GDocs extends WeakBase
                 importFromGoogleDocs();
                 return;
             }
+            if ( aURL.Path.compareTo(CONFIGURE) == 0 )
+            {
+                startNewThread(new Runnable() {
+                    public void run() {
+                        try {
+                            new ConfigDialog(null,true).setVisible(true);
+                        } catch (Exception e) {
+                            
+                        }
+                    }
+                });
+                return;
+            }
+            
         }
     }
 
     private void exportToGoogleDocs() {
         final String path = getCurrentDocumentPath();
         startNewThread(new Runnable() {
-            public void run() {
+            public void run() {                
                 if (path!=null && !path.equals("")) {
                     try {
                         URL url = new URL(path);
@@ -154,12 +173,12 @@ public final class GDocs extends WeakBase
                         if (file.isFile()) {
                             boolean doUpload = true;
                             if (isModified()) {
-                                String notSavedMessage = "Your file was modified from the last save; only last saved version of file will be exported to Google Docs.\nWould you like to save this version and export?";
+                                String notSavedMessage = Configuration.getResources().getString("Your_file_was_modified");
                                 int option = JOptionPane.showConfirmDialog(null,notSavedMessage);
                                 if (option == JOptionPane.YES_OPTION) {
                                         if ( !storeToDisk() ) {
                                             doUpload = false;
-                                            JOptionPane.showMessageDialog(null,"Cannot save file on disk....\nFile won't be uploaded.");
+                                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Cannot_save_file_on_disk...."));
                                         }
                                 } else if  (option == JOptionPane.CANCEL_OPTION) {
                                     doUpload = false;
@@ -170,13 +189,13 @@ public final class GDocs extends WeakBase
                                 new UploadDialog(pathName).setVisible(true);
                             }
                         } else {                            
-                            JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
+                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                         }
                       } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
+                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());
                       }
                   } else {
-                      JOptionPane.showMessageDialog(null,"Sorry... you must first save your file on hard disk.");
+                      JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                   }
             }
         });

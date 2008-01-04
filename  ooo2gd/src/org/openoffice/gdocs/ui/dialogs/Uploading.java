@@ -4,6 +4,8 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
+import org.openoffice.gdocs.configuration.Configuration;
+
 /**
  *
  * @author  rmk
@@ -33,7 +35,7 @@ public class Uploading extends javax.swing.JDialog {
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setResizable(false);
-        jLabel1.setText("Uploading in progress...");
+        jLabel1.setText(Configuration.getResources().getString("Uploading_in_progress..."));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

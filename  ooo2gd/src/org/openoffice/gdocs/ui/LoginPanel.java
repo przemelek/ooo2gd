@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
+import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.Creditionals;
 
 public class LoginPanel extends javax.swing.JPanel implements Serializable {
@@ -22,7 +23,7 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
         readCreditionals();
     }
     
-    public Creditionals getCreditionals() {
+    public Creditionals getCreditionals() {        
         Creditionals creditionals = new Creditionals(getUserName(),getPassword());
         if (rememberCheckBox.isSelected()) {
             creditionals.store();
@@ -59,13 +60,13 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
         jLabel4 = new javax.swing.JLabel();
         rememberCheckBox = new javax.swing.JCheckBox();
 
-        jLabel1.setText("Google User Name:");
+        jLabel1.setText(Configuration.getResources().getString("Google_User_Name:"));
 
-        jLabel2.setText("Google Password:");
+        jLabel2.setText(Configuration.getResources().getString("Google_Password:"));
 
-        jLabel4.setText("Google Account Info");
+        jLabel4.setText(Configuration.getResources().getString("Google_Account_Info"));
 
-        rememberCheckBox.setText("Remember Password (It will be stored on local disk)");
+        rememberCheckBox.setText(Configuration.getResources().getString("Remember_Password_(It_will_be_stored_on_local_disk)"));
         rememberCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rememberCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rememberCheckBox.addActionListener(new java.awt.event.ActionListener() {
