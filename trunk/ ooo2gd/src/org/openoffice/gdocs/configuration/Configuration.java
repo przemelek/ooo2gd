@@ -14,6 +14,8 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ListDataListener;
 
+import org.openoffice.gdocs.util.EncodingSensitiveControl;
+
 public class Configuration {
     
     private static Map<String,String> map = new HashMap<String,String>();
@@ -26,6 +28,7 @@ public class Configuration {
         map.put("English","en");
         map.put("Polski","pl");
         map.put("German","de");
+        map.put("Bulgarian", "bg");
         map.put("System","system");
         for (String str : map.keySet()) {
             langsMap.put(map.get(str),str);
@@ -79,10 +82,13 @@ public class Configuration {
         }
     }
     
+    private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
     public static ResourceBundle getResources() {        
         Locale locale = Locale.getDefault();
         if ((lang!=null) && (!"system".equals(lang))) locale = new Locale(lang);
-        return ResourceBundle.getBundle("org/openoffice/gdocs/resources/properties",locale);
+        return ResourceBundle.getBundle("org/openoffice/gdocs/resources/properties", 
+            locale, 
+            encodingSensitiveControl);
     }
     
     public static ComboBoxModel getLanguagesModel() {
