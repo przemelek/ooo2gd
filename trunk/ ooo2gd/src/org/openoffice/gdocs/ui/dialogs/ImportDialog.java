@@ -163,16 +163,10 @@ public class ImportDialog extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-        try {
+        try {            
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
             wrapper.login(loginPanel1.getCreditionals());
             DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-//            if (Desktop.isDesktopSupported()) {
-//                Desktop.getDesktop().browse( wrapper.getUriForEntry(entry) );
-//            } else {
-//                JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
-//            }
-
             final String documentUrl = this.currentDocumentPath +"/"+URLEncoder.encode(entry.getTitle().getPlainText(), "utf8");
             final Downloader downloader = new Downloader(wrapper.getUriForEntry(entry), 
                 documentUrl, wrapper.getService());
@@ -198,19 +192,19 @@ public class ImportDialog extends JDialog {
                             XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
                             XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN"));
                         }
                     }
                 }
             });
             downloader.start();
         } catch (AuthenticationException e) {
-            JOptionPane.showMessageDialog(this,"Invalid Creditionals.");
+            JOptionPane.showMessageDialog(this,Configuration.getResources().getString("INVALID_CREDITIONALS"));
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this,e.getMessage());
+            JOptionPane.showMessageDialog(this,Configuration.getResources().getString("Problem:_")+e.getMessage());
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
+            JOptionPane.showMessageDialog(this,Configuration.getResources().getString("CANNOT_OPEN_BROWSER"));
         }
     }//GEN-LAST:event_openButtonActionPerformed
 
@@ -242,7 +236,7 @@ public class ImportDialog extends JDialog {
             }
             jTable1.setModel(dtm);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,"Problem: "+e.getMessage());
+            JOptionPane.showMessageDialog(this,Configuration.getResources().getString("Problem:_")+e.getMessage());
         }
 
         this.repaint();
