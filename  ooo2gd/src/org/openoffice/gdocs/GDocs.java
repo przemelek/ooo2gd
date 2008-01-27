@@ -92,11 +92,11 @@ public final class GDocs extends WeakBase
                     result = this;
                 }
                 return result;
+            } else if ( aURL.Path.compareTo(IMPORT_FROM) == 0 ) {
+                return this;
+            } else if ( aURL.Path.compareTo(CONFIGURE) == 0 ) {
+                return this;
             }
-            if ( aURL.Path.compareTo(IMPORT_FROM) == 0 )
-                return this;
-            if ( aURL.Path.compareTo(CONFIGURE) == 0 )
-                return this;
         }
         return null;
     }
@@ -124,7 +124,7 @@ public final class GDocs extends WeakBase
     {
         if ( object.length > 0 )
         {
-            m_xFrame = (com.sun.star.frame.XFrame)UnoRuntime.queryInterface(
+        m_xFrame = (com.sun.star.frame.XFrame)UnoRuntime.queryInterface(
                 com.sun.star.frame.XFrame.class, object[0]);
         }
     }
@@ -205,7 +205,7 @@ public final class GDocs extends WeakBase
         startNewThread(new Runnable() {
             public void run() {
                 try {
-                    new ImportDialog(null,true).setVisible(true);
+                    new ImportDialog(null,true, getCurrentDocumentPath()).setVisible(true);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,e.getMessage());
                 }
@@ -233,9 +233,8 @@ public final class GDocs extends WeakBase
     }
     
     private String getCurrentDocumentPath() {
-        XModel xDoc = (XModel) UnoRuntime.queryInterface(
-        XModel.class, m_xFrame.getController().getModel());
-        return xDoc.getURL();
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        return tmpDir;
     }    
 
     private boolean isModified() throws HeadlessException {

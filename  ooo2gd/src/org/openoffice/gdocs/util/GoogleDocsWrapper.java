@@ -76,8 +76,8 @@ public class GoogleDocsWrapper {
         }
 
         private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
-            DocumentEntry newDocument = new DocumentEntry();
-              newDocument.setFile(documentFile);
+            DocumentEntry newDocument = new DocumentEntry();              
+              newDocument.setFile(documentFile,documentTitle);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
               DocumentListEntry uploaded = service.insert(documentListFeedUrl, 

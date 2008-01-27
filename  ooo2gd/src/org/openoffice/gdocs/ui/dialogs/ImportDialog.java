@@ -6,18 +6,33 @@ package org.openoffice.gdocs.ui.dialogs;
 
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.util.AuthenticationException;
+import com.sun.star.beans.PropertyValue;
+import com.sun.star.frame.XComponentLoader;
+import com.sun.star.lang.XComponent;
+import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.text.XTextDocument;
+import com.sun.star.uno.UnoRuntime;
+import com.sun.star.uno.XComponentContext;
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+
+import org.openoffice.gdocs.ApplicationLauncher;
 import org.openoffice.gdocs.configuration.Configuration;
+import org.openoffice.gdocs.util.Downloader;
 import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
+import org.openoffice.gdocs.util.IOEvent;
+import org.openoffice.gdocs.util.IOListener;
 
 /**
  *
@@ -25,12 +40,14 @@ import org.openoffice.gdocs.ui.models.DocumentsTableModel;
  */
 public class ImportDialog extends JDialog {
     
+  private final String currentDocumentPath;
     /** Creates new form ImportDialog */
-    public ImportDialog(java.awt.Frame parent, boolean modal) {
+    public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath) {
         super(parent, modal);
         initComponents();
         jTable1.setModel(new DocumentsTableModel());
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.currentDocumentPath = currentDocumentPath;
     }
     
     
@@ -150,14 +167,47 @@ public class ImportDialog extends JDialog {
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
             wrapper.login(loginPanel1.getCreditionals());
             DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse( wrapper.getUriForEntry(entry) );
-            } else {
-                JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
-            }
+//            if (Desktop.isDesktopSupported()) {
+//                Desktop.getDesktop().browse( wrapper.getUriForEntry(entry) );
+//            } else {
+//                JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
+//            }
+
+            final String documentUrl = this.currentDocumentPath +"/"+URLEncoder.encode(entry.getTitle().getPlainText(), "utf8");
+            final Downloader downloader = new Downloader(wrapper.getUriForEntry(entry), 
+                documentUrl, wrapper.getService());
+            final Uploading progressWindow = new Uploading();
+            progressWindow.setMessage("Google Docs -> OpenOffice.org");
+            progressWindow.setVisible(true);            
+            downloader.addIOListener(new IOListener() {                
+                public void ioProgress(IOEvent ioEvent) {                    
+                    if (ioEvent.isCompleted()) {
+                        progressWindow.dispose();
+                        File docFile = new File(documentUrl);
+                        try {
+                            XComponentContext xContext = com.sun.star.comp.helper.Bootstrap.bootstrap();
+                            XMultiComponentFactory xMCF = xContext.getServiceManager();
+                            Object oDesktop = xMCF.createInstanceWithContext("com.sun.star.frame.Desktop", xContext);
+                            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,oDesktop);
+                            System.out.println(docFile.toURI().toString());
+                            System.out.println(docFile.toURL().toString());
+                            System.out.println(documentUrl);
+                            StringBuffer sLoadUrl = new StringBuffer("file:///");
+                            sLoadUrl.append(docFile.getCanonicalPath().replace('\\', '/'));                              
+                            System.out.println(sLoadUrl.toString());
+                            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
+                            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+            downloader.start();
         } catch (AuthenticationException e) {
             JOptionPane.showMessageDialog(this,"Invalid Creditionals.");
         } catch (URISyntaxException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this,e.getMessage());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this,"Cannot open document in default browser");
@@ -210,11 +260,10 @@ public class ImportDialog extends JDialog {
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ImportDialog(new java.awt.Frame(), true).setVisible(true);
+                new ImportDialog(new java.awt.Frame(), true, ApplicationLauncher.getDocumentDirectory()).setVisible(true);
             }
         });
     }
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
