@@ -38,10 +38,10 @@ Sorry..._you_must_first_save_your_file_on_hard_disk.=Entschuldigung, Sie müssen 
 
 Problem\:_=Problem\: 
 
-CANNOT_OPEN_BROWSER=Cannot open document in default browser
+CANNOT_OPEN_BROWSER=Datei konnte nicht im Standard-Browser geöffnet werden
 
-INVALID_CREDITIONALS=Invalid Creditionals.
+INVALID_CREDITIONALS= Benutzername/Passwort falsch.
 
-ERROR_IMPORTING_FILE = Error importing file
+ERROR_IMPORTING_FILE = Fehler beim Datei-Import
 
-PROBLEM_CANNOT_OPEN = Cannot open downloaded file
+PROBLEM_CANNOT_OPEN = Die heruntergeladene Datei konnte nicht geöffnet werden
