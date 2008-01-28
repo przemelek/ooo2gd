@@ -17,7 +17,6 @@ import com.sun.star.lib.uno.helper.WeakBase;
 import com.sun.star.util.XModifiable;
 import java.awt.HeadlessException;
 import java.io.File;
-import java.io.IOError;
 import java.net.URL;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.configuration.Configuration;
@@ -205,7 +204,7 @@ public final class GDocs extends WeakBase
         startNewThread(new Runnable() {
             public void run() {
                 try {
-                    new ImportDialog(null,true, getTempPath()).setVisible(true);
+                    new ImportDialog(null,true, getTempPath(),m_xFrame).setVisible(true);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,e.getMessage());
                 }

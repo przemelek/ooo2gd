@@ -8,25 +8,21 @@ import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.frame.XComponentLoader;
+import com.sun.star.frame.XFrame;
 import com.sun.star.lang.XComponent;
-import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
-import com.sun.star.uno.XComponentContext;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-
-import org.openoffice.gdocs.ApplicationLauncher;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.Downloader;
 import org.openoffice.gdocs.util.GoogleDocsWrapper;
@@ -39,11 +35,12 @@ import org.openoffice.gdocs.util.IOListener;
  * @author  rmk
  */
 public class ImportDialog extends JDialog {
-    
+  private XFrame xFrame;
   private final String currentDocumentPath;
     /** Creates new form ImportDialog */
-    public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath) {
+    public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath,XFrame frame) {
         super(parent, modal);
+        this.xFrame = frame;
         initComponents();
         jTable1.setModel(new DocumentsTableModel());
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -179,20 +176,13 @@ public class ImportDialog extends JDialog {
                         progressWindow.dispose();
                         File docFile = new File(documentUrl);
                         try {
-                            XComponentContext xContext = com.sun.star.comp.helper.Bootstrap.bootstrap();
-                            XMultiComponentFactory xMCF = xContext.getServiceManager();
-                            Object oDesktop = xMCF.createInstanceWithContext("com.sun.star.frame.Desktop", xContext);
-                            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,oDesktop);
-                            System.out.println(docFile.toURI().toString());
-                            System.out.println(docFile.toURL().toString());
-                            System.out.println(documentUrl);
+                            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
                             StringBuffer sLoadUrl = new StringBuffer("file:///");
                             sLoadUrl.append(docFile.getCanonicalPath().replace('\\', '/'));                              
-                            System.out.println(sLoadUrl.toString());
                             XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
                             XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
                         } catch (Exception e) {
-                            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN"));
+                            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
                         }
                     }
                 }
@@ -248,16 +238,6 @@ public class ImportDialog extends JDialog {
         dispose();
     }//GEN-LAST:event_closeDialog
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ImportDialog(new java.awt.Frame(), true, ApplicationLauncher.getDocumentDirectory()).setVisible(true);
-            }
-        });
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
