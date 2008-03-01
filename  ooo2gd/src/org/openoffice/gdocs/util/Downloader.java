@@ -32,6 +32,9 @@ import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.client.http.HttpAuthToken;
 
 public class Downloader implements Runnable {
+  private interface DownloaderInterface {
+      public void fetchImpl(InputStream is, int contentLength) throws IOException;
+  }
   private static final int DEFAULT_RETRY_COUNT = 5;
   private static final int DEFAULT_BUFFER_SIZE = 1024 * 8;
   private static final String DEFAULT_USER_AGENT = "ooo2gd";
@@ -41,32 +44,49 @@ public class Downloader implements Runnable {
   private final int bufferSize = DEFAULT_BUFFER_SIZE;
   
   private final DocsService docsService;
-  private final URL source;
-  private final URI destFileURI;
+  private URL source;
+  private URI destFileURI;
   
   private String userAgent = DEFAULT_USER_AGENT;
   
   private List<IOListener> ioListeners = Collections.synchronizedList(new ArrayList<IOListener>());
-//  public Downloader(URL source, String destFileURI, DocsService docsService) throws URISyntaxException, MalformedURLException {
-//    this(source, destFileURI, docsService, DEFAULT_RETRY_COUNT);
-//  }
-//  
-//  public Downloader(URI source, String destFileURI, DocsService docsService) throws MalformedURLException, URISyntaxException {
-//    this(source.toURL(), destFileURI, docsService, DEFAULT_RETRY_COUNT);
-//  }
-//
+  
+  private DownloaderInterface currentDownloader;
+
+  
   public Downloader(URI source, String destFileURI, DocsService docsService) throws URISyntaxException, MalformedURLException {
-    this.source = source.toURL();    
-    this.destFileURI = new File(destFileURI).toURI();
+      this.source = source.toURL();
+      this.destFileURI = new File(destFileURI).toURI();
     if(!(docsService.getAuthTokenFactory().getAuthToken() instanceof HttpAuthToken)){
-      throw new IllegalArgumentException("The downloader class works only with HttpAuthTokens.");
+       throw new IllegalArgumentException("The downloader class works only with HttpAuthTokens.");
     }
-    this.docsService = docsService;
+    this.docsService = docsService; 
+      this.currentDownloader = new DownloaderInterface() {
+         public void fetchImpl(InputStream is, int contentLength) throws IOException {
+             fetchImplForFile(is,contentLength);
+         }
+      };    
   }
   
-  public Downloader(String source, String destFileURI, DocsService docsService) throws MalformedURLException, URISyntaxException {
-    this(new URI(source), destFileURI, docsService);
+  public Downloader(URI source, final OutputStream out, DocsService docsService) throws MalformedURLException{
+      this.source = source.toURL();
+      this.docsService = docsService; 
+      this.currentDownloader = new DownloaderInterface() {
+         public void fetchImpl(InputStream is, int contentLength) throws IOException {
+             fetchImplForMemory(is,out,contentLength);
+         }      
+    };
   }
+  
+  public void download() throws IOException {          
+      doFetchHttpURLConnection();      
+  }
+  
+  //public Downloader()
+  
+  //public Downloader(String source, String destFileURI, DocsService docsService) throws MalformedURLException, URISyntaxException {
+ //   this(new URI(source), destFileURI, docsService);
+  //}
   
   public void addIOListener(IOListener l){
     ioListeners.add(l);
@@ -85,14 +105,17 @@ public class Downloader implements Runnable {
     t.start();
   }
 
-  @Override
   public void run() {
     try {
-//      doFetchHTTPClient();
-      doFetchHttpURLConnection();
+      doFetchHttpURLConnection();      
     } catch (IOException ioex) {
       fireIOEvent(new IOEvent(this, 
-IOEvent.getUNKNOWN_SIZE(), IOEvent.getUNKNOWN_SIZE(),           ioex, Configuration.getResources().getString("ERROR_IMPORTING_FILE")));
+                              IOEvent.getUNKNOWN_SIZE(), 
+                              IOEvent.getUNKNOWN_SIZE(),
+                              ioex, 
+                              Configuration.getResources().getString("ERROR_IMPORTING_FILE")
+                              )
+                             );
     }
   }
 
@@ -105,7 +128,7 @@ IOEvent.getUNKNOWN_SIZE(), IOEvent.getUNKNOWN_SIZE(),           ioex, Configurat
     conn.setRequestProperty("Authorization", header);
     conn.setRequestProperty("User-Agent", userAgent);
     conn.connect();
-    String contentLengthStr = conn.getHeaderField("Content-Length");
+    String contentLengthStr = conn.getHeaderField("Content-Length");       
     int contentLength = IOEvent.getUNKNOWN_SIZE();
     if(contentLengthStr!=null){
       try {
@@ -116,35 +139,10 @@ IOEvent.getUNKNOWN_SIZE(), IOEvent.getUNKNOWN_SIZE(),           ioex, Configurat
       }
     }
     InputStream is = conn.getInputStream();
-    fetchImpl(is, contentLength);
+    //fetchImpl(is, contentLength);
+    currentDownloader.fetchImpl(is, contentLength);
   }
  
-//  private void doFetchHTTPClient() throws IOException {
-//    HttpClient client = new HttpClient();
-//    GetMethod method = new GetMethod(source.toExternalForm());
-//    method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, 
-//        new DefaultHttpMethodRetryHandler(retryCount, false));
-//    HttpAuthToken authToken = (HttpAuthToken)docsService.getAuthTokenFactory().getAuthToken();
-//    String header = authToken.getAuthorizationHeader(source, "GET");
-//    method.addRequestHeader("Authorization", header);
-//    try {
-//      // Execute the method.
-//      int statusCode = client.executeMethod(method);
-//
-//      if (statusCode != HttpStatus.SC_OK) {
-//        System.err.println("Method failed: " + method.getStatusLine());
-//      }
-//
-//      InputStream is = method.getResponseBodyAsStream();
-//      fetchImpl(is);
-//    } catch (HttpException e) {
-//      System.err.println("Fatal protocol violation: " + e.getMessage());
-//      e.printStackTrace();
-//    } finally {
-//      // Release the connection.
-//      method.releaseConnection();
-//    }  
-//  }
   
   /**
    * Works only for file based targets. We assume user have write permission for the directory containing
@@ -152,22 +150,18 @@ IOEvent.getUNKNOWN_SIZE(), IOEvent.getUNKNOWN_SIZE(),           ioex, Configurat
    * @param contentLength 
    * @throws IOException 
    */
-  private void fetchImpl(InputStream is, int contentLength) throws IOException {
+  private void fetchImplForFile(InputStream is, int contentLength) throws IOException {
     File destFile = new File(destFileURI);
     File tempFile = createTempFile(destFile);
-    OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile));
     int progress = 0;
-    byte[] buffer = new byte[bufferSize];
-    int readCount;
-    try {
-      while((readCount=is.read(buffer))>0) {
-        out.write(buffer, 0, readCount);
-        progress += readCount;
-        fireIOEvent(new IOEvent(this, contentLength, progress, null, null));
+    OutputStream out = new BufferedOutputStream(new FileOutputStream(tempFile));
+    try {      
+       progress = getStream(is, contentLength, out);
+    } finally {
+      if(out!=null){
+        out.close();
       }
-      out.flush();
-      out.close();
-      out = null;
+    }       
       if(destFile.exists()&&!destFile.canWrite()){
         throw new IOException("Can not write to the destination file.");
       }
@@ -176,12 +170,34 @@ IOEvent.getUNKNOWN_SIZE(), IOEvent.getUNKNOWN_SIZE(),           ioex, Configurat
       }
       tempFile.delete(); // we need not to wait for exit
       fireIOEvent(new IOEvent(this,contentLength,progress,null,null,true));
+  }
+  
+  private void fetchImplForMemory(InputStream is, OutputStream out, int contentLength) throws IOException {
+    int progress = 0;    
+    try {      
+       progress = getStream(is, contentLength, out);
     } finally {
       if(out!=null){
         out.close();
       }
-    }
+    }       
+   fireIOEvent(new IOEvent(this,contentLength,progress,null,null,true));      
   }
+
+    private int getStream(final InputStream is, final int contentLength, OutputStream out) throws IOException {
+        int progress = 0;
+        byte[] buffer = new byte[bufferSize];            
+        int readCount;        
+        while((readCount=is.read(buffer))>0) {
+          out.write(buffer, 0, readCount);
+          progress += readCount;
+          fireIOEvent(new IOEvent(this, contentLength, progress, null, null));
+        }
+        out.flush();
+        out.close();
+        out = null;
+        return progress;
+    }
   
   /**
    * Copied from http://www.javalobby.org/java/forums/t17036.html

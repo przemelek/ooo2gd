@@ -134,7 +134,7 @@ public class GDocsFileSystem extends FileSystemView{
     
     public static void main(String[] args) throws Exception {
         GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
-        Creditionals credits = new Creditionals("user","toester");
+        Creditionals credits = new Creditionals("user","password");
         wrapper.login(credits);
         GDocsFileSystem fileSystem = new GDocsFileSystem(wrapper);
         JFileChooser fileChooser = new JFileChooser(new File("Google Docs"),fileSystem);        
