@@ -6,20 +6,32 @@ package org.openoffice.gdocs.ui.dialogs;
 
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.util.AuthenticationException;
+import com.sun.star.beans.PropertyState;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XFrame;
+import com.sun.star.frame.XStorable;
+import com.sun.star.io.XInputStream;
 import com.sun.star.lang.XComponent;
+import com.sun.star.lib.uno.adapter.ByteArrayToXInputStreamAdapter;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
 import java.awt.Desktop;
+import java.awt.HeadlessException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -35,8 +47,37 @@ import org.openoffice.gdocs.util.IOListener;
  * @author  rmk
  */
 public class ImportDialog extends JDialog {
+	
+  private final class ImportIOListener implements IOListener {
+		private final String url;
+
+		private final Uploading window;
+
+		private ImportIOListener(String url, Uploading window) {
+			this.url = url;
+			this.window = window;
+		}
+
+		public void ioProgress(IOEvent ioEvent) {                    
+		    if (ioEvent.isCompleted()) {
+		        window.dispose();
+		        File docFile = new File(url);
+		        try {
+		            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
+		            StringBuffer sLoadUrl = new StringBuffer("file:///");
+		            sLoadUrl.append(docFile.getCanonicalPath().replace('\\', '/'));                              
+		            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
+		            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+		        } catch (Exception e) {
+		            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
+		        }
+		    }
+		}
+	}
+  
   private XFrame xFrame;
   private final String currentDocumentPath;
+  
     /** Creates new form ImportDialog */
     public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath,XFrame frame) {
         super(parent, modal);
@@ -164,39 +205,37 @@ public class ImportDialog extends JDialog {
             GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
             wrapper.login(loginPanel1.getCreditionals());
             DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-            final String documentUrl = this.currentDocumentPath +"/"+URLEncoder.encode(entry.getTitle().getPlainText(), "utf8");
-            final Downloader downloader = new Downloader(wrapper.getUriForEntry(entry), 
-                documentUrl, wrapper.getService());
-            final Uploading progressWindow = new Uploading();
-            progressWindow.setMessage("Google Docs -> OpenOffice.org");
-            progressWindow.setVisible(true);            
-            downloader.addIOListener(new IOListener() {                
-                public void ioProgress(IOEvent ioEvent) {                    
-                    if (ioEvent.isCompleted()) {
-                        progressWindow.dispose();
-                        File docFile = new File(documentUrl);
-                        try {
-                            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
-                            StringBuffer sLoadUrl = new StringBuffer("file:///");
-                            sLoadUrl.append(docFile.getCanonicalPath().replace('\\', '/'));                              
-                            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
-                            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
-                        }
-                    }
-                }
-            });
-            downloader.start();
+             if ( entry.getId().startsWith("document") ) {
+                donwloadTextDocument(entry, wrapper);                
+                
+             }
         } catch (AuthenticationException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this,Configuration.getResources().getString("INVALID_CREDITIONALS"));
         } catch (URISyntaxException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this,Configuration.getResources().getString("Problem:_")+e.getMessage());
         } catch (IOException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this,Configuration.getResources().getString("CANNOT_OPEN_BROWSER"));
         }
     }//GEN-LAST:event_openButtonActionPerformed
+
+    private void donwloadTextDocument(final DocumentListEntry entry, final GoogleDocsWrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
+        final String documentUrl = this.currentDocumentPath +"/"+entry.getTitle().getPlainText();
+        final URI uri = wrapper.getUriForEntry(entry);
+        downloadURI(documentUrl, uri, wrapper);
+    }
+
+    private void downloadURI(final String documentUrl, final URI uri, final GoogleDocsWrapper wrapper) throws MalformedURLException, URISyntaxException {
+        final Downloader downloader = new Downloader(uri, 
+            documentUrl, wrapper.getService());
+        final Uploading progressWindow = new Uploading();
+        progressWindow.setMessage("Google Docs -> OpenOffice.org");
+        progressWindow.setVisible(true);            
+        downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow));
+        downloader.start();
+    }
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         try {
@@ -222,7 +261,9 @@ public class ImportDialog extends JDialog {
             for (DocumentListEntry entry:wrapper.getListOfDocs()) {
                 if ( entry.getId().startsWith("document") ) {
                     dtm.add(entry);
-                }
+                }/* else if ( entry.getId().startsWith("spreadsheet") ) {
+                    dtm.add(entry);
+                }*/
             }
             jTable1.setModel(dtm);
         } catch (Exception e) {

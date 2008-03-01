@@ -55,7 +55,7 @@ public class GoogleDocsWrapper {
         
             File documentFile = new File(path);
         
-            if (path.split("\\.").length>2) {                
+            if (path.split("\\.").length>2) {
                 String ext = path.substring(path.lastIndexOf("."));                
                 String name = path.substring(path.lastIndexOf("\\")+1,path.lastIndexOf("."));
                 name = name.replaceAll("\\.","_");
@@ -76,7 +76,7 @@ public class GoogleDocsWrapper {
         }
 
         private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
-            DocumentEntry newDocument = new DocumentEntry();              
+            DocumentEntry newDocument = new DocumentEntry();
               newDocument.setFile(documentFile);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
@@ -88,7 +88,7 @@ public class GoogleDocsWrapper {
 		List<DocumentListEntry> list = new LinkedList<DocumentListEntry>();
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
-                list=feed.getEntries();
+                list=feed.getEntries();                
 		return list;
         }
         
@@ -99,7 +99,8 @@ public class GoogleDocsWrapper {
             if ("document".equals(type)) {
                 uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
             } else if ("spreadsheet".equals(type)) {
-                uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
+                //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
+                uriStr = "http://spreadsheets.google.com/ccc?key="+id+"&hl=en";
             } else if ("presentation".equals(type)) {
                 uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
             }

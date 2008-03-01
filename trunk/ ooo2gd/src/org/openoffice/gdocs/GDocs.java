@@ -172,16 +172,7 @@ public final class GDocs extends WeakBase
                         if (file.isFile()) {
                             boolean doUpload = true;
                             if (isModified()) {
-                                String notSavedMessage = Configuration.getResources().getString("Your_file_was_modified");
-                                int option = JOptionPane.showConfirmDialog(null,notSavedMessage);
-                                if (option == JOptionPane.YES_OPTION) {
-                                        if ( !storeToDisk() ) {
-                                            doUpload = false;
-                                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Cannot_save_file_on_disk...."));
-                                        }
-                                } else if  (option == JOptionPane.CANCEL_OPTION) {
-                                    doUpload = false;
-                                }
+                                doUpload = askForDecisionAboutUploading();
                             }
                             if (doUpload) {
                                 String pathName=file.getPath();
@@ -196,6 +187,21 @@ public final class GDocs extends WeakBase
                   } else {
                       JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                   }
+            }
+
+            private boolean askForDecisionAboutUploading() throws HeadlessException {
+                boolean doUpload = true;
+                String notSavedMessage = Configuration.getResources().getString("Your_file_was_modified");
+                int option = JOptionPane.showConfirmDialog(null,notSavedMessage);
+                if (option == JOptionPane.YES_OPTION) {
+                        if ( !storeToDisk() ) {
+                            doUpload = false;
+                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Cannot_save_file_on_disk...."));
+                        }
+                } else if  (option == JOptionPane.CANCEL_OPTION) {
+                    doUpload = false;
+                }
+                return doUpload;
             }
         });
     }
