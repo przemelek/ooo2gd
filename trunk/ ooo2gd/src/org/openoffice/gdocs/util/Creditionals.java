@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import org.openoffice.gdocs.configuration.Configuration;
 
 public class Creditionals {
     
@@ -43,9 +44,9 @@ public class Creditionals {
     private boolean readCreditionals() {
         boolean result = false;
         try {            
-            File file = new File(CREDITIONALS_FILE);            
+            File file = new File(Configuration.getWorkingPath()+CREDITIONALS_FILE);            
             if (file.exists()) {
-                FileReader fr = new FileReader(CREDITIONALS_FILE);                
+                FileReader fr = new FileReader(Configuration.getWorkingPath()+CREDITIONALS_FILE);
                 BufferedReader br = new BufferedReader(fr);
                 char[] buf=new char[1024];
                 int length = br.read(buf);
@@ -63,7 +64,7 @@ public class Creditionals {
     
     private void storeCreditionals() {
         try {
-            FileWriter fw = new FileWriter(CREDITIONALS_FILE);
+            FileWriter fw = new FileWriter(Configuration.getWorkingPath()+CREDITIONALS_FILE);
             BufferedWriter bw = new BufferedWriter(fw);
             String password = getPassword();
             String userName = getUserName();

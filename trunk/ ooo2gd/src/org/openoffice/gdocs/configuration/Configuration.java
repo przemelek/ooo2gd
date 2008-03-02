@@ -1,7 +1,5 @@
 package org.openoffice.gdocs.configuration;
 
-import com.sun.star.lang.XMultiServiceFactory;
-import com.sun.star.uno.UnoRuntime;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -14,12 +12,12 @@ import java.util.Map.Entry;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.event.ListDataListener;
 
 import org.openoffice.gdocs.util.EncodingSensitiveControl;
 
 public class Configuration {
     
+    private static String workingPath;
     private static Map<String,String> map = new HashMap<String,String>();
     private static Map<String,String> langsMap = new HashMap<String,String>();
     
@@ -61,7 +59,7 @@ public class Configuration {
     
     public static void store() {
         try {
-            FileWriter fw = new FileWriter("gdocs.lang");
+            FileWriter fw = new FileWriter(getWorkingPath()+"gdocs.lang");
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(lang);
             bw.close();
@@ -72,7 +70,7 @@ public class Configuration {
     
     public static void restore() {
         try {
-            FileReader fr = new FileReader("gdocs.lang");
+            FileReader fr = new FileReader(getWorkingPath()+"gdocs.lang");
             BufferedReader br = new BufferedReader(fr);
             lang = br.readLine();
             br.close();
@@ -101,4 +99,9 @@ public class Configuration {
         lang = map.get(chosenLang);
         store();
     }
+    
+    public static String getWorkingPath() {
+        return System.getProperty("user.dir")+"/";
+    }
+    
 }

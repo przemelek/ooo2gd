@@ -161,7 +161,7 @@ public final class GDocs extends WeakBase
         }
     }
 
-    private void exportToGoogleDocs() {
+    private void exportToGoogleDocs() {        
         final String path = getCurrentDocumentPath();
         startNewThread(new Runnable() {
             public void run() {                
@@ -176,7 +176,7 @@ public final class GDocs extends WeakBase
                             }
                             if (doUpload) {
                                 String pathName=file.getPath();
-                                new UploadDialog(pathName).setVisible(true);
+                                new UploadDialog(pathName,m_xFrame).setVisible(true);
                             }
                         } else {                            
                             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
