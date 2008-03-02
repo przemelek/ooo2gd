@@ -4,12 +4,22 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
+import com.sun.star.beans.PropertyValue;
+import com.sun.star.frame.XComponentLoader;
+import com.sun.star.frame.XFrame;
+import com.sun.star.frame.XStorable;
+import com.sun.star.lang.XComponent;
+import com.sun.star.text.XTextDocument;
+import com.sun.star.uno.UnoRuntime;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.GoogleDocsWrapper;
+import org.openoffice.gdocs.util.OOoUtil;
 
 /**
  *
@@ -18,9 +28,10 @@ import org.openoffice.gdocs.util.GoogleDocsWrapper;
 public class UploadDialog extends javax.swing.JDialog {
   
     private String pathName;
-    
-    public UploadDialog(String pathName) {
+    private XFrame xFrame;
+    public UploadDialog(String pathName,XFrame frame) {
         super();
+        xFrame = frame;
         this.pathName = pathName;
         initComponents();
         String docName = new File(pathName).getName();            
@@ -199,10 +210,26 @@ public class UploadDialog extends javax.swing.JDialog {
                     String docName=getDocumentTitle();
                     uploading.setVisible(true);
                     wrapper.login(loginPanel1.getCreditionals());                    
+                    /*
+                    // File to store is OpenOffice Impress Presentation?
+                    if (pathName.indexOf(".odp")!=-1) {
+                        int option = JOptionPane.showConfirmDialog(null,"Your file is in OpenOffice Impress format (ODP),\nbut Google Docs supports only Power Point format (PPS).\nDo you want OOo2GD convert your file?");
+                        if (option == JOptionPane.YES_OPTION) {
+                            String filterName = "MS Powerpoint 97";
+                            try {
+                                pathName=OOoUtil.convertDocumentToFormat(pathName, filterName, "ppt", xFrame);
+                            } catch (Exception e) {
+                                System.out.println(e.getMessage());
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null,"Sorry, OOo2GD wasn't able to convert this document.\nTry to do it using Save As.. option in File Menu,\nremember Save your document as PPS.");
+                            }
+                        }
+                    }*/
                     wrapper.upload(pathName,docName);
                     JOptionPane.showMessageDialog(null,"File Uploaded");
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());                    
                 }
                 finally {
                     uploading.setVisible(false);
@@ -210,7 +237,7 @@ public class UploadDialog extends javax.swing.JDialog {
             }
         }).start();
     }//GEN-LAST:event_okButtonActionPerformed
-        
+           
     public void setMessageText(String messageText) {
         message.setText(messageText);
     }    

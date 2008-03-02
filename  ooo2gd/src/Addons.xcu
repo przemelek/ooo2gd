@@ -1,20 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
-
 <oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Addons" oor:package="org.openoffice.Office">
   <node oor:name="AddonUI">
-    <node oor:name="OfficeMenuBar">
-      <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">
+    <node oor:name="OfficeMenuBarMerging">
+    <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">
+       <prop oor:name="ImageIdentifier" oor:type="xs:string">
+           <value/>
+       </prop>         
+       <node oor:name="S1" oor:op="replace">
+          <prop oor:name="MergePoint">
+            <value>.uno:PickList\.uno:SaveAll</value>
+          </prop>
+          <prop oor:name="MergeCommand">
+            <value>AddBefore</value>
+          </prop>
+          <prop oor:name="MergeFallback">
+            <value>AddPath</value>
+          </prop>
+      <node oor:name="MenuItems">
+            <node oor:name="M0" oor:op="replace">       
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
           <value xml:lang="en">Google Docs</value>
           <value xml:lang="pl">Google Docs</value>
           <value xml:lang="de">Google Docs</value>
-        </prop>
-        <prop oor:name="Target" oor:type="xs:string">
-          <value>_self</value>
-        </prop>
-        <prop oor:name="ImageIdentifier" oor:type="xs:string">
-          <value/>
         </prop>
         <node oor:name="Submenu">
           <node oor:name="m1" oor:op="replace">
@@ -81,9 +89,15 @@
           
         </node>
       </node>
+      </node>
+      </node>
+      </node>      
     </node>
-    <node oor:name="OfficeToolBar">
-      <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">        
+    <node oor:name="OfficeToolBar">               
+      <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">          
+        <prop oor:name="UIName" oor:type="xs:string">
+            <value>Google Docs</value>
+        </prop>           
       <node oor:name="m1" oor:op="replace">
         <prop oor:name="URL" oor:type="xs:string">
           <value>org.openoffice.gdocs.gdocs:Export to Google Docs</value>
@@ -127,12 +141,11 @@
         </prop>
       </node>      
       </node>
-    </node>
-   
+    </node>   
     <node oor:name="Images">
-      <node oor:name="org.openoffice.gdocs.gdocs.export to google docs.images" oor:op="replace">
-        <prop oor:name="URL" oor:type="xs:string">
-          <value>org.openoffice.gdocs.gdocs:Export to Google Docs</value>
+      <node oor:name="org.openoffice.gdocs.gdocs.images" oor:op="replace">
+                  <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Google Docs</value>
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
@@ -140,6 +153,26 @@
           </prop>
         </node>
       </node>
+      <node oor:name="org.openoffice.gdocs.gdocs.export.images" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Export to Google Docs</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL">
+              <value>%origin%/images/export16.png</value>
+          </prop>
+        </node>
       </node>
+      <node oor:name="org.openoffice.gdocs.gdocs.import.images" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Import from Google Docs</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL">
+              <value>%origin%/images/import16.png</value>
+          </prop>
+        </node>
+      </node>
+      </node>      
   </node>
 </oor:component-data>

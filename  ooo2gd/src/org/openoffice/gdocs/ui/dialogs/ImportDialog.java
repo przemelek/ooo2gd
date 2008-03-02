@@ -41,6 +41,7 @@ import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 import org.openoffice.gdocs.util.IOEvent;
 import org.openoffice.gdocs.util.IOListener;
+import org.openoffice.gdocs.util.OOoUtil;
 
 /**
  *
@@ -64,8 +65,8 @@ public class ImportDialog extends JDialog {
 		        File docFile = new File(url);
 		        try {
 		            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
-		            StringBuffer sLoadUrl = new StringBuffer("file:///");
-		            sLoadUrl.append(docFile.getCanonicalPath().replace('\\', '/'));                              
+                            String fName = docFile.getCanonicalPath();
+                            String sLoadUrl = OOoUtil.fileNameToOOoURL(fName);                              
 		            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
 		            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
 		        } catch (Exception e) {
