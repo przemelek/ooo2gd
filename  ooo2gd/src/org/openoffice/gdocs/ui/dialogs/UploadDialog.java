@@ -209,24 +209,27 @@ public class UploadDialog extends javax.swing.JDialog {
                     GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
                     String docName=getDocumentTitle();
                     uploading.setVisible(true);
-                    wrapper.login(loginPanel1.getCreditionals());                    
-                    /*
+                    wrapper.login(loginPanel1.getCreditionals());
+                    boolean upload = true;
                     // File to store is OpenOffice Impress Presentation?
-                    if (pathName.indexOf(".odp")!=-1) {
-                        int option = JOptionPane.showConfirmDialog(null,"Your file is in OpenOffice Impress format (ODP),\nbut Google Docs supports only Power Point format (PPS).\nDo you want OOo2GD convert your file?");
+                    if (pathName.indexOf(".odp")!=-1) {                        
+                        String msg = "Before upload your presentation must be converted to MS PowerPoint 97 format (PPT).\nDo you want to convert your presentation before upload?";
+                        int option = JOptionPane.showConfirmDialog(null,msg,"Conversion",JOptionPane.YES_NO_OPTION);
                         if (option == JOptionPane.YES_OPTION) {
-                            String filterName = "MS Powerpoint 97";
+                            String filterName = "MS PowerPoint 97";
                             try {
                                 pathName=OOoUtil.convertDocumentToFormat(pathName, filterName, "ppt", xFrame);
                             } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                                e.printStackTrace();
                                 JOptionPane.showMessageDialog(null,"Sorry, OOo2GD wasn't able to convert this document.\nTry to do it using Save As.. option in File Menu,\nremember Save your document as PPS.");
                             }
+                        } else {
+                            upload = false;
                         }
-                    }*/
-                    wrapper.upload(pathName,docName);
-                    JOptionPane.showMessageDialog(null,"File Uploaded");
+                    }
+                    if (upload) {
+                        wrapper.upload(pathName,docName);
+                        JOptionPane.showMessageDialog(null,"File Uploaded");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());                    

@@ -101,7 +101,7 @@ public class Configuration {
     }
     
     public static String getWorkingPath() {
-        return System.getProperty("user.dir")+"/";
+        return System.getProperty("user.home")+"/";
     }
     
 }
