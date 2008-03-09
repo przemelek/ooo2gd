@@ -34,7 +34,7 @@ Your_file_was_modified=Plik zosta³ zmodyfikowany od ostatniego zapisu; tylko zap
 
 Cannot_save_file_on_disk....=Nie mo¿na zapisaæ pliku na dysk....\nPlik nie zostanie wyeksportowany.
 
-Sorry..._you_must_first_save_your_file_on_hard_disk.=Musisz najpierw nagraæ plik na dysku.
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Musisz najpierw zapisaæ plik na dysku.
 
 Problem\:_=Problem\: 
 
@@ -45,3 +45,5 @@ INVALID_CREDITIONALS=Invalid Credentials.
 ERROR_IMPORTING_FILE = Problem z pobraniem pliku
 
 PROBLEM_CANNOT_OPEN = Nie mogê otworzyæ zaimportowanego pliku.
+
+NEED_CONVERT_PPT =Przed przes³aniem do Google Docs Twoja prezentacja musi zostaæ skonwertowana do formatu MS PowerPoint 97 (PPT).\nCzy chcesz skonwertowaæ i przes³aæ prezentacjê?

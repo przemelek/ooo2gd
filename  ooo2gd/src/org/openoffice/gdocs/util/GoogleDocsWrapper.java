@@ -92,17 +92,25 @@ public class GoogleDocsWrapper {
 		return list;
         }
         
-        public URI getUriForEntry(final DocumentListEntry entry) throws URISyntaxException {
+        public URI getUriForEntry(final DocumentListEntry entry,final Creditionals credetionals) throws URISyntaxException {
+            String googleApsName = "";
+            if(credetionals!=null) {
+                String userName = credetionals.getUserName();
+                if (userName.indexOf("@")!=-1) {
+                    googleApsName="a/"+userName.substring(userName.indexOf("@")+1)+"/";
+                }
+                
+            }
             String id = entry.getId().split("%3A")[1];
             String type = entry.getId().split("%3A")[0];            
             String uriStr = "";
             if ("document".equals(type)) {
-                uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
+                uriStr = "http://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
             } else if ("spreadsheet".equals(type)) {
                 //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
-                uriStr = "http://spreadsheets.google.com/ccc?key="+id+"&hl=en";
+                uriStr = "http://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
             } else if ("presentation".equals(type)) {
-                uriStr = "http://docs.google.com/MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+                uriStr = "http://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
             }
             return new URI(uriStr);
         }	

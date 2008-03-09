@@ -45,3 +45,5 @@ INVALID_CREDITIONALS= Benutzername/Passwort falsch.
 ERROR_IMPORTING_FILE = Fehler beim Datei-Import
 
 PROBLEM_CANNOT_OPEN = Die heruntergeladene Datei konnte nicht geöffnet werden
+
+NEED_CONVERT_PPT =Vor dem Upload muss Ihre Präsentation ins MS PowerPoint Format (PPT) konvertiert werden.\nWollen Sie Ihre Präsentation konvertiert und hochladen?
