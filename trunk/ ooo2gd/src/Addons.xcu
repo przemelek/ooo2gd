@@ -40,9 +40,9 @@
             </prop>
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
-              <value xml:lang="en">Export to Google Docs</value>
-              <value xml:lang="pl">Eksport do Google Docs</value>
-              <value xml:lang="de">Export nach Google Docs</value>
+              <value xml:lang="en">Export to...</value>
+              <value xml:lang="pl">Eksport do...</value>
+              <value xml:lang="de">Export</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -60,9 +60,9 @@
             </prop>
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
-              <value xml:lang="en">Import from Google Docs</value>
-              <value xml:lang="pl">Import z Google Docs</value>
-              <value xml:lang="de">Import von Google Docs</value>
+              <value xml:lang="en">Import from...</value>
+              <value xml:lang="pl">Import z...</value>
+              <value xml:lang="de">Import</value>
             </prop>
           </node>          
 
@@ -116,7 +116,7 @@
           <value/>
           <value xml:lang="en">Export to Google Docs</value>
           <value xml:lang="pl">Eksport do Google Docs</value>
-          <value xml:lang="de">Export nach Google Docs</value>
+          <value xml:lang="de">Export</value>
         </prop>
       </node>
       
@@ -137,7 +137,7 @@
           <value/>
           <value xml:lang="en">Import from Google Docs</value>
           <value xml:lang="pl">Import z Google Docs</value>
-          <value xml:lang="de">Import von Google Docs</value>
+          <value xml:lang="de">Import</value>
         </prop>
       </node>      
       </node>

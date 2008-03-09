@@ -189,6 +189,7 @@ public class Downloader implements Runnable {
         byte[] buffer = new byte[bufferSize];            
         int readCount;        
         while((readCount=is.read(buffer))>0) {
+            String bufStr = new String(buffer);
           out.write(buffer, 0, readCount);
           progress += readCount;
           fireIOEvent(new IOEvent(this, contentLength, progress, null, null));

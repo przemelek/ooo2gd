@@ -224,7 +224,7 @@ public class ImportDialog extends JDialog {
 
     private void donwloadTextDocument(final DocumentListEntry entry, final GoogleDocsWrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         final String documentUrl = this.currentDocumentPath +"/"+entry.getTitle().getPlainText();
-        final URI uri = wrapper.getUriForEntry(entry);
+        final URI uri = wrapper.getUriForEntry(entry,loginPanel1.getCreditionals());
         downloadURI(documentUrl, uri, wrapper);
     }
 

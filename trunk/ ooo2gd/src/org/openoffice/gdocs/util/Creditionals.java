@@ -32,13 +32,8 @@ public class Creditionals {
         this.password = password;
     }
 
-        private String xorString(String input,String key) {
-        char[] keyChars = key.toCharArray();
-        char[] inputChars = input.toCharArray();
-        for (int i=0; i<inputChars.length; i++) {
-            inputChars[i]^=keyChars[i%keyChars.length];
-        }
-        return new String(inputChars);
+    private String xorString(String input,String key) {
+      return OOoUtil.xorString(input, key);
     }
     
     private boolean readCreditionals() {

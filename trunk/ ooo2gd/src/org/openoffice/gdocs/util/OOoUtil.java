@@ -1,22 +1,26 @@
 package org.openoffice.gdocs.util;
 
 import com.sun.star.beans.PropertyValue;
-import com.sun.star.container.XEnumerationAccess;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XFrame;
 import com.sun.star.frame.XStorable;
 import com.sun.star.lang.XComponent;
-import com.sun.star.lib.uno.adapter.XOutputStreamToByteArrayAdapter;
 import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.text.XTextDocument;
-import com.sun.star.text.XTextFieldsSupplier;
 import com.sun.star.uno.UnoRuntime;
-import com.sun.star.util.XRefreshable;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class OOoUtil {
+    
+    
+        public static String xorString(String input,String key) {
+            char[] keyChars = key.toCharArray();
+            char[] inputChars = input.toCharArray();
+            for (int i=0; i<inputChars.length; i++) {
+                inputChars[i]^=keyChars[i%keyChars.length];
+            }
+            return new String(inputChars);
+        }
     
         public static String fileNameToOOoURL(final String fName) {
             StringBuilder sLoadUrl = new StringBuilder("file:///");

@@ -139,7 +139,7 @@ public class GDocsFileSystem extends FileSystemView{
         GDocsFileSystem fileSystem = new GDocsFileSystem(wrapper);
         JFileChooser fileChooser = new JFileChooser(new File("Google Docs"),fileSystem);        
         fileChooser.showOpenDialog(null);
-        URI uri = wrapper.getUriForEntry(((GDocsFile)fileChooser.getSelectedFile()).getEntry() );
+        URI uri = wrapper.getUriForEntry(((GDocsFile)fileChooser.getSelectedFile()).getEntry(),credits );
         System.out.println(uri);
         
     }
