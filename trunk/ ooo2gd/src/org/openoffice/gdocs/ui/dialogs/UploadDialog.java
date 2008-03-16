@@ -17,7 +17,7 @@ import org.openoffice.gdocs.util.OOoUtil;
  *
  * @author  rmk
  */
-public class UploadDialog extends javax.swing.JDialog {
+public class UploadDialog extends javax.swing.JFrame {
   
     private String pathName;
     private XFrame xFrame;
@@ -30,7 +30,7 @@ public class UploadDialog extends javax.swing.JDialog {
         setVisibleForDocName(true);            
         setMessageText("File "+pathName+" will be uploaded to Google Docs");
         setDocumentTitle(docName);
-        setModal(true);
+        //setModal(true);
         toFront();
     }
     
@@ -59,7 +59,7 @@ public class UploadDialog extends javax.swing.JDialog {
         setTitle(Configuration.getResources().getString("Export_to_Google_Docs"));
         setAlwaysOnTop(true);
         setLocationByPlatform(true);
-        setModal(true);
+        //setModal(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {

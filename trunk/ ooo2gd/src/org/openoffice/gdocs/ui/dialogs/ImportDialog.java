@@ -6,33 +6,23 @@ package org.openoffice.gdocs.ui.dialogs;
 
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.util.AuthenticationException;
-import com.sun.star.beans.PropertyState;
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XFrame;
-import com.sun.star.frame.XStorable;
-import com.sun.star.io.XInputStream;
 import com.sun.star.lang.XComponent;
-import com.sun.star.lib.uno.adapter.ByteArrayToXInputStreamAdapter;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
 import java.awt.Desktop;
 import java.awt.HeadlessException;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.openoffice.gdocs.configuration.Configuration;
@@ -47,7 +37,7 @@ import org.openoffice.gdocs.util.OOoUtil;
  *
  * @author  rmk
  */
-public class ImportDialog extends JDialog {
+public class ImportDialog extends JFrame {
 	
   private final class ImportIOListener implements IOListener {
 		private final String url;
@@ -81,7 +71,7 @@ public class ImportDialog extends JDialog {
   
     /** Creates new form ImportDialog */
     public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath,XFrame frame) {
-        super(parent, modal);
+        super();
         this.xFrame = frame;
         initComponents();
         jTable1.setModel(new DocumentsTableModel());
@@ -268,6 +258,7 @@ public class ImportDialog extends JDialog {
             }
             jTable1.setModel(dtm);
         } catch (Exception e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(this,Configuration.getResources().getString("Problem:_")+e.getMessage());
         }
 
