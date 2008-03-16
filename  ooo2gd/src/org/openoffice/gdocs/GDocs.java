@@ -162,12 +162,18 @@ public final class GDocs extends WeakBase
     }
 
     private void exportToGoogleDocs() {        
-        final String path = getCurrentDocumentPath();
+        final String documentPath = getCurrentDocumentPath();
         startNewThread(new Runnable() {
             public void run() {                
+                String path = documentPath;
                 if (path!=null && !path.equals("")) {
                     try {
-                        URL url = new URL(path);
+                        // OK, it's funny but sometimes we may have in path spaces, and sometimes
+                        // we may have nice %20 in place of spaces....
+                        if (path.indexOf(" ")!=-1) {
+                            path = path.replaceAll(" ", "%20");
+                        }
+                        URL url = new URL(path);  
                         File file = new File(url.toURI());
                         if (file.isFile()) {
                             boolean doUpload = true;
@@ -182,6 +188,7 @@ public final class GDocs extends WeakBase
                             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                         }
                       } catch (Exception e) {
+                            e.printStackTrace();
                             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());
                       }
                   } else {
