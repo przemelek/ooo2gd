@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -29,7 +30,7 @@ public class Configuration {
     private static String proxyPort;
     private static String proxyUser;
     private static String proxyPassword;
-    private static Map<String,String> map = new HashMap<String,String>();
+    private static Map<String,String> map = new LinkedHashMap<String, String>();
     private static Map<String,String> langsMap = new HashMap<String,String>();
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
     private static String lang = "system";
@@ -37,9 +38,10 @@ public class Configuration {
     static {
         // OK, it's realy ugly method...        
         map.put("English","en");
-        map.put("Polski","pl");
-        map.put("German","de");
         map.put("Bulgarian", "bg");
+        map.put("German","de");
+        map.put("Polski","pl");                
+        map.put("Russian","ru");
         map.put("System","system");
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());
