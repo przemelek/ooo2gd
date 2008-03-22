@@ -42,6 +42,7 @@ public class ConfigDialog extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
         proxyCheckBox = new javax.swing.JCheckBox();
         proxyServerLabel = new javax.swing.JLabel();
         proxyServer = new javax.swing.JTextField();
@@ -104,6 +105,8 @@ public class ConfigDialog extends javax.swing.JDialog {
 
         jLabel9.setText("Polish: Przemyslaw Rumik");
 
+        jLabel10.setText("Russian: Nikita aka Kolobok");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -129,7 +132,10 @@ public class ConfigDialog extends javax.swing.JDialog {
                         .addComponent(jLabel9))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel7)))
+                        .addComponent(jLabel7))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel10)))
                 .addContainerGap(206, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -149,7 +155,9 @@ public class ConfigDialog extends javax.swing.JDialog {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel10)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         proxyCheckBox.setText("Use proxy");
@@ -271,7 +279,7 @@ public class ConfigDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
                     .addComponent(jButton1))
-                .addContainerGap())
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -355,6 +363,7 @@ public class ConfigDialog extends javax.swing.JDialog {
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
