@@ -47,3 +47,6 @@ ERROR_IMPORTING_FILE = Error importing file
 PROBLEM_CANNOT_OPEN = Cannot open downloaded file
 
 NEED_CONVERT_PPT =Before upload your presentation must be converted to MS PowerPoint 97 format (PPT).\nDo you want to convert and upload your presentation?
+
+OPEN_IN_BROWSER = Open in Browser
+OPEN_VIA_BROWSER = Open via Browser
