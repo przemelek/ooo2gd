@@ -47,3 +47,7 @@ ERROR_IMPORTING_FILE = Problem z pobraniem pliku
 PROBLEM_CANNOT_OPEN = Nie mogê otworzyæ zaimportowanego pliku.
 
 NEED_CONVERT_PPT =Przed przes³aniem do Google Docs Twoja prezentacja musi zostaæ skonwertowana do formatu MS PowerPoint 97 (PPT).\nCzy chcesz skonwertowaæ i przes³aæ prezentacjê?
+
+OPEN_IN_BROWSER = Otwórz w przegl±darce
+
+OPEN_VIA_BROWSER = Otwórz u¿ywaj±c przegl±darki

@@ -30,6 +30,7 @@ public class GoogleDocsWrapper {
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
 	private DocsService service;
+        private boolean isLogedIn = false;
 	
         public GoogleDocsWrapper() {
         }
@@ -39,8 +40,15 @@ public class GoogleDocsWrapper {
         }
         
 	public void login(Creditionals creditionals) throws AuthenticationException {
+            if (!isLogedIn) {
 		service = new DocsService(APP_NAME);
 		service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
+                isLogedIn=true;
+            } else {
+                System.out.println("LogedIn :-)");
+                Throwable t = new Throwable();
+                t.printStackTrace();
+            }
 	}
 	
 	public boolean upload(String path,String documentTitle) throws IOException, ServiceException {
@@ -75,6 +83,17 @@ public class GoogleDocsWrapper {
             return documentFile;
         }
 
+    private String getGoogleAppsName(final Creditionals credetionals) {
+        String googleApsName = "";
+        if (credetionals != null) {
+            String userName = credetionals.getUserName();
+            if (userName.indexOf("@") != -1) {
+                googleApsName = "a/" + userName.substring(userName.indexOf("@") + 1) + "/";
+            }
+        }
+        return googleApsName;
+    }
+
         private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
             DocumentEntry newDocument = new DocumentEntry();
               newDocument.setFile(documentFile);
@@ -93,26 +112,34 @@ public class GoogleDocsWrapper {
         }
         
         public URI getUriForEntry(final DocumentListEntry entry,final Creditionals credetionals) throws URISyntaxException {
-            String googleApsName = "";
-            if(credetionals!=null) {
-                String userName = credetionals.getUserName();
-                if (userName.indexOf("@")!=-1) {
-                    googleApsName="a/"+userName.substring(userName.indexOf("@")+1)+"/";
-                }
-                
-            }
+            String googleApsName = getGoogleAppsName(credetionals);
             String id = entry.getId().split("%3A")[1];
             String type = entry.getId().split("%3A")[0];            
             String uriStr = "";
             if ("document".equals(type)) {
-                uriStr = "http://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
+                uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
             } else if ("spreadsheet".equals(type)) {
                 //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
-                uriStr = "http://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
+                uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
             } else if ("presentation".equals(type)) {
-                uriStr = "http://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+                uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
             }
             return new URI(uriStr);
         }	
 	
+        public URI getUriForEntryInBrowser(final DocumentListEntry entry,final Creditionals credetionals) throws URISyntaxException {
+            String googleApsName = getGoogleAppsName(credetionals);
+            String id = entry.getId().split("%3A")[1];
+            String type = entry.getId().split("%3A")[0];            
+            String uriStr = "";
+            if ("document".equals(type)) {
+                uriStr = "http://docs.google.com/"+googleApsName+"Doc?docid="+id;
+            } else if ("spreadsheet".equals(type)) {
+                //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
+                uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
+            } else if ("presentation".equals(type)) {
+                uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+            }
+            return new URI(uriStr);            
+        }
 }
