@@ -133,7 +133,7 @@ public class GoogleDocsWrapper {
             String type = entry.getId().split("%3A")[0];            
             String uriStr = "";
             if ("document".equals(type)) {
-                uriStr = "http://docs.google.com/"+googleApsName+"Doc?docid="+id;
+                uriStr = "https://docs.google.com/"+googleApsName+"Doc?docid="+id;
             } else if ("spreadsheet".equals(type)) {
                 //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
                 uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
