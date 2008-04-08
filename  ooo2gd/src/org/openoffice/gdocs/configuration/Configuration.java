@@ -121,15 +121,23 @@ public class Configuration {
                 Authenticator.setDefault(new SimpleAuthenticator());
             } else {
                 Authenticator.setDefault(null);
-            }
+            }            
             Properties systemProperties = System.getProperties();
+//            systemProperties.setProperty("http.proxySet", "true");
+//            systemProperties.setProperty("https.proxySet", "true");
             systemProperties.setProperty("http.proxyHost", getProxyServer());
             systemProperties.setProperty("http.proxyPort", getProxyPort());
+            systemProperties.setProperty("https.proxyHost", getProxyServer());
+            systemProperties.setProperty("https.proxyPort", getProxyPort());            
         } else {
             Authenticator.setDefault(null);
             Properties systemProperties = System.getProperties();            
+            systemProperties.remove("http.proxySet");
+            systemProperties.remove("https.proxySet");            
             systemProperties.remove("http.proxyHost");
             systemProperties.remove("http.proxyPort");
+            systemProperties.remove("https.proxyHost");
+            systemProperties.remove("https.proxyPort");            
         }
     }
     
