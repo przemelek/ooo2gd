@@ -304,24 +304,20 @@ public class ImportDialog extends JFrame {
             jTable1.setEnabled(true);
             DocumentsTableModel dtm = new DocumentsTableModel();        
             for (DocumentListEntry entry:wrapper.getListOfDocs()) {
-                if ( entry.getId().startsWith("document") ) {
-                    dtm.add(entry);
-                } else if ( entry.getId().startsWith("spreadsheet") ) {
-                    dtm.add(entry);
-                }
+                dtm.add(entry);
             }
             jTable1.setModel(dtm);
             jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
-                    DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-                    if ( entry.getId().startsWith("document") ) {
-                        openButton.setEnabled(true);
-                        openViaBrowserButton.setEnabled(true);
-                        openInBrowser.setEnabled(true);
-                    } else if ( entry.getId().startsWith("spreadsheet") ) {
+                    DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));                    
+                    if ( entry.getId().startsWith("spreadsheet") ) {
                         openButton.setEnabled(false);
                         openViaBrowserButton.setEnabled(false);
                         openInBrowser.setEnabled(true);
+                    } else {
+                        openButton.setEnabled(true);
+                        openViaBrowserButton.setEnabled(true);
+                        openInBrowser.setEnabled(true);                                                        
                     }
 
                     try {

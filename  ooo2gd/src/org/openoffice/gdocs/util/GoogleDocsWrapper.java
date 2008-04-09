@@ -120,8 +120,10 @@ public class GoogleDocsWrapper {
                 uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
             } else if ("spreadsheet".equals(type)) {
                 //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
+                //uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ods";
                 uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
             } else if ("presentation".equals(type)) {
+                //http://docs.google.com/MiscCommands?command=saveasdoc&exportFormat=ppt&docID=ajg23wkfz9qn_449gt2kn8
                 uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
             }
             return new URI(uriStr);
@@ -138,7 +140,7 @@ public class GoogleDocsWrapper {
                 //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
                 uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
             } else if ("presentation".equals(type)) {
-                uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+                uriStr = "https://docs.google.com/"+googleApsName+"Presentation?docid="+id;
             }
             return new URI(uriStr);            
         }
