@@ -51,10 +51,9 @@ public class ImportDialog extends JFrame {
 		}
 
 		public void ioProgress(IOEvent ioEvent) {                    
-		    if (ioEvent.isCompleted()) {
-		        window.dispose();
-		        File docFile = new File(url);
+		    if (ioEvent.isCompleted()) {		        		        
 		        try {
+                            File docFile = new File(url);
 		            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
                             String fName = docFile.getCanonicalPath();
                             String sLoadUrl = OOoUtil.fileNameToOOoURL(fName);                              
@@ -62,7 +61,9 @@ public class ImportDialog extends JFrame {
 		            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
 		        } catch (Exception e) {
 		            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
-		        }
+		        } finally {
+                            window.dispose();
+                        }
 		    }
 		}
 	}
@@ -270,7 +271,7 @@ public class ImportDialog extends JFrame {
 
     private void donwloadTextDocument(final DocumentListEntry entry, final GoogleDocsWrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         final String documentUrl = this.currentDocumentPath +"/"+entry.getTitle().getPlainText();
-        final URI uri = wrapper.getUriForEntry(entry,loginPanel1.getCreditionals());
+        final URI uri = wrapper.getUriForEntry(entry);
         downloadURI(documentUrl, uri, wrapper);
     }
 
@@ -321,7 +322,7 @@ public class ImportDialog extends JFrame {
                     }
 
                     try {
-                        final URI uri = wrapper.getUriForEntry(entry,loginPanel1.getCreditionals());
+                        final URI uri = wrapper.getUriForEntry(entry);
                         System.out.println(uri.toString());
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -347,7 +348,7 @@ public class ImportDialog extends JFrame {
 
             @Override
             public URI getUri(DocumentListEntry entry) throws URISyntaxException {
-                return getWrapper().getUriForEntry(entry, getCreditionals());
+                return getWrapper().getUriForEntry(entry);
             }
         }.open();
 }//GEN-LAST:event_openViaBrowserButtonActionPerformed
@@ -357,7 +358,7 @@ public class ImportDialog extends JFrame {
 
             @Override
             public URI getUri(DocumentListEntry entry) throws URISyntaxException {
-                return getWrapper().getUriForEntryInBrowser(entry, getCreditionals());
+                return getWrapper().getUriForEntryInBrowser(entry);
             }
         }.open();
     }//GEN-LAST:event_openInBrowserActionPerformed
