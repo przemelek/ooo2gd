@@ -83,19 +83,8 @@ public class GoogleDocsWrapper {
             return documentFile;
         }
 
-    private String getGoogleAppsName(final Creditionals credetionals) {
-        String googleApsName = "";
-        if (credetionals != null) {
-            String userName = credetionals.getUserName();
-            if (userName.indexOf("@") != -1) {
-                googleApsName = "a/" + userName.substring(userName.indexOf("@") + 1) + "/";
-            }
-        }
-        return googleApsName;
-    }
-
         private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
-            DocumentEntry newDocument = new DocumentEntry();
+              DocumentEntry newDocument = new DocumentEntry();
               newDocument.setFile(documentFile);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
@@ -111,37 +100,27 @@ public class GoogleDocsWrapper {
 		return list;
         }
         
-        public URI getUriForEntry(final DocumentListEntry entry,final Creditionals credetionals) throws URISyntaxException {
-            String googleApsName = getGoogleAppsName(credetionals);
+        public URI getUriForEntry(final DocumentListEntry entry) throws URISyntaxException {
             String id = entry.getId().split("%3A")[1];
-            String type = entry.getId().split("%3A")[0];            
-            String uriStr = "";
+            String type = entry.getId().split("%3A")[0];
+            String entryLink = entry.getDocumentLink().getHref();
+            String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
             if ("document".equals(type)) {
-                uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
+                uriStr += "MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
             } else if ("spreadsheet".equals(type)) {
                 //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
                 //uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ods";
-                uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
+                uriStr += "ccc?key="+id+"&hl=en";
             } else if ("presentation".equals(type)) {
                 //http://docs.google.com/MiscCommands?command=saveasdoc&exportFormat=ppt&docID=ajg23wkfz9qn_449gt2kn8
-                uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+                uriStr += "MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
             }
             return new URI(uriStr);
         }	
 	
-        public URI getUriForEntryInBrowser(final DocumentListEntry entry,final Creditionals credetionals) throws URISyntaxException {
-            String googleApsName = getGoogleAppsName(credetionals);
-            String id = entry.getId().split("%3A")[1];
-            String type = entry.getId().split("%3A")[0];            
+        public URI getUriForEntryInBrowser(final DocumentListEntry entry) throws URISyntaxException {
             String uriStr = "";
-            if ("document".equals(type)) {
-                uriStr = "https://docs.google.com/"+googleApsName+"Doc?docid="+id;
-            } else if ("spreadsheet".equals(type)) {
-                //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
-                uriStr = "https://spreadsheets.google.com/"+googleApsName+"ccc?key="+id+"&hl=en";
-            } else if ("presentation".equals(type)) {
-                uriStr = "https://docs.google.com/"+googleApsName+"Presentation?docid="+id;
-            }
+            uriStr = entry.getDocumentLink().getHref();
             return new URI(uriStr);            
         }
 }
