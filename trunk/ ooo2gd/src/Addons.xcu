@@ -22,7 +22,7 @@
           <value/>
           <value xml:lang="en">Google Docs</value>
           <value xml:lang="pl">Google Docs</value>
-          <value xml:lang="de">Google Docs</value>
+          <value xml:lang="de">Google Text und Tabellen</value>
         </prop>
         <node oor:name="Submenu">
           <node oor:name="m1" oor:op="replace">
@@ -42,7 +42,7 @@
               <value/>
               <value xml:lang="en">Export to...</value>
               <value xml:lang="pl">Eksport do...</value>
-              <value xml:lang="de">Export</value>
+              <value xml:lang="de">Export zu...</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -62,7 +62,7 @@
               <value/>
               <value xml:lang="en">Import from...</value>
               <value xml:lang="pl">Import z...</value>
-              <value xml:lang="de">Import</value>
+              <value xml:lang="de">Import aus...</value>
             </prop>
           </node>          
 
@@ -83,7 +83,7 @@
               <value/>
               <value xml:lang="en">Configuration</value>
               <value xml:lang="pl">Konfiguracja</value>
-              <value xml:lang="de">Configuration</value>
+              <value xml:lang="de">Einstellungen</value>
             </prop>
           </node>          
           
@@ -116,7 +116,7 @@
           <value/>
           <value xml:lang="en">Export to Google Docs</value>
           <value xml:lang="pl">Eksport do Google Docs</value>
-          <value xml:lang="de">Export</value>
+          <value xml:lang="de">zu Google Text und Tabellen exportieren</value>
         </prop>
       </node>
       
@@ -137,7 +137,7 @@
           <value/>
           <value xml:lang="en">Import from Google Docs</value>
           <value xml:lang="pl">Import z Google Docs</value>
-          <value xml:lang="de">Import</value>
+          <value xml:lang="de">aus Google Text und Tabellen importieren</value>
         </prop>
       </node>      
       </node>
