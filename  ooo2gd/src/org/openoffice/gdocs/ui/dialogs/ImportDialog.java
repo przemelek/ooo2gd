@@ -310,13 +310,14 @@ public class ImportDialog extends JFrame {
             jTable1.setModel(dtm);
             jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
-                    DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));                    
+                    DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+                    boolean googleAppsAccount = entry.getDocumentLink().getHref().indexOf("/a/")!=-1;
                     if ( entry.getId().startsWith("spreadsheet") ) {
                         openButton.setEnabled(false);
                         openViaBrowserButton.setEnabled(false);
                         openInBrowser.setEnabled(true);
                     } else {
-                        openButton.setEnabled(true);
+                        openButton.setEnabled(!googleAppsAccount);
                         openViaBrowserButton.setEnabled(true);
                         openInBrowser.setEnabled(true);                                                        
                     }
