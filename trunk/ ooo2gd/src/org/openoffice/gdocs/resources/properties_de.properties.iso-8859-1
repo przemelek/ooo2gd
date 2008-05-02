@@ -1,22 +1,22 @@
 # Sample ResourceBundle properties file
 
-Google_User_Name\:=Google Benutzername:\
+Google_User_Name\:=Google Benutzername\:
 
 Google_Password\:=Google Passwort\:
 
-Google_Account_Info=Google Account Infos
+Google_Account_Info=Google Account Info
 
-Remember_Password_(It_will_be_stored_on_local_disk)=Passwort speichern? (Es wird auf Ihrer Festplatte gesichert)
+Remember_Password_(It_will_be_stored_on_local_disk)=Passwort merken? (Es wird lokal gesichert)
 
-Import_from_Google_Docs=Import von Google Docs
+Import_from_Google_Docs=Import aus Google Text und Tabellen
 
 Close=Schließen
 
-Get_list=Liste laden
+Get_list=Dateiliste laden
 
-Open=Öffnen
+Open=öffnen
 
-Export_to_Google_Docs=Export nach Google Docs
+Export_to_Google_Docs=Import zu Google Text und Tabellen
 
 Document_name\:=Dateiname\:
 
@@ -24,26 +24,30 @@ OK=OK
 
 Cancel=Abbrechen
 
-Uploading_in_progress...=Hochladen...
+Uploading_in_progress...=Upload...
 
 Document_Title=Dateiname
 
 Published=Erstellt
 
-Your_file_was_modified=Ihre Datei wurde nach dem Speichern geändert. Leider können nur Dateien in Google Docs hochgeladen werden, die zuvor gespeichert wurden.\nMöchten Sie die aktuelle Version speichern und dann exportieren?
+Your_file_was_modified=Ihre Datei wurde nach dem Speichern geändert. Leider können nur Dateien bei Google Text und Tabellen hochgeladen werden, die zuvor gespeichert wurden.\nMöchten Sie die aktuelle Version speichern und dann exportieren?
 
 Cannot_save_file_on_disk....=Die Datei konnte nicht auf der Festplatte gespeichert werden,\ndeswegen wurde die Datei nicht hochgeladen.
 
-Sorry..._you_must_first_save_your_file_on_hard_disk.=Entschuldigung, Sie müssen die Datei erst auf der Festplatte speichern.
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Sie müssen die Datei erst auf der Festplatte speichern.
 
 Problem\:_=Problem\: 
 
 CANNOT_OPEN_BROWSER=Datei konnte nicht im Standard-Browser geöffnet werden
 
-INVALID_CREDITIONALS= Benutzername/Passwort falsch.
+INVALID_CREDITIONALS=Benutzername/Passwort falsch.
 
-ERROR_IMPORTING_FILE = Fehler beim Datei-Import
+ERROR_IMPORTING_FILE =Fehler beim Datei-Import
 
-PROBLEM_CANNOT_OPEN = Die heruntergeladene Datei konnte nicht geöffnet werden
+PROBLEM_CANNOT_OPEN =Die heruntergeladene Datei konnte nicht geöffnet werden
 
 NEED_CONVERT_PPT =Vor dem Upload muss Ihre Präsentation ins MS PowerPoint Format (PPT) konvertiert werden.\nWollen Sie Ihre Präsentation konvertiert und hochladen?
+
+OPEN_IN_BROWSER = Im Browser öffnen
+
+OPEN_VIA_BROWSER = Via Browser öffnen

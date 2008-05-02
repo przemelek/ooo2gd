@@ -2,6 +2,7 @@ package org.openoffice.gdocs.ui.dialogs;
 
 import java.awt.Desktop;
 import java.net.URI;
+import javax.swing.JComponent;
 import org.openoffice.gdocs.configuration.Configuration;
 
 
@@ -77,6 +78,7 @@ public class ConfigDialog extends javax.swing.JDialog {
             }
         });
 
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createCompoundBorder(null, javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED)));
 
         jLabel3.setText("Code: Przemyslaw Rumik ");
@@ -214,7 +216,7 @@ public class ConfigDialog extends javax.swing.JDialog {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jComboBox1, 0, 370, Short.MAX_VALUE))
                             .addComponent(proxyCheckBox)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -234,9 +236,9 @@ public class ConfigDialog extends javax.swing.JDialog {
                                     .addComponent(proxyPort)
                                     .addComponent(proxyPortLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
+                        .addGap(123, 123, 123)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(94, 94, 94)
+                        .addGap(80, 80, 80)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -276,10 +278,9 @@ public class ConfigDialog extends javax.swing.JDialog {
                 .addGap(5, 5, 5)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2)))
         );
 
         pack();
@@ -318,16 +319,17 @@ public class ConfigDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void setEnableForProxy(boolean enable) {
-        proxyServerLabel.setEnabled(enable);
-        proxyServer.setEnabled(enable);
-        proxyPortLabel.setEnabled(enable);
-        proxyPort.setEnabled(enable);
-        authProxyLabel.setEnabled(enable);
-        boolean authProxyEnable = authProxyLabel.isSelected();
-        authProxyUserLabel.setEnabled(authProxyEnable);
-        authProxyUser.setEnabled(authProxyEnable);
-        authProxyPasswordLabel.setEnabled(authProxyEnable);
-        authProxyPassword.setEnabled(authProxyEnable);
+        JComponent components[] = {proxyServerLabel,proxyServer,proxyPortLabel,proxyPort,authProxyLabel};
+        for (JComponent component:components) {
+            component.setVisible(enable);
+            component.setEnabled(enable);
+        }
+        boolean authProxyEnable = authProxyLabel.isSelected() && enable;
+        JComponent components2[] = {authProxyUserLabel,authProxyUser,authProxyPasswordLabel,authProxyPassword};
+        for (JComponent component:components2) {
+            component.setVisible(authProxyEnable);
+            component.setEnabled(authProxyEnable);
+        }        
     }
     
     private void proxyCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proxyCheckBoxActionPerformed

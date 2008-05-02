@@ -42,7 +42,7 @@ public class GoogleDocsWrapper {
 	public void login(Creditionals creditionals) throws AuthenticationException {
             if (!isLogedIn) {
 		service = new DocsService(APP_NAME);
-		service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
+		service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());                
                 isLogedIn=true;
             } else {
                 System.out.println("LogedIn :-)");
