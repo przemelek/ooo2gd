@@ -80,4 +80,11 @@ public class OOoUtil {
             //xComp.dispose();
             return newPathName;
         }
+        
+        
+        public static void openInOpenOffice(final String sLoadUrl, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
+            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
+            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
+            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+        }
 }
