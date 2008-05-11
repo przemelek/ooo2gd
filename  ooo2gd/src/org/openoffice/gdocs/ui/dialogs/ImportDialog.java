@@ -54,18 +54,16 @@ public class ImportDialog extends JFrame {
 		    if (ioEvent.isCompleted()) {		        		        
 		        try {
                             File docFile = new File(url);
-		            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
                             String fName = docFile.getCanonicalPath();
-                            String sLoadUrl = OOoUtil.fileNameToOOoURL(fName);                              
-		            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
-		            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+                            String sLoadUrl = OOoUtil.fileNameToOOoURL(fName);
+                            OOoUtil.openInOpenOffice(sLoadUrl, xFrame);
 		        } catch (Exception e) {
 		            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
 		        } finally {
                             window.dispose();
                         }
 		    }
-		}
+		}        
 	}
 
     private class OpenWrapper {
