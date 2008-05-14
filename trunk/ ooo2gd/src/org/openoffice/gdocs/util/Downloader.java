@@ -39,9 +39,7 @@ public class Downloader implements Runnable {
   private static final String DEFAULT_USER_AGENT = "ooo2gd";
   
   private static final IOListener[] DUMMY_IOLISTENER_ARRAY = {};
-  
-  private final int bufferSize = DEFAULT_BUFFER_SIZE;
-  
+    
   private final DocsService docsService;
   private URL source;
   private URI destFileURI;
@@ -185,7 +183,7 @@ public class Downloader implements Runnable {
 
     private int getStream(final InputStream is, final int contentLength, OutputStream out) throws IOException {
         int progress = 0;
-        byte[] buffer = new byte[bufferSize];            
+        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];            
         int readCount;        
         while((readCount=is.read(buffer))>0) {
             String bufStr = new String(buffer);

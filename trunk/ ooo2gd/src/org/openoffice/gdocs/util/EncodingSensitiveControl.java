@@ -24,8 +24,8 @@ public class EncodingSensitiveControl extends ResourceBundle.Control {
   private static final String FORMAT_SUFFIX = "properties.";
   private final List<String> FORMATS;
   
-  public static final String[] STANDARD_ENCODINGS = {"","US-ASCII", "ISO-8859-1", "ISO-8859-2", "UTF-8", "UTF-16BE", "UTF-16LE", "UTF-16","WINDOWS-1251"};
-  public static final String[] ALL_ENCODINGS = Charset.availableCharsets().keySet().toArray(new String[0]);
+  private static final String[] STANDARD_ENCODINGS = {"","US-ASCII", "ISO-8859-1", "ISO-8859-2", "UTF-8", "UTF-16BE", "UTF-16LE", "UTF-16","WINDOWS-1251"};
+  private static final String[] ALL_ENCODINGS = Charset.availableCharsets().keySet().toArray(new String[0]);
   public EncodingSensitiveControl() {
     this(STANDARD_ENCODINGS);
   }
@@ -61,7 +61,7 @@ public class EncodingSensitiveControl extends ResourceBundle.Control {
     if (resourceURL == null)
       return null;
 
-    if(FORMAT_PROPERTIES.equals(format)){
+    if(FORMAT_PROPERTIES.toString().equals(format)){
       return super.newBundle(baseName, locale, format, loader, reload);
     }
     InputStream stream = getResourceInputStream(resourceURL, reload);

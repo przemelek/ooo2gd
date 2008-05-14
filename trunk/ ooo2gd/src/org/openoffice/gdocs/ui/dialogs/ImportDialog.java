@@ -311,22 +311,16 @@ public class ImportDialog extends JFrame {
                     DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
                     boolean googleAppsAccount = entry.getDocumentLink().getHref().indexOf("/a/")!=-1;
                     if ( entry.getId().startsWith("spreadsheet") ) {
-                        openButton.setEnabled(false);
-                        openViaBrowserButton.setEnabled(false);
-                        openInBrowser.setEnabled(true);
+                        setButtonsEnable(false, false, true);
                     } else {
-                        openButton.setEnabled(!googleAppsAccount);
-                        openViaBrowserButton.setEnabled(true);
-                        openInBrowser.setEnabled(true);                                                        
-                    }
-
-                    try {
-                        final URI uri = wrapper.getUriForEntry(entry);
-                        System.out.println(uri.toString());
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    	setButtonsEnable(!googleAppsAccount, true, true);                                      
                     }
                 }
+				private void setButtonsEnable(boolean openState, boolean openViaBrowserState, boolean openInBrowserState) {
+					openButton.setEnabled(openState);
+					openViaBrowserButton.setEnabled(openViaBrowserState);
+					openInBrowser.setEnabled(openInBrowserState);
+				}
             });                
         } catch (Exception e) {
             e.printStackTrace();
