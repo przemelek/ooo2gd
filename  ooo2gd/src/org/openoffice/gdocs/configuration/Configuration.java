@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -22,8 +23,7 @@ import org.openoffice.gdocs.util.EncodingSensitiveControl;
 import org.openoffice.gdocs.util.OOoUtil;
 
 public class Configuration {
-    
-    private static String workingPath;
+        
     private static boolean useProxy;
     private static boolean proxyAuth;
     private static String proxyServer;
@@ -71,20 +71,25 @@ public class Configuration {
 //    }
     
     public static void store() {
+    	BufferedWriter bw = null;
+    	PrintWriter pr = null;
         try {
             FileWriter fw = new FileWriter(getWorkingPath()+"gdocs.lang");
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pr = new PrintWriter(bw);
-            pr.println(lang);
-            pr.println(isUseProxy()?"1":"0");
-            pr.println(getProxyServer());
-            pr.println(getProxyPort());
-            pr.println(isProxyAuth()?"1":"0");
-            pr.println(OOoUtil.xorString(getProxyUser(),CONFIG_SECRET_PHRASE));
-            pr.println(OOoUtil.xorString(getProxyPassword(),CONFIG_SECRET_PHRASE));
-            bw.close();
+            bw = new BufferedWriter(fw);
+            pr = new PrintWriter(bw);
+        	pr.println(lang);
+        	pr.println(isUseProxy()?"1":"0");
+        	pr.println(getProxyServer());
+        	pr.println(getProxyPort());
+        	pr.println(isProxyAuth()?"1":"0");
+        	pr.println(OOoUtil.xorString(getProxyUser(),CONFIG_SECRET_PHRASE));
+        	pr.println(OOoUtil.xorString(getProxyPassword(),CONFIG_SECRET_PHRASE));
         } catch (Exception e) {
-            
+            // Intentionaly left empty
+        } finally {
+        	if (pr!=null) {
+        			pr.close();
+        	}
         }
         restore();
     }
@@ -104,24 +109,22 @@ public class Configuration {
             setProxyAuth("1".equals(proxyAuthStr));
             String proxyUser = br.readLine();
             String proxyPassword = br.readLine();
-            setProxyUser(OOoUtil.xorString(proxyUser, CONFIG_SECRET_PHRASE));
-            setProxyPassword(OOoUtil.xorString(proxyPassword, CONFIG_SECRET_PHRASE));
+            if ((proxyUser!=null) && (proxyPassword!=null)) {
+            	setProxyUser(OOoUtil.xorString(proxyUser, CONFIG_SECRET_PHRASE));
+            	setProxyPassword(OOoUtil.xorString(proxyPassword, CONFIG_SECRET_PHRASE));
+            }
             br.close();
             
-        } catch (Exception e) {
-            
+        } catch (IOException e) {
+            // Intentionaly left empty
         }
-        if (isUseProxy()) {
-            if (isProxyAuth()) {
-                class SimpleAuthenticator extends Authenticator {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(Configuration.getProxyUser(), Configuration.getProxyPassword().toCharArray());
-                    }                
-                }
-                Authenticator.setDefault(new SimpleAuthenticator());
-            } else {
-                Authenticator.setDefault(null);
-            }            
+        setProxyProperties(isUseProxy(), isProxyAuth());
+    }
+
+	private static void setProxyProperties(boolean isUseProxy,
+			boolean isProxyAuth) {
+		if (isUseProxy) { 
+            setProxyAuthenticator(isProxyAuth);            
             Properties systemProperties = System.getProperties();
 //            systemProperties.setProperty("http.proxySet", "true");
 //            systemProperties.setProperty("https.proxySet", "true");
@@ -139,7 +142,20 @@ public class Configuration {
             systemProperties.remove("https.proxyHost");
             systemProperties.remove("https.proxyPort");            
         }
-    }
+	}
+
+	private static void setProxyAuthenticator(boolean isProxyAuth) {
+		if (isProxyAuth) {
+		    class SimpleAuthenticator extends Authenticator {
+		        protected PasswordAuthentication getPasswordAuthentication() {
+		            return new PasswordAuthentication(Configuration.getProxyUser(), Configuration.getProxyPassword().toCharArray());
+		        }                
+		    }
+		    Authenticator.setDefault(new SimpleAuthenticator());
+		} else {
+		    Authenticator.setDefault(null);
+		}
+	}
     
     private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
     public static ResourceBundle getResources() {        

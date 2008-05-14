@@ -53,7 +53,7 @@ public class Creditionals {
                 setPassword(lines[1]);
                 result=true;
             }
-        } catch (Exception e) {};
+        } catch (IOException e) { /* intentionaly left empty */}
         return result;
     }
     

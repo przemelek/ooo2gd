@@ -40,10 +40,10 @@ public class OOoUtil {
             properties[0]=prop;
             properties[1]=new PropertyValue();
             properties[1].Name="ReadOnly";
-            properties[1].Value=new Boolean(true);
+            properties[1].Value=Boolean.valueOf(true);
             properties[2]=new PropertyValue();
             properties[2].Value="AsTemplate";
-            properties[2].Value=new Boolean(true);
+            properties[2].Value=Boolean.valueOf(true);
             XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
             XComponent xComp  = null;
             xComp = loader.loadComponentFromURL(fName, "_blank", 0, properties);
@@ -56,13 +56,13 @@ public class OOoUtil {
             PropertyValue[] propertyValue = new PropertyValue[ 3 ];
             propertyValue[0] = new com.sun.star.beans.PropertyValue();
             propertyValue[0].Name = "Overwrite";
-            propertyValue[0].Value = new Boolean(true);
+            propertyValue[0].Value = Boolean.valueOf(true);
             propertyValue[1] = new com.sun.star.beans.PropertyValue();
             propertyValue[1].Name = "FilterName";
             propertyValue[1].Value = filterName;
             propertyValue[2]=new PropertyValue();
             propertyValue[2].Value="AsTemplate";
-            propertyValue[2].Value=new Boolean(true);            
+            propertyValue[2].Value=Boolean.valueOf(true);            
             //XOutputStreamToByteArrayAdapter outputStream = new XOutputStreamToByteArrayAdapter(); 
             //propertyValue[2] = new com.sun.star.beans.PropertyValue();
             //propertyValue[2].Name = "OutputStream";
@@ -84,7 +84,7 @@ public class OOoUtil {
         
         public static void openInOpenOffice(final String sLoadUrl, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
             XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
-            XComponent xComp = loader.loadComponentFromURL(sLoadUrl.toString(), "_blank", 0, new PropertyValue[0]);
+            XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 0, new PropertyValue[0]);
             XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
         }
 }

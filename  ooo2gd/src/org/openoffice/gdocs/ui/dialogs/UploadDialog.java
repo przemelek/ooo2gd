@@ -205,19 +205,7 @@ public class UploadDialog extends javax.swing.JFrame {
                     boolean upload = true;
                     // File to store is OpenOffice Impress Presentation?
                     if (pathName.toLowerCase().indexOf(".odp")!=-1) {                        
-                        
-                        String msg = Configuration.getResources().getString("NEED_CONVERT_PPT");
-                        int option = JOptionPane.showConfirmDialog(null,msg,"ODP -> PPT",JOptionPane.YES_NO_OPTION);
-                        if (option == JOptionPane.YES_OPTION) {
-                            String filterName = "MS PowerPoint 97";
-                            try {
-                                pathName=OOoUtil.convertDocumentToFormat(pathName, filterName, "ppt", xFrame);
-                            } catch (Exception e) {
-                                JOptionPane.showMessageDialog(null,"Sorry, OOo2GD wasn't able to convert this document.\nTry to do it using Save As.. option in File Menu,\nremember Save your document as Microsoft PowerPoint 97 (PPT).");
-                            }
-                        } else {
-                            upload = false;
-                        }
+                        upload = convertPresentation(upload);
                     }
                     if (upload) {
                         wrapper.upload(pathName,docName);
@@ -231,6 +219,22 @@ public class UploadDialog extends javax.swing.JFrame {
                     uploading.setVisible(false);
                 }        
             }
+
+			private boolean convertPresentation(boolean upload) {
+				String msg = Configuration.getResources().getString("NEED_CONVERT_PPT");
+				int option = JOptionPane.showConfirmDialog(null,msg,"ODP -> PPT",JOptionPane.YES_NO_OPTION);
+				if (option == JOptionPane.YES_OPTION) {
+				    String filterName = "MS PowerPoint 97";
+				    try {
+				        pathName=OOoUtil.convertDocumentToFormat(pathName, filterName, "ppt", xFrame);
+				    } catch (Exception e) {
+				        JOptionPane.showMessageDialog(null,"Sorry, OOo2GD wasn't able to convert this document.\nTry to do it using Save As.. option in File Menu,\nremember Save your document as Microsoft PowerPoint 97 (PPT).");
+				    }
+				} else {
+				    upload = false;
+				}
+				return upload;
+			}
         }).start();
     }//GEN-LAST:event_okButtonActionPerformed
            
