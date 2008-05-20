@@ -50,9 +50,11 @@ public class ImportDialog extends JFrame {
 			this.window = window;
 		}
 
-		public void ioProgress(IOEvent ioEvent) {                    
+		public void ioProgress(IOEvent ioEvent) {   
+                    int progress = (int)((float)ioEvent.getCompletedSize()/(float)ioEvent.getTotalSize()*100.0);
+                    window.setProgress(progress);
 		    if (ioEvent.isCompleted()) {		        		        
-		        try {
+		        try {                            
                             File docFile = new File(url);
                             String fName = docFile.getCanonicalPath();
                             String sLoadUrl = OOoUtil.fileNameToOOoURL(fName);
@@ -279,6 +281,7 @@ public class ImportDialog extends JFrame {
         final Uploading progressWindow = new Uploading();
         progressWindow.setMessage("Google Docs -> OpenOffice.org");
         progressWindow.setVisible(true);            
+        progressWindow.showProgressBar();
         downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow));
         downloader.start();
     }
