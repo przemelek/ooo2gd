@@ -51,3 +51,5 @@ NEED_CONVERT_PPT =Vor dem Upload muss Ihre Präsentation ins MS PowerPoint Format
 OPEN_IN_BROWSER = Im Browser öffnen
 
 OPEN_VIA_BROWSER = Via Browser öffnen
+
+CONFIGURATION = Einstellungen

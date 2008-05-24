@@ -33,7 +33,7 @@ public class Creditionals {
     }
 
     private String xorString(String input,String key) {
-      return OOoUtil.xorString(input, key);
+      return Util.xorString(input, key);
     }
     
     private boolean readCreditionals() {

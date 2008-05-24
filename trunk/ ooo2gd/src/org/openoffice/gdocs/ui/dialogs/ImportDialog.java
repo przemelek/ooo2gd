@@ -4,14 +4,6 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
-import com.google.gdata.data.docs.DocumentListEntry;
-import com.google.gdata.util.AuthenticationException;
-import com.sun.star.beans.PropertyValue;
-import com.sun.star.frame.XComponentLoader;
-import com.sun.star.frame.XFrame;
-import com.sun.star.lang.XComponent;
-import com.sun.star.text.XTextDocument;
-import com.sun.star.uno.UnoRuntime;
 import java.awt.Desktop;
 import java.awt.HeadlessException;
 import java.io.File;
@@ -20,19 +12,25 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import org.openoffice.gdocs.configuration.Configuration;
-import org.openoffice.gdocs.util.Downloader;
-import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 import org.openoffice.gdocs.util.Creditionals;
+import org.openoffice.gdocs.util.Downloader;
+import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.util.IOEvent;
 import org.openoffice.gdocs.util.IOListener;
-import org.openoffice.gdocs.util.OOoUtil;
+import org.openoffice.gdocs.util.Util;
+
+import com.google.gdata.data.docs.DocumentListEntry;
+import com.google.gdata.util.AuthenticationException;
+import com.sun.star.frame.XFrame;
 
 /**
  *
@@ -57,9 +55,10 @@ public class ImportDialog extends JFrame {
 		        try {                            
                             File docFile = new File(url);
                             String fName = docFile.getCanonicalPath();
-                            String sLoadUrl = OOoUtil.fileNameToOOoURL(fName);
-                            OOoUtil.openInOpenOffice(sLoadUrl, xFrame);
+                            String sLoadUrl = Util.fileNameToOOoURL(fName);
+                            Util.openInOpenOffice(sLoadUrl, xFrame);
 		        } catch (Exception e) {
+                            Configuration.log(e);
 		            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
 		        } finally {
                             window.dispose();
@@ -88,12 +87,15 @@ public class ImportDialog extends JFrame {
             doOpen(entry);
         } catch (AuthenticationException e) {
             e.printStackTrace();
+            Configuration.log(e);
             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("INVALID_CREDITIONALS"));
         } catch (URISyntaxException e) {
             e.printStackTrace();
+            Configuration.log(e);
             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
+            Configuration.log(e);
             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("CANNOT_OPEN_BROWSER"));
         }               
         }        
@@ -326,7 +328,9 @@ public class ImportDialog extends JFrame {
 				}
             });                
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();            
+            Configuration.log(Configuration.getResources().getString("Problem:_")+e.getMessage());
+            Configuration.log(e);
             JOptionPane.showMessageDialog(this,Configuration.getResources().getString("Problem:_")+e.getMessage());
         }
 
