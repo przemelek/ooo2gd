@@ -10,7 +10,7 @@ import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
 import java.io.IOException;
 
-public class OOoUtil {
+public class Util {
     
     
         public static String xorString(String input,String key) {
@@ -29,9 +29,9 @@ public class OOoUtil {
         }
     
         public static String convertDocumentToFormat(String pathName, String filterName, String newExt,XFrame xFrame ) throws com.sun.star.io.IOException, com.sun.star.lang.IllegalArgumentException,IOException {
-            String fName = OOoUtil.fileNameToOOoURL(pathName);
+            String fName = Util.fileNameToOOoURL(pathName);
             String newPathName = pathName.substring(0,pathName.lastIndexOf("."))+"."+newExt;
-            String newFName = OOoUtil.fileNameToOOoURL(newPathName);
+            String newFName = Util.fileNameToOOoURL(newPathName);
 
             PropertyValue[] properties = new PropertyValue[3];
             PropertyValue prop = new PropertyValue();
@@ -87,4 +87,5 @@ public class OOoUtil {
             XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 0, new PropertyValue[0]);
             XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
         }
+        
 }

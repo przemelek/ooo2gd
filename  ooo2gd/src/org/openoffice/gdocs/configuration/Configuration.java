@@ -6,10 +6,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -20,10 +23,13 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
 import org.openoffice.gdocs.util.EncodingSensitiveControl;
-import org.openoffice.gdocs.util.OOoUtil;
+import org.openoffice.gdocs.util.Util;
 
 public class Configuration {
-        
+
+    private static final int MAX_SIZE_OF_LOG = 1000;
+    private static String versionStr = "1.0.4";
+    private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
     private static String proxyServer;
@@ -82,8 +88,8 @@ public class Configuration {
         	pr.println(getProxyServer());
         	pr.println(getProxyPort());
         	pr.println(isProxyAuth()?"1":"0");
-        	pr.println(OOoUtil.xorString(getProxyUser(),CONFIG_SECRET_PHRASE));
-        	pr.println(OOoUtil.xorString(getProxyPassword(),CONFIG_SECRET_PHRASE));
+        	pr.println(Util.xorString(getProxyUser(),CONFIG_SECRET_PHRASE));
+        	pr.println(Util.xorString(getProxyPassword(),CONFIG_SECRET_PHRASE));
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -110,8 +116,8 @@ public class Configuration {
             String proxyUser = br.readLine();
             String proxyPassword = br.readLine();
             if ((proxyUser!=null) && (proxyPassword!=null)) {
-            	setProxyUser(OOoUtil.xorString(proxyUser, CONFIG_SECRET_PHRASE));
-            	setProxyPassword(OOoUtil.xorString(proxyPassword, CONFIG_SECRET_PHRASE));
+            	setProxyUser(Util.xorString(proxyUser, CONFIG_SECRET_PHRASE));
+            	setProxyPassword(Util.xorString(proxyPassword, CONFIG_SECRET_PHRASE));
             }
             br.close();
             
@@ -227,5 +233,53 @@ public class Configuration {
     public static void setProxyAuth(boolean proxyAuth) {
         Configuration.proxyAuth=proxyAuth;
     }
+
+    public static void log(String str) {
+        if (log.size()>MAX_SIZE_OF_LOG) {
+            log.remove(0);
+        }
+        log.add(str);        
+    }
     
+    public static void log(Exception e) {        
+        class MyWriter extends Writer {
+            private StringBuilder sb;
+
+            public MyWriter() {
+                sb = new StringBuilder();
+            }
+
+            @Override
+            public void close() throws IOException {
+                
+            }
+
+            @Override
+            public void flush() throws IOException {
+                
+            }
+
+            @Override
+            public void write(char[] cbuf, int off, int len) throws IOException {
+                sb.append(cbuf, off, len);
+            }
+
+            @Override
+            public String toString() {
+                return sb.toString();
+            }                        
+        };
+        MyWriter writer = new MyWriter();
+        PrintWriter pw = new PrintWriter(writer);
+        e.printStackTrace(pw);
+        log(writer.toString());            
+    }
+    
+    public static List<String> getLog() {
+        return log;
+    }
+    
+    public static String getVersionStr() {
+        return versionStr;
+    }
 }

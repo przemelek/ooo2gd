@@ -51,3 +51,5 @@ NEED_CONVERT_PPT =Before upload your presentation must be converted to MS PowerP
 OPEN_IN_BROWSER = Open in Browser
 
 OPEN_VIA_BROWSER = Open via Browser
+
+CONFIGURATION = Configuration
