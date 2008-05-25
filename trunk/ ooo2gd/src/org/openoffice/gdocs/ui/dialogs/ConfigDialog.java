@@ -10,11 +10,11 @@ import javax.swing.JTextArea;
 import org.openoffice.gdocs.configuration.Configuration;
 
 
-public class ConfigDialog extends javax.swing.JDialog {
+public class ConfigDialog extends javax.swing.JFrame {
     
     /** Creates new form ConfigDialog */
     public ConfigDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+        super("Configuration");
         initComponents();
         jComboBox1.setModel(Configuration.getLanguagesModel());
         proxyCheckBox.setSelected(Configuration.isUseProxy());        

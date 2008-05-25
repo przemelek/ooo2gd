@@ -363,6 +363,9 @@ public class ImportDialog extends JFrame {
         }.open();
     }//GEN-LAST:event_openInBrowserActionPerformed
     
+    public static void main(String[] args) {
+        new ImportDialog(null, true, ".", null).setVisible(true);
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
