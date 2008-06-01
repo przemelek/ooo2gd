@@ -31,8 +31,10 @@ public final class GDocs extends WeakBase
               com.sun.star.frame.XDispatch
 {
     private static final String GDOCS_PROTOCOL = "org.openoffice.gdocs.gdocs:";
-    private static final String EXPORT_TO = "Export to Google Docs";
-    private static final String IMPORT_FROM = "Import from Google Docs";
+    private static final String EXPORT_TO_GOOGLE_DOCS = "Export to Google Docs";
+    private static final String IMPORT_FROM_GOOGLE_DOCS = "Import from Google Docs";    
+    private static final String EXPORT_TO_ZOHO = "Export to Zoho";
+    private static final String IMPORT_FROM_ZOHO = "Import from Zoho";
     private static final String CONFIGURE = "Configure";
     private final XComponentContext m_xContext;
     private com.sun.star.frame.XFrame m_xFrame;
@@ -84,16 +86,25 @@ public final class GDocs extends WeakBase
     {
         if ( aURL.Protocol.compareTo(GDOCS_PROTOCOL) == 0 )
         {
-            if ( aURL.Path.compareTo(EXPORT_TO) == 0 ) {
+            if ( aURL.Path.compareTo(EXPORT_TO_GOOGLE_DOCS) == 0 ) {
                 String path = getCurrentDocumentPath();
                 XDispatch result = null;
                 if (path!=null) {
                     result = this;
                 }
                 return result;
-            } else if ( aURL.Path.compareTo(IMPORT_FROM) == 0 ) {
+            } else if ( aURL.Path.compareTo(EXPORT_TO_ZOHO) == 0 ) {
+                String path = getCurrentDocumentPath();
+                XDispatch result = null;
+                if (path!=null) {
+                    result = this;
+                }
+                return result;
+            }  else if ( aURL.Path.compareTo(IMPORT_FROM_GOOGLE_DOCS) == 0 ) {
                 return this;
-            } else if ( aURL.Path.compareTo(CONFIGURE) == 0 ) {
+            }  else if ( aURL.Path.compareTo(IMPORT_FROM_ZOHO) == 0 ) {
+                return this;   
+            }  else if ( aURL.Path.compareTo(CONFIGURE) == 0 ) {
                 return this;
             }
         }
@@ -134,16 +145,26 @@ public final class GDocs extends WeakBase
     {
          if ( aURL.Protocol.compareTo(GDOCS_PROTOCOL) == 0 )
         {
-            if ( aURL.Path.compareTo(EXPORT_TO) == 0 )
+            if ( aURL.Path.compareTo(EXPORT_TO_GOOGLE_DOCS) == 0 )
             {
-                exportToGoogleDocs();
+                exportTo("Google Docs");
                 return;
             }
-            if ( aURL.Path.compareTo(IMPORT_FROM) == 0 )
+            if ( aURL.Path.compareTo(EXPORT_TO_ZOHO) == 0 )
             {
-                importFromGoogleDocs();
+                exportTo("Zoho");
                 return;
             }
+            if ( aURL.Path.compareTo(IMPORT_FROM_GOOGLE_DOCS) == 0 )
+            {
+                importFrom("Google Docs");
+                return;
+            }
+            if ( aURL.Path.compareTo(IMPORT_FROM_ZOHO) == 0 )
+            {
+                importFrom("Zoho");
+                return;
+            }            
             if ( aURL.Path.compareTo(CONFIGURE) == 0 )
             {
                 startNewThread(new Runnable() {
@@ -161,7 +182,7 @@ public final class GDocs extends WeakBase
         }
     }
 
-    private void exportToGoogleDocs() {        
+    private void exportTo(final String system) {        
         final String documentPath = getCurrentDocumentPath();
         startNewThread(new Runnable() {
             public void run() {                
@@ -182,7 +203,7 @@ public final class GDocs extends WeakBase
                             }
                             if (doUpload) {
                                 String pathName=file.getPath();
-                                new UploadDialog(pathName,m_xFrame).setVisible(true);
+                                new UploadDialog(pathName,system,m_xFrame).setVisible(true);
                             }
                         } else {                            
                             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
@@ -213,11 +234,11 @@ public final class GDocs extends WeakBase
         });
     }
 
-    private void importFromGoogleDocs() throws HeadlessException {
+    private void importFrom(final String system) throws HeadlessException {
         startNewThread(new Runnable() {
             public void run() {
                 try {
-                    new ImportDialog(null,true, getTempPath(),m_xFrame).setVisible(true);
+                    new ImportDialog(null,true, getTempPath(), system, m_xFrame).setVisible(true);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,e.getMessage());
                 }

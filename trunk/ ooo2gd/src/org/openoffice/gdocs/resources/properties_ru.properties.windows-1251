@@ -4,11 +4,11 @@ Google_User_Name\:=Имя учетной записи\:
 
 Google_Password\:=Пароль\:
 
-Google_Account_Info=Учетная запись Google
+Google_Account_Info=Учетная запись ${system}
 
 Remember_Password_(It_will_be_stored_on_local_disk)=Запомнить пароль (будет сохранен на диск)
 
-Import_from_Google_Docs=Импортировать из Google Docs
+Import_from_Google_Docs=Импортировать из ${system}
 
 Close=Закрыть
 
@@ -16,7 +16,7 @@ Get_list=Получить список
 
 Open=Открыть
 
-Export_to_Google_Docs=Экспортировать в Google Docs
+Export_to_Google_Docs=Экспортировать в ${system}
 
 Document_name\:=Имя документа\:
 
@@ -30,7 +30,7 @@ Document_Title=Заголовок документа
 
 Published=Опубликовано
 
-Your_file_was_modified=Файл был изменен. Только последняя сохраненная версия файла будет экспортирована в Google Docs.\nЖелаете сохранить эту версию и экспортировать её?
+Your_file_was_modified=Файл был изменен. Только последняя сохраненная версия файла будет экспортирована в ${system}.\nЖелаете сохранить эту версию и экспортировать её?
 
 Cannot_save_file_on_disk....=Не могу сохранить файл на диск....\nФайл не будет отправлен.
 

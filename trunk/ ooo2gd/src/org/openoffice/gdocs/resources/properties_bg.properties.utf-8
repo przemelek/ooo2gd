@@ -8,7 +8,7 @@ Google_Account_Info=Профил
 
 Remember_Password_(It_will_be_stored_on_local_disk)=Запомняне на паролата (Съхранява се на локалния диск)
 
-Import_from_Google_Docs=Импортиране от Google Docs
+Import_from_Google_Docs=Импортиране от ${system}
 
 Close=Изход
 
@@ -16,7 +16,7 @@ Get_list=Опресни списъка
 
 Open=Импорт
 
-Export_to_Google_Docs=Експортиране към Google Docs
+Export_to_Google_Docs=Експортиране към ${system}
 
 Document_name\:=Document name\:
 
@@ -30,7 +30,7 @@ Document_Title=Заглавие
 
 Published=Публикуван на
 
-Your_file_was_modified=Файлът е модифициран след последния запис; само последната записана версия ще бъде качена в Google Docs.\nЖелаете ли да запишете тази версия?
+Your_file_was_modified=Файлът е модифициран след последния запис; само последната записана версия ще бъде качена в ${system}.\nЖелаете ли да запишете тази версия?
 
 Cannot_save_file_on_disk....=Файлът не може да бъде записан на диска.\nФайлът няма да бъде качен.
 

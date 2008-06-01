@@ -11,19 +11,16 @@ import org.openoffice.gdocs.util.Creditionals;
 
 public class LoginPanel extends javax.swing.JPanel implements Serializable {
     
+    private String system;
     /** Creates new form LoginPanel */
     public LoginPanel() {
-        initComponents();
-        jLabel4.setText(Configuration.getResources().getString("Google_Account_Info"));
-        jLabel1.setText(Configuration.getResources().getString("Google_User_Name:"));
-        jLabel2.setText(Configuration.getResources().getString("Google_Password:"));
-        rememberCheckBox.setText(Configuration.getResources().getString("Remember_Password_(It_will_be_stored_on_local_disk)"));
-        jButton1.setText(Configuration.getResources().getString("CONFIGURATION"));
-        readCreditionals();
+        initComponents();        
+        // By default we assume using of Google Docs        
+        setSystem("Google Docs");
     }
     
     public Creditionals getCreditionals() {        
-        Creditionals creditionals = new Creditionals(getUserName(),getPassword());
+        Creditionals creditionals = new Creditionals(getUserName(),getPassword(),system);
         if (rememberCheckBox.isSelected()) {
             creditionals.store();
         }                
@@ -39,7 +36,7 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
     }
     
     private void readCreditionals() {
-        Creditionals creditionals = new Creditionals();
+        Creditionals creditionals = new Creditionals(getSystem());
         rememberCheckBox.setSelected(creditionals.getWsCreditionalsReadedFromDisk());
         userNameField.setText(creditionals.getUserName());
         passwordField.setText(creditionals.getPassword());
@@ -159,5 +156,19 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JCheckBox rememberCheckBox;
     private javax.swing.JTextField userNameField;
     // End of variables declaration//GEN-END:variables
+
+    public void setSystem(String system) {
+        this.system = system;
+        jLabel4.setText(Configuration.getStringFromResources("Google_Account_Info", system));
+        jLabel1.setText(Configuration.getStringFromResources("Google_User_Name:",system));
+        jLabel2.setText(Configuration.getStringFromResources("Google_Password:",system));
+        rememberCheckBox.setText(Configuration.getResources().getString("Remember_Password_(It_will_be_stored_on_local_disk)"));
+        jButton1.setText(Configuration.getResources().getString("CONFIGURATION"));        
+        readCreditionals();
+    }
+    
+    public String getSystem() {
+        return this.system;
+    }
     
 }

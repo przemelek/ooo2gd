@@ -20,9 +20,9 @@
             <node oor:name="M0" oor:op="replace">       
         <prop oor:name="Title" oor:type="xs:string">
           <value/>
-          <value xml:lang="en">Google Docs</value>
-          <value xml:lang="pl">Google Docs</value>
-          <value xml:lang="de">Google Text und Tabellen</value>
+          <value xml:lang="en">Google Docs &amp; Zoho</value>
+          <value xml:lang="pl">Google Docs &amp; Zoho</value>
+          <value xml:lang="de">Google Text und Tabellen &amp; Zoho</value>
         </prop>
         <node oor:name="Submenu">
           <node oor:name="m1" oor:op="replace">
@@ -40,9 +40,9 @@
             </prop>
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
-              <value xml:lang="en">Export to...</value>
-              <value xml:lang="pl">Eksport do...</value>
-              <value xml:lang="de">Export zu...</value>
+              <value xml:lang="en">Export to Google Docs</value>
+              <value xml:lang="pl">Eksport do Google Docs</value>
+              <value xml:lang="de">Export zu Google Text und Tabellen</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -60,13 +60,56 @@
             </prop>
             <prop oor:name="Title" oor:type="xs:string">
               <value/>
-              <value xml:lang="en">Import from...</value>
-              <value xml:lang="pl">Import z...</value>
-              <value xml:lang="de">Import aus...</value>
+              <value xml:lang="en">Import from Google Docs</value>
+              <value xml:lang="pl">Import z Google Docs</value>
+              <value xml:lang="de">Import aus Google Text und Tabellen</value>
             </prop>
           </node>          
 
           <node oor:name="m3" oor:op="replace">
+            <prop oor:name="URL" oor:type="xs:string">
+              <value>org.openoffice.gdocs.gdocs:Export to Zoho</value>
+            </prop>
+            <prop oor:name="ImageIdentifier" oor:type="xs:string">
+              <value/>
+            </prop>
+            <prop oor:name="Target" oor:type="xs:string">
+              <value>_self</value>
+            </prop>
+            <prop oor:name="Context" oor:type="xs:string">
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>
+            </prop>
+            <prop oor:name="Title" oor:type="xs:string">
+              <value/>
+              <value xml:lang="en">Export to Zoho</value>
+              <value xml:lang="pl">Eksport do Zoho</value>
+              <value xml:lang="de">Export zu Zoho</value>
+            </prop>
+          </node>          
+
+          <node oor:name="m4" oor:op="replace">
+            <prop oor:name="URL" oor:type="xs:string">
+              <value>org.openoffice.gdocs.gdocs:Import from Zoho</value>
+            </prop>
+            <prop oor:name="ImageIdentifier" oor:type="xs:string">
+              <value/>
+            </prop>
+            <prop oor:name="Target" oor:type="xs:string">
+              <value>_self</value>
+            </prop>
+            <prop oor:name="Context" oor:type="xs:string">
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>
+            </prop>
+            <prop oor:name="Title" oor:type="xs:string">
+              <value/>
+              <value xml:lang="en">Import from Zoho</value>
+              <value xml:lang="pl">Import z Zoho</value>
+              <value xml:lang="de">Import aus Zoho</value>
+            </prop>
+          </node>          
+
+          
+          <node oor:name="m5" oor:op="replace">
             <prop oor:name="URL" oor:type="xs:string">
               <value>org.openoffice.gdocs.gdocs:Configure</value>
             </prop>
@@ -90,7 +133,7 @@
         </node>
       </node>
       </node>
-      </node>
+      </node>                  
       </node>      
     </node>
     <node oor:name="OfficeToolBar">               
@@ -139,7 +182,52 @@
           <value xml:lang="pl">Import z Google Docs</value>
           <value xml:lang="de">aus Google Text und Tabellen importieren</value>
         </prop>
+      </node>
+      
+      <node oor:name="m3" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Export to Zoho</value>
+        </prop>
+        <prop oor:name="ImageIdentifier" oor:type="xs:string">
+          <value/>
+        </prop>
+        <prop oor:name="Target" oor:type="xs:string">
+          <value>_self</value>
+        </prop>
+        <prop oor:name="Context" oor:type="xs:string">
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>            
+          <value/>
+        </prop>
+        <prop oor:name="Title" oor:type="xs:string">
+          <value/>
+          <value xml:lang="en">Export to Zoho</value>
+          <value xml:lang="pl">Eksport do Zoho</value>
+          <value xml:lang="de">zu Zoho</value>
+        </prop>
       </node>      
+
+      <node oor:name="m4" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Import from Zoho</value>
+        </prop>
+        <prop oor:name="ImageIdentifier" oor:type="xs:string">
+          <value/>
+        </prop>
+        <prop oor:name="Target" oor:type="xs:string">
+          <value>_self</value>
+        </prop>
+        <prop oor:name="Context" oor:type="xs:string">
+          <value/>
+        </prop>
+        <prop oor:name="Title" oor:type="xs:string">
+          <value/>
+          <value xml:lang="en">Import from Zoho</value>
+          <value xml:lang="pl">Import z Zoho</value>
+          <value xml:lang="de">aus Zoho</value>
+        </prop>
+      </node>
+
+      
       </node>
     </node>   
     <node oor:name="Images">
@@ -173,6 +261,30 @@
           </prop>
         </node>
       </node>
+      
+      <node oor:name="org.openoffice.gdocs.gdocs.export.zoho.images" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Export to Zoho</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL">
+              <value>%origin%/images/export16.png</value>
+          </prop>
+        </node>
+      </node>      
+
+      <node oor:name="org.openoffice.gdocs.gdocs.import.zoho.images" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:Import from Zoho</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL">
+              <value>%origin%/images/import16.png</value>
+          </prop>
+        </node>
+      </node>
+
+      
       </node>      
   </node>
 </oor:component-data>

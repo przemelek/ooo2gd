@@ -23,14 +23,15 @@ import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 import org.openoffice.gdocs.util.Creditionals;
 import org.openoffice.gdocs.util.Downloader;
-import org.openoffice.gdocs.util.GoogleDocsWrapper;
 import org.openoffice.gdocs.util.IOEvent;
 import org.openoffice.gdocs.util.IOListener;
 import org.openoffice.gdocs.util.Util;
+import org.openoffice.gdocs.util.Document;
+import org.openoffice.gdocs.util.Wrapper;
 
-import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
+import org.openoffice.gdocs.util.WrapperFactory;
 
 /**
  *
@@ -68,57 +69,68 @@ public class ImportDialog extends JFrame {
 	}
 
     private class OpenWrapper {
-        private GoogleDocsWrapper wrapper;
+        private Wrapper wrapper;
         private Creditionals creditionals;
 
-        public OpenWrapper() {
-            wrapper = new GoogleDocsWrapper();
+        public OpenWrapper(Wrapper wrapper) {    
+            this.wrapper = wrapper;
             creditionals = loginPanel1.getCreditionals();
         }          
         
-        public void doOpen(DocumentListEntry entry) throws AuthenticationException, URISyntaxException, IOException {
+        public void doOpen(Document entry) throws AuthenticationException, URISyntaxException, IOException {
             donwloadTextDocument(entry, getWrapper());
         }
         
         public void open() {
         try {            
             wrapper.login(creditionals);
-            DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+            Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
             doOpen(entry);
         } catch (AuthenticationException e) {
             e.printStackTrace();
             Configuration.log(e);
             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("INVALID_CREDITIONALS"));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Configuration.log(e);
-            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             Configuration.log(e);
             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("CANNOT_OPEN_BROWSER"));
-        }               
-        }        
-        public GoogleDocsWrapper getWrapper() { return wrapper; }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Configuration.log(e);
+            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());              
+        }
+        }
+        public Wrapper getWrapper() { return wrapper; }
         public Creditionals getCreditionals() { return creditionals; }
     }  
   
   
     private abstract class OpenWithBrowserWrapper extends OpenWrapper {
-        public void doOpen(DocumentListEntry entry) throws AuthenticationException, URISyntaxException, IOException {
+
+        public OpenWithBrowserWrapper(Wrapper wrapper) {
+            super(wrapper);
+        }
+        
+        
+        
+        public void doOpen(Document entry) throws AuthenticationException, URISyntaxException, IOException {
             Desktop.getDesktop().browse(getUri(entry));
         }
-        public abstract URI getUri(DocumentListEntry entry) throws URISyntaxException;
+        public abstract URI getUri(Document entry) throws URISyntaxException;
     }  
   
   private XFrame xFrame;
   private final String currentDocumentPath;
+  private String system;
   
     /** Creates new form ImportDialog */
-    public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath,XFrame frame) {
+    public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath,String system,XFrame frame) {
         super();
         this.xFrame = frame;
+        this.system = system;
         initComponents();
+        loginPanel1.setSystem(system);
+        setTitle(Configuration.getStringFromResources("Import_from_Google_Docs", system));
         getListButton.setText(Configuration.getResources().getString("Get_list"));
         openButton.setText(Configuration.getResources().getString("Open"));
         openInBrowser.setText(Configuration.getResources().getString("OPEN_IN_BROWSER"));
@@ -268,20 +280,20 @@ public class ImportDialog extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-        new OpenWrapper().open();
+        new OpenWrapper(WrapperFactory.getWrapperForCredentials(system)).open();
     }//GEN-LAST:event_openButtonActionPerformed
 
-    private void donwloadTextDocument(final DocumentListEntry entry, final GoogleDocsWrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
-        final String documentUrl = this.currentDocumentPath +"/"+entry.getTitle().getPlainText();
+    private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
+        final String documentUrl = this.currentDocumentPath +"/"+entry.getTitle();
         final URI uri = wrapper.getUriForEntry(entry);
         downloadURI(documentUrl, uri, wrapper);
     }
 
-    private void downloadURI(final String documentUrl, final URI uri, final GoogleDocsWrapper wrapper) throws MalformedURLException, URISyntaxException {
-        final Downloader downloader = new Downloader(uri, 
-            documentUrl, wrapper.getService());
+    private void downloadURI(final String documentUrl, final URI uri, final Wrapper wrapper) throws MalformedURLException, URISyntaxException {
+        final Downloader downloader = wrapper.getDownloader(uri, 
+            documentUrl);
         final Uploading progressWindow = new Uploading();
-        progressWindow.setMessage("Google Docs -> OpenOffice.org");
+        progressWindow.setMessage(wrapper.getSystem()+" -> OpenOffice.org");
         progressWindow.setVisible(true);            
         progressWindow.showProgressBar();
         downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow));
@@ -302,19 +314,19 @@ public class ImportDialog extends JFrame {
     
     
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
-        final GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
+        final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
         try {
             wrapper.login(loginPanel1.getCreditionals());
             jTable1.setEnabled(true);
-            DocumentsTableModel dtm = new DocumentsTableModel();        
-            for (DocumentListEntry entry:wrapper.getListOfDocs()) {
+            DocumentsTableModel dtm = new DocumentsTableModel();                    
+            for (Document entry:wrapper.getListOfDocs()) {
                 dtm.add(entry);
             }
             jTable1.setModel(dtm);
             jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
-                    DocumentListEntry entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-                    boolean googleAppsAccount = entry.getDocumentLink().getHref().indexOf("/a/")!=-1;
+                    Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+                    boolean googleAppsAccount = entry.getDocumentLink().indexOf("/a/")!=-1;
                     if ( entry.getId().startsWith("spreadsheet") ) {
                         setButtonsEnable(false, false, true);
                     } else {
@@ -344,27 +356,27 @@ public class ImportDialog extends JFrame {
     }//GEN-LAST:event_closeDialog
     
     private void openViaBrowserButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openViaBrowserButtonActionPerformed
-        new OpenWithBrowserWrapper() {
+        new OpenWithBrowserWrapper(WrapperFactory.getWrapperForCredentials(system)) {
 
             @Override
-            public URI getUri(DocumentListEntry entry) throws URISyntaxException {
+            public URI getUri(Document entry) throws URISyntaxException {
                 return getWrapper().getUriForEntry(entry);
             }
         }.open();
 }//GEN-LAST:event_openViaBrowserButtonActionPerformed
 
     private void openInBrowserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openInBrowserActionPerformed
-        new OpenWithBrowserWrapper() {
+        new OpenWithBrowserWrapper(WrapperFactory.getWrapperForCredentials(system)) {
 
             @Override
-            public URI getUri(DocumentListEntry entry) throws URISyntaxException {
+            public URI getUri(Document entry) throws URISyntaxException {
                 return getWrapper().getUriForEntryInBrowser(entry);
             }
         }.open();
     }//GEN-LAST:event_openInBrowserActionPerformed
     
     public static void main(String[] args) {
-        new ImportDialog(null, true, ".", null).setVisible(true);
+        new ImportDialog(null, true, ".", "Google Docs", null).setVisible(true);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

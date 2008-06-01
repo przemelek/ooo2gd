@@ -20,16 +20,36 @@ public class Creditionals {
     private boolean wasCreditionalsReadedFromDisk = false;
     private String userName;
     private String password;
+    private String system;
 
-    public Creditionals() {
+    public Creditionals(String system) {
         super();
+        this.system = system;
         setWasCreditionalReadFromDisk(readCreditionals());
     }    
     
-    public Creditionals(String userName, String password) {
+    public Creditionals(String userName, String password, String system) {
         super();
         this.userName = userName;
         this.password = password;
+        this.system = system;
+    }
+    
+    public Creditionals(String userName, String password) {
+        // by default we use Google Docs
+        this(userName,password,"Google Docs");
+    }
+
+    public void setSystem(String system) {
+        this.system = system;
+    }
+
+    private String getCredentionalsfileName() {
+        String credentionalsFileName = Configuration.getWorkingPath() + CREDITIONALS_FILE;
+        if (!("Google Docs".equals(system))) {
+            credentionalsFileName += system.replaceAll(" ", "_");
+        }
+        return credentionalsFileName;
     }
 
     private String xorString(String input,String key) {
@@ -37,11 +57,12 @@ public class Creditionals {
     }
     
     private boolean readCreditionals() {
+        String credentionalsFileName = getCredentionalsfileName();
         boolean result = false;
         try {            
-            File file = new File(Configuration.getWorkingPath()+CREDITIONALS_FILE);            
+            File file = new File(credentionalsFileName);
             if (file.exists()) {
-                FileReader fr = new FileReader(Configuration.getWorkingPath()+CREDITIONALS_FILE);
+                FileReader fr = new FileReader(credentionalsFileName);
                 BufferedReader br = new BufferedReader(fr);
                 char[] buf=new char[1024];
                 int length = br.read(buf);
@@ -58,8 +79,9 @@ public class Creditionals {
     }
     
     private void storeCreditionals() {
+        String credentionalsFileName = getCredentionalsfileName();
         try {
-            FileWriter fw = new FileWriter(Configuration.getWorkingPath()+CREDITIONALS_FILE);
+            FileWriter fw = new FileWriter(credentionalsFileName);
             BufferedWriter bw = new BufferedWriter(fw);
             String password = getPassword();
             String userName = getUserName();
@@ -98,5 +120,9 @@ public class Creditionals {
     
     public boolean getWsCreditionalsReadedFromDisk() {
         return wasCreditionalsReadedFromDisk;
+    }
+
+    public String getSystem() {
+        return this.system;
     }
 }

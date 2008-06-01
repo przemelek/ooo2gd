@@ -28,7 +28,7 @@ import org.openoffice.gdocs.util.Util;
 public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;
-    private static String versionStr = "1.0.4";
+    private static String versionStr = "1.1.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -132,21 +132,17 @@ public class Configuration {
 		if (isUseProxy) { 
             setProxyAuthenticator(isProxyAuth);            
             Properties systemProperties = System.getProperties();
-//            systemProperties.setProperty("http.proxySet", "true");
-//            systemProperties.setProperty("https.proxySet", "true");
             systemProperties.setProperty("http.proxyHost", getProxyServer());
             systemProperties.setProperty("http.proxyPort", getProxyPort());
             systemProperties.setProperty("https.proxyHost", getProxyServer());
             systemProperties.setProperty("https.proxyPort", getProxyPort());            
         } else {
             Authenticator.setDefault(null);
-            Properties systemProperties = System.getProperties();            
-            systemProperties.remove("http.proxySet");
-            systemProperties.remove("https.proxySet");            
+            Properties systemProperties = System.getProperties(); 
             systemProperties.remove("http.proxyHost");
             systemProperties.remove("http.proxyPort");
             systemProperties.remove("https.proxyHost");
-            systemProperties.remove("https.proxyPort");            
+            systemProperties.remove("https.proxyPort");
         }
 	}
 
@@ -170,6 +166,14 @@ public class Configuration {
         return ResourceBundle.getBundle("org/openoffice/gdocs/resources/properties", 
             locale, 
             encodingSensitiveControl);
+    }
+    
+    public static String getStringFromResources(String stringId) {
+        return Configuration.getResources().getString(stringId);
+    }
+    
+    public static String getStringFromResources(String stringId,String system) {
+        return getStringFromResources(stringId).replace("${system}", system);
     }
     
     public static ComboBoxModel getLanguagesModel() {
