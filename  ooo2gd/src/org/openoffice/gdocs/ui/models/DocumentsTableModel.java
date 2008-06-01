@@ -9,18 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import org.openoffice.gdocs.configuration.Configuration;
-
+import org.openoffice.gdocs.util.Document;
 
 public class DocumentsTableModel extends AbstractTableModel {
 
-    private List<DocumentListEntry> list = new ArrayList<DocumentListEntry>();
+    private List<Document> list = new ArrayList<Document>();
     
     public Object getValueAt(int rowIndex, int columnIndex) {
-        DocumentListEntry entry = list.get(rowIndex);
+        Document entry = list.get(rowIndex);
         Object obj = null;            
         switch (columnIndex) {
-            case 0: obj = entry.getTitle().getPlainText(); break;
-            case 1: obj = entry.getUpdated().toStringRfc822(); break;
+            case 0: obj = entry.getTitle(); break;
+            case 1: obj = entry.getUpdated(); break;
         }
         if (obj==null) obj="";
         return obj;
@@ -50,11 +50,11 @@ public class DocumentsTableModel extends AbstractTableModel {
         return "";
     }
        
-    public void add(DocumentListEntry entry) {
+    public void add(Document entry) {
         list.add(entry);
     }
 
-    public DocumentListEntry getEntry(int idx) {            
+    public Document getEntry(int idx) {            
         return list.get(idx);
     }
     

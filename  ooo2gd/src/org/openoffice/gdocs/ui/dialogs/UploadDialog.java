@@ -10,8 +10,10 @@ import java.io.File;
 import java.net.URI;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.configuration.Configuration;
-import org.openoffice.gdocs.util.GoogleDocsWrapper;
+import org.openoffice.gdocs.util.Creditionals;
 import org.openoffice.gdocs.util.Util;
+import org.openoffice.gdocs.util.Wrapper;
+import org.openoffice.gdocs.util.WrapperFactory;
 
 /**
  *
@@ -21,15 +23,20 @@ public class UploadDialog extends javax.swing.JFrame {
   
     private String pathName;
     private XFrame xFrame;
-    public UploadDialog(String pathName,XFrame frame) {
+    private String system;
+    public UploadDialog(String pathName,String system,XFrame frame) {
         super();
         xFrame = frame;
         this.pathName = pathName;
+        this.system = system;
         initComponents();
+        loginPanel1.setSystem(system);
         String docName = new File(pathName).getName();            
         setVisibleForDocName(true);            
-        setMessageText("File "+pathName+" will be uploaded to Google Docs");
+        setMessageText("File "+pathName+" will be uploaded to "+system);
         setDocumentTitle(docName);
+        jLabel3.setText(Configuration.getResources().getString("Document_name:"));
+        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));
         //setModal(true);
         toFront();
     }
@@ -167,14 +174,6 @@ public class UploadDialog extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        try {
-            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
-        } catch (Exception e) {
-            // OK, it's not crutial problem, so we ignore it ;-)'
-        }
-    }//GEN-LAST:event_jLabel1MouseClicked
-
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.toFront();
     }//GEN-LAST:event_formWindowOpened
@@ -187,26 +186,33 @@ public class UploadDialog extends javax.swing.JFrame {
         this.toFront();
     }//GEN-LAST:event_formComponentShown
 
-    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        upload=false;
-        this.setVisible(false);
-    }//GEN-LAST:event_cancelButtonActionPerformed
+private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+try {
+            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
+        } catch (Exception e) {
+            // OK, it's not crutial problem, so we ignore it ;-)'
+        }
+}//GEN-LAST:event_jLabel1MouseClicked
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         upload=true;
         this.setVisible(false);
         final Uploading uploading = new Uploading();
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
+                    //GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
+                    Creditionals credentionals = loginPanel1.getCreditionals();
+                    Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
                     String docName=getDocumentTitle();
                     uploading.setVisible(true);
-                    wrapper.login(loginPanel1.getCreditionals());
+                    wrapper.login(credentionals);
                     boolean upload = true;
                     // File to store is OpenOffice Impress Presentation?
-                    if (pathName.toLowerCase().indexOf(".odp")!=-1) {                        
-                        upload = convertPresentation(upload);
+                    if (needConversion(pathName,system)) {
+                        if (pathName.toLowerCase().indexOf(".odp")!=-1) {                        
+                            upload = convertPresentation(upload);
+                        }
                     }
                     if (upload) {
                         wrapper.upload(pathName,docName);
@@ -223,7 +229,7 @@ public class UploadDialog extends javax.swing.JFrame {
             }
 
 			private boolean convertPresentation(boolean upload) {
-				String msg = Configuration.getResources().getString("NEED_CONVERT_PPT");
+				String msg = Configuration.getStringFromResources("NEED_CONVERT_PPT",system);
 				int option = JOptionPane.showConfirmDialog(null,msg,"ODP -> PPT",JOptionPane.YES_NO_OPTION);
 				if (option == JOptionPane.YES_OPTION) {
 				    String filterName = "MS PowerPoint 97";
@@ -238,8 +244,18 @@ public class UploadDialog extends javax.swing.JFrame {
 				}
 				return upload;
 			}
+
+            private boolean needConversion(String pathName, String system) {
+                Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
+                return wrapper.neeedConversion(pathName);
+            }
         }).start();
-    }//GEN-LAST:event_okButtonActionPerformed
+}//GEN-LAST:event_okButtonActionPerformed
+
+private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+upload=false;
+        this.setVisible(false);
+}//GEN-LAST:event_cancelButtonActionPerformed
            
     public void setMessageText(String messageText) {
         message.setText(messageText);

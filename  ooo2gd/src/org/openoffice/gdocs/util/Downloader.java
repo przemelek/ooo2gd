@@ -31,6 +31,20 @@ import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.client.http.HttpAuthToken;
 
 public class Downloader implements Runnable {
+
+    protected int getContentLength(HttpURLConnection conn) {
+        String contentLengthStr = conn.getHeaderField("Content-Length");
+        int contentLength = IOEvent.getUNKNOWN_SIZE();
+        if (contentLengthStr != null) {
+            try {
+                contentLength = Integer.parseInt(contentLengthStr);
+            } catch (NumberFormatException nfex) {
+                System.err.println("Warning: can not parse the content lenght; continuing with download.");
+                nfex.printStackTrace();
+            }
+        }
+        return contentLength;
+    }
   private interface DownloaderInterface {
       public void fetchImpl(InputStream is, int contentLength) throws IOException;
   }
@@ -40,7 +54,7 @@ public class Downloader implements Runnable {
   
   private static final IOListener[] DUMMY_IOLISTENER_ARRAY = {};
     
-  private final DocsService docsService;
+  private final Wrapper wrapper;
   private URL source;
   private URI destFileURI;
   
@@ -51,13 +65,13 @@ public class Downloader implements Runnable {
   private DownloaderInterface currentDownloader;
 
   
-  public Downloader(URI source, String destFileURI, DocsService docsService) throws URISyntaxException, MalformedURLException {
+  public Downloader(URI source, String destFileURI, Wrapper wrapper) throws URISyntaxException, MalformedURLException {
       this.source = source.toURL();
       this.destFileURI = new File(destFileURI).toURI();
-    if(!(docsService.getAuthTokenFactory().getAuthToken() instanceof HttpAuthToken)){
-       throw new IllegalArgumentException("The downloader class works only with HttpAuthTokens.");
-    }
-    this.docsService = docsService; 
+//    if(!(docsService.getAuthTokenFactory().getAuthToken() instanceof HttpAuthToken)){
+//       throw new IllegalArgumentException("The downloader class works only with HttpAuthTokens.");
+//    }
+      this.wrapper = wrapper;
       this.currentDownloader = new DownloaderInterface() {
          public void fetchImpl(InputStream is, int contentLength) throws IOException {
              fetchImplForFile(is,contentLength);
@@ -65,9 +79,9 @@ public class Downloader implements Runnable {
       };    
   }
   
-  public Downloader(URI source, final OutputStream out, DocsService docsService) throws MalformedURLException{
-      this.source = source.toURL();
-      this.docsService = docsService; 
+  public Downloader(URI source, final OutputStream out, Wrapper wrapper) throws MalformedURLException{
+      this.source = source.toURL();      
+      this.wrapper = wrapper; 
       this.currentDownloader = new DownloaderInterface() {
          public void fetchImpl(InputStream is, int contentLength) throws IOException {
              fetchImplForMemory(is,out,contentLength);
@@ -120,25 +134,22 @@ public class Downloader implements Runnable {
     HttpURLConnection.setDefaultAllowUserInteraction(true);
     
     HttpURLConnection conn = (HttpURLConnection)source.openConnection();
-    HttpAuthToken authToken = (HttpAuthToken)docsService.getAuthTokenFactory().getAuthToken();
-    String header = authToken.getAuthorizationHeader(source, "GET");
-    conn.setRequestProperty("Authorization", header);
+    setAthenticationHeader(conn);
     conn.setRequestProperty("User-Agent", userAgent);
+    conn.setRequestMethod("GET");
     conn.connect();
-    String contentLengthStr = conn.getHeaderField("Content-Length");       
-    int contentLength = IOEvent.getUNKNOWN_SIZE();
-    if(contentLengthStr!=null){
-      try {
-        contentLength = Integer.parseInt(contentLengthStr);
-      } catch(NumberFormatException nfex){
-        System.err.println("Warning: can not parse the content lenght; continuing with download.");
-        nfex.printStackTrace();
-      }
-    }
+    int contentLength = getContentLength(conn);
     InputStream is = conn.getInputStream();
     //fetchImpl(is, contentLength);
     currentDownloader.fetchImpl(is, contentLength);
   }
+
+  protected void setAthenticationHeader(HttpURLConnection conn) {
+        DocsService docsService = ((GoogleDocsWrapper)wrapper).getService();
+	HttpAuthToken authToken = (HttpAuthToken)docsService.getAuthTokenFactory().getAuthToken();
+        String header = authToken.getAuthorizationHeader(source, "GET");
+        conn.setRequestProperty("Authorization", header);    
+}
  
   
   /**

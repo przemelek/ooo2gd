@@ -29,7 +29,7 @@ public class EncodingSensitiveControl extends ResourceBundle.Control {
   public EncodingSensitiveControl() {
     this(STANDARD_ENCODINGS);
   }
-  
+    
   public EncodingSensitiveControl(String[] encodingNames) {
     List<String> formats = new ArrayList<String>(ResourceBundle.Control.FORMAT_DEFAULT);
     for(String encodingName : encodingNames){

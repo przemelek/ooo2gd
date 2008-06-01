@@ -4,11 +4,11 @@ Google_User_Name\:=Nazwa u¿ytkownika\:
 
 Google_Password\:=Has³o:
 
-Google_Account_Info=Informacje o koncie Google
+Google_Account_Info=Informacje o koncie ${system}
 
 Remember_Password_(It_will_be_stored_on_local_disk)=Pamiêtaj has³o (zostanie zapisane na dysku)
 
-Import_from_Google_Docs=Import z Google Docs
+Import_from_Google_Docs=Import z ${system}
 
 Close=Zamknij
 
@@ -16,7 +16,7 @@ Get_list=Pobierz listê
 
 Open=Otwórz
 
-Export_to_Google_Docs=Eksport do Google Docs
+Export_to_Google_Docs=Eksport do ${system}
 
 Document_name\:=Nazwa dokumentu\:
 
@@ -46,7 +46,7 @@ ERROR_IMPORTING_FILE = Problem z pobraniem pliku
 
 PROBLEM_CANNOT_OPEN = Nie mogê otworzyæ zaimportowanego pliku.
 
-NEED_CONVERT_PPT =Przed przes³aniem do Google Docs Twoja prezentacja musi zostaæ skonwertowana do formatu MS PowerPoint 97 (PPT).\nCzy chcesz skonwertowaæ i przes³aæ prezentacjê?
+NEED_CONVERT_PPT =Przed przes³aniem do ${system} Twoja prezentacja musi zostaæ skonwertowana do formatu MS PowerPoint 97 (PPT).\nCzy chcesz skonwertowaæ i przes³aæ prezentacjê?
 
 OPEN_IN_BROWSER = Otwórz w przegl±darce
 

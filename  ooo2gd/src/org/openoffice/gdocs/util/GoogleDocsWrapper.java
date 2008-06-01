@@ -19,6 +19,8 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.openoffice.gdocs.util.Document;
+
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.docs.DocumentEntry;
@@ -26,7 +28,7 @@ import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
 
-public class GoogleDocsWrapper {	
+public class GoogleDocsWrapper implements Wrapper {	
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
 	private DocsService service;
@@ -92,18 +94,27 @@ public class GoogleDocsWrapper {
                   newDocument);
 	}
 	
-	public List<DocumentListEntry> getListOfDocs() throws IOException, ServiceException {
-		List<DocumentListEntry> list = new LinkedList<DocumentListEntry>();
+//	public List<DocumentListEntry> getListOfDocs() throws IOException, ServiceException {
+        public List<Document> getListOfDocs() throws IOException, ServiceException {
+		List<Document> list = new LinkedList<Document>();
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
-                list=feed.getEntries();                
+                List<DocumentListEntry> listOfEntries = feed.getEntries();
+                for (DocumentListEntry entry:listOfEntries) {
+                    Document docEntry = new Document();
+                    docEntry.setDocumentLink(entry.getDocumentLink().getHref());
+                    docEntry.setId(entry.getId());
+                    docEntry.setTitle(entry.getTitle().getPlainText());
+                    docEntry.setUpdated(entry.getUpdated().toStringRfc822());
+                    list.add(docEntry);
+                }
 		return list;
         }
         
-        public URI getUriForEntry(final DocumentListEntry entry) throws URISyntaxException {
+        public URI getUriForEntry(final Document entry) throws URISyntaxException {
             String id = entry.getId().split("%3A")[1];
             String type = entry.getId().split("%3A")[0];
-            String entryLink = entry.getDocumentLink().getHref();
+            String entryLink = entry.getDocumentLink();
             String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
             if ("document".equals(type)) {
                 uriStr += "MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
@@ -118,9 +129,36 @@ public class GoogleDocsWrapper {
             return new URI(uriStr);
         }	
 	
-        public URI getUriForEntryInBrowser(final DocumentListEntry entry) throws URISyntaxException {
+        public URI getUriForEntryInBrowser(final Document entry) throws URISyntaxException {
             String uriStr = "";
-            uriStr = entry.getDocumentLink().getHref();
+            uriStr = entry.getDocumentLink();
             return new URI(uriStr);            
         }
+
+        public boolean neeedConversion(String path) {
+            if (path.toLowerCase().endsWith(".odp")) {
+                return true;
+            }
+            return false;
+        }
+
+        public String closestSupportedFormat(String path) {
+            String extension = path.substring(path.lastIndexOf(".")+1).toLowerCase();
+            if ("odp".equals(extension)) {
+                return "ppt";
+            } else {
+                return extension;
+            }
+        }
+
+        public String getSystem() {
+            return "Google Docs";
+        }
+
+        public Downloader getDownloader(URI uri, String documentUrl) throws URISyntaxException, MalformedURLException  {
+            return new Downloader(uri, documentUrl, this);
+        }
+
+        
+        
 }
