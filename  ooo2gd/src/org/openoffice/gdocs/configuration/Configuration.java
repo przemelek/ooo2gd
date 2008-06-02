@@ -28,7 +28,7 @@ import org.openoffice.gdocs.util.Util;
 public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;
-    private static String versionStr = "1.1.0";
+    private static String versionStr = "1.1.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -48,6 +48,7 @@ public class Configuration {
         map.put("German","de");
         map.put("Polski","pl");                
         map.put("Russian","ru");
+        map.put("Spanish","es");
         map.put("System","system");
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());

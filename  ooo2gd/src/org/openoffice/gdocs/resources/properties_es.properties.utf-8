@@ -1,0 +1,55 @@
+﻿# Sample ResourceBundle properties file
+
+Google_User_Name\:=Usuario\:
+
+Google_Password\:=Contraseña\:
+
+Google_Account_Info=Información sobre la cuenta de ${system}
+
+Remember_Password_(It_will_be_stored_on_local_disk)=Recordar contraseña (Será almacenada en el disco local)
+
+Import_from_Google_Docs=Importar desde ${system}
+
+Close=Cerrar
+
+Get_list=Obtener lista
+
+Open=Abrir
+
+Export_to_Google_Docs=Exportar a ${system}
+
+
+Document_name\:=Nombre del documento\:
+
+OK=OK
+
+Cancel=Cancelar
+
+Uploading_in_progress...=Envío en proceso...
+
+Document_Title=Título del Documento
+
+Published=Publicado
+
+Your_file_was_modified=Tu fichero ha sido modificado desde la ultima vez que lo guardaste; sólo la última versión guardada será exportada.\¿Quieres guardar esta versión del documento y exportarla?
+
+Cannot_save_file_on_disk....=No es posible guardar el fichero en el disco....\nEl fichero no será enviado.
+
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Lo siento... debes guardar primero tu fichero en el disco duro.
+
+Problem\:_=Problema\:
+
+CANNOT_OPEN_BROWSER=No es posible abrir el documento en tu navegador por defecto
+
+INVALID_CREDITIONALS=Identificación no válida.
+
+ERROR_IMPORTING_FILE = Error importando el fichero
+
+PROBLEM_CANNOT_OPEN = No se puede abrir el fichero descargado
+
+NEED_CONVERT_PPT =Antes de enviar tu presentación debe ser convertida al formato MS PowerPoint 97 (PPT).\n¿Quieres convertir y enviar tu presentación?
+
+OPEN_IN_BROWSER = Abrir en Navegador
+OPEN_VIA_BROWSER = Abrir via Navegador
+
+CONFIGURATION = Configuración
