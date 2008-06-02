@@ -23,6 +23,7 @@
           <value xml:lang="en">Google Docs &amp; Zoho</value>
           <value xml:lang="pl">Google Docs &amp; Zoho</value>
           <value xml:lang="de">Google Text und Tabellen &amp; Zoho</value>
+          <value xml:lang="es">Google Docs &amp; Zoho</value>
         </prop>
         <node oor:name="Submenu">
           <node oor:name="m1" oor:op="replace">
@@ -43,6 +44,7 @@
               <value xml:lang="en">Export to Google Docs</value>
               <value xml:lang="pl">Eksport do Google Docs</value>
               <value xml:lang="de">Export zu Google Text und Tabellen</value>
+              <value xml:lang="es">Exportar a Google Docs</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -63,6 +65,7 @@
               <value xml:lang="en">Import from Google Docs</value>
               <value xml:lang="pl">Import z Google Docs</value>
               <value xml:lang="de">Import aus Google Text und Tabellen</value>
+              <value xml:lang="es">Importar desde Google Docs</value>
             </prop>
           </node>          
 
@@ -84,6 +87,7 @@
               <value xml:lang="en">Export to Zoho</value>
               <value xml:lang="pl">Eksport do Zoho</value>
               <value xml:lang="de">Export zu Zoho</value>
+              <value xml:lang="en">Exportar a Zoho</value>
             </prop>
           </node>          
 
@@ -105,6 +109,7 @@
               <value xml:lang="en">Import from Zoho</value>
               <value xml:lang="pl">Import z Zoho</value>
               <value xml:lang="de">Import aus Zoho</value>
+              <value xml:lang="es">Importar desde Zoho</value>
             </prop>
           </node>          
 
@@ -127,6 +132,7 @@
               <value xml:lang="en">Configuration</value>
               <value xml:lang="pl">Konfiguracja</value>
               <value xml:lang="de">Einstellungen</value>
+              <value xml:lang="es">Configuración</value>
             </prop>
           </node>          
           
@@ -160,6 +166,7 @@
           <value xml:lang="en">Export to Google Docs</value>
           <value xml:lang="pl">Eksport do Google Docs</value>
           <value xml:lang="de">zu Google Text und Tabellen exportieren</value>
+          <value xml:lang="es">Exportar a Google Docs</value>
         </prop>
       </node>
       
@@ -181,6 +188,7 @@
           <value xml:lang="en">Import from Google Docs</value>
           <value xml:lang="pl">Import z Google Docs</value>
           <value xml:lang="de">aus Google Text und Tabellen importieren</value>
+          <value xml:lang="es">Import desde Google Docs</value>
         </prop>
       </node>
       
@@ -203,6 +211,7 @@
           <value xml:lang="en">Export to Zoho</value>
           <value xml:lang="pl">Eksport do Zoho</value>
           <value xml:lang="de">zu Zoho</value>
+          <value xml:lang="es">Exportar a Zoho</value>
         </prop>
       </node>      
 
@@ -224,6 +233,7 @@
           <value xml:lang="en">Import from Zoho</value>
           <value xml:lang="pl">Import z Zoho</value>
           <value xml:lang="de">aus Zoho</value>
+          <value xml:lang="es">Importar desde Zoho</value>
         </prop>
       </node>
 
