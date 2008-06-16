@@ -24,6 +24,7 @@
           <value xml:lang="pl">Google Docs &amp; Zoho</value>
           <value xml:lang="de">Google Text und Tabellen &amp; Zoho</value>
           <value xml:lang="es">Google Docs &amp; Zoho</value>
+          <value xml:lang="it">Google Docs &amp; Zoho</value>
         </prop>
         <node oor:name="Submenu">
           <node oor:name="m1" oor:op="replace">
@@ -45,6 +46,7 @@
               <value xml:lang="pl">Eksport do Google Docs</value>
               <value xml:lang="de">Export zu Google Text und Tabellen</value>
               <value xml:lang="es">Exportar a Google Docs</value>
+              <value xml:lang="it">Esporta in Google Docs</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -66,6 +68,7 @@
               <value xml:lang="pl">Import z Google Docs</value>
               <value xml:lang="de">Import aus Google Text und Tabellen</value>
               <value xml:lang="es">Importar desde Google Docs</value>
+              <value xml:lang="it">Importa da Google Docs</value>
             </prop>
           </node>          
 
@@ -88,6 +91,7 @@
               <value xml:lang="pl">Eksport do Zoho</value>
               <value xml:lang="de">Export zu Zoho</value>
               <value xml:lang="en">Exportar a Zoho</value>
+              <value xml:lang="it">Esporta in Zoho</value>
             </prop>
           </node>          
 
@@ -110,6 +114,7 @@
               <value xml:lang="pl">Import z Zoho</value>
               <value xml:lang="de">Import aus Zoho</value>
               <value xml:lang="es">Importar desde Zoho</value>
+              <value xml:lang="it">Importa da Zoho</value>
             </prop>
           </node>          
 
@@ -133,6 +138,7 @@
               <value xml:lang="pl">Konfiguracja</value>
               <value xml:lang="de">Einstellungen</value>
               <value xml:lang="es">Configuración</value>
+              <value xml:lang="it">Configurazione</value>
             </prop>
           </node>          
           
@@ -257,7 +263,7 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
-              <value>%origin%/images/export16.png</value>
+              <value>%origin%/images/upload-doc.png</value>
           </prop>
         </node>
       </node>
@@ -267,7 +273,7 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
-              <value>%origin%/images/import16.png</value>
+              <value>%origin%/images/download-doc.png</value>
           </prop>
         </node>
       </node>
@@ -278,7 +284,7 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
-              <value>%origin%/images/export16.png</value>
+              <value>%origin%/images/upload-zoho.png</value>
           </prop>
         </node>
       </node>      
@@ -289,7 +295,7 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
-              <value>%origin%/images/import16.png</value>
+              <value>%origin%/images/download-zoho.png</value>
           </prop>
         </node>
       </node>
