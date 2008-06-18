@@ -6,14 +6,13 @@ Google_Password\:=Password\:
 
 Google_Account_Info=${system} Informazioni account
 
-Remember_Password_(It_will_be
-_stored_on_local_disk)=Ricorda Password (verrà conservata sul disco locale)
+Remember_Password_(It_will_be_stored_on_local_disk)=Ricorda Password (verrà conservata sul disco locale)
 
 Import_from_Google_Docs=Importa da ${system}
 
 Close=Chiudi
 
-Get_list=Guarda elenco
+Get_list=Scarica elenco
 
 Open=Apri
 
