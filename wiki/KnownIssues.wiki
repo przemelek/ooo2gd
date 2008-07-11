@@ -15,3 +15,6 @@ To resolve this problem try to set used by !OpenOffice JVM to Sun Java (Menu Too
 
 4) I can see message "Could not create Java implementation loader", what do do? 
 Simply use solution #3 :-)
+
+5) Comment by david.cuen
+For those of you using Ubuntu Hardy and unable to see any JRE under Menu>Tools>Options>Java and therefore not been able to use this extension this is the solution: you have to install Open Office again manually (on the terminal) sudo apt-get install openoffice.org It seem like the preinstalled version that comes with Ubuntu doesnot have all the bit needed in order to run JRE properly.. I did it and worked for me> More infor here: http://user.services.openoffice.org/en/forum/viewtopic.php?f=16&t=816
