@@ -74,7 +74,7 @@ public class Creditionals {
                 setPassword(lines[1]);
                 result=true;
             }
-        } catch (IOException e) { /* intentionaly left empty */}
+        } catch (IOException e) { /* intentionaly left empty */}       
         return result;
     }
     
@@ -114,7 +114,7 @@ public class Creditionals {
         this.password = password;
     }
     
-    private void setWasCreditionalReadFromDisk(boolean flag) {
+    public void setWasCreditionalReadFromDisk(boolean flag) {
         wasCreditionalsReadedFromDisk = flag;
     }
     
@@ -124,5 +124,10 @@ public class Creditionals {
 
     public String getSystem() {
         return this.system;
+    }
+    
+    public boolean isEmpty() {
+        boolean empty = ( (userName==null) || ("".equals(userName)) && (password==null) || ("".equals(password)) );
+        return empty;        
     }
 }

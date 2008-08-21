@@ -35,6 +35,7 @@ public final class GDocs extends WeakBase
     private static final String IMPORT_FROM_GOOGLE_DOCS = "Import from Google Docs";    
     private static final String EXPORT_TO_ZOHO = "Export to Zoho";
     private static final String IMPORT_FROM_ZOHO = "Import from Zoho";
+    private static final String EXPORT_WITH_WEBDAV = "ExportWebDAV";
     private static final String CONFIGURE = "Configure";
     private final XComponentContext m_xContext;
     private com.sun.star.frame.XFrame m_xFrame;
@@ -106,6 +107,8 @@ public final class GDocs extends WeakBase
                 return this;   
             }  else if ( aURL.Path.compareTo(CONFIGURE) == 0 ) {
                 return this;
+            }  else if ( aURL.Path.compareTo(EXPORT_WITH_WEBDAV)==0) {
+                return this;
             }
         }
         return null;
@@ -164,6 +167,11 @@ public final class GDocs extends WeakBase
             {
                 importFrom("Zoho");
                 return;
+            }
+            if ( aURL.Path.compareTo(EXPORT_WITH_WEBDAV) == 0 )
+            {
+                exportTo("WebDAV");
+                return;
             }            
             if ( aURL.Path.compareTo(CONFIGURE) == 0 )
             {
@@ -203,7 +211,8 @@ public final class GDocs extends WeakBase
                             }
                             if (doUpload) {
                                 String pathName=file.getPath();
-                                new UploadDialog(pathName,system,m_xFrame).setVisible(true);
+                                UploadDialog dialog = new UploadDialog(pathName,system,m_xFrame);
+                                dialog.setVisible(true);
                             }
                         } else {                            
                             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));

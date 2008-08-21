@@ -11,9 +11,15 @@ public interface Wrapper {
     public URI getUriForEntry(final Document entry) throws URISyntaxException;
     public URI getUriForEntryInBrowser(final Document entry) throws URISyntaxException;
     public void login(Creditionals creditionals) throws Exception;
+    public boolean checkIfAuthorizationNeeded(String path,String documentTitle) throws Exception;
     public boolean upload(String path,String documentTitle) throws Exception;
     public boolean neeedConversion(String path);
     public String closestSupportedFormat(String path);
     public String getSystem();
     public List<Document> getListOfDocs() throws Exception;
+    public void storeCredentials(Creditionals credentials);
+    public void setServerPath(String serverPath);
+    public boolean isServerSelectionNeeded();
+    public List<String> getListOfServersForSelection();
+    public Creditionals getCreditionalsForServer(String serverPath);
 }

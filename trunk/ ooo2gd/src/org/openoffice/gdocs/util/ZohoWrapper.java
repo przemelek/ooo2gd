@@ -451,6 +451,29 @@ public class ZohoWrapper implements Wrapper {
             return false;
         }
 
+        public boolean checkIfAuthorizationNeeded(String path, String documentTitle) throws Exception {
+            return true;
+        }
+        
+         public void storeCredentials(Creditionals credentials) {
+            credentials.store();
+        }
+         
+        public void setServerPath(String serverPath) {
+            // do nothing
+        }
+
+        public boolean isServerSelectionNeeded() {
+            return false;
+        }
+
+        public List<String> getListOfServersForSelection() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
+        public Creditionals getCreditionalsForServer(String serverPath) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
         
         private void fillListWithDocuments(List<org.openoffice.gdocs.util.Document> entries) throws ParserConfigurationException, URISyntaxException, IOException, ServiceException, SAXException {
             List<ZohoDocument> list = getListOfZohoDocuments();

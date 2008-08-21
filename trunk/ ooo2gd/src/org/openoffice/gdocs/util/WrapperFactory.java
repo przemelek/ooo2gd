@@ -7,6 +7,8 @@ public class WrapperFactory {
             wrapper = new GoogleDocsWrapper();
         } else if ("Zoho".equals(system)) {
             wrapper = new ZohoWrapper();
+        } else if ("WebDAV".equals(system)) {
+            wrapper = new WebDAVWrapper();
         }
         return wrapper;
     }
