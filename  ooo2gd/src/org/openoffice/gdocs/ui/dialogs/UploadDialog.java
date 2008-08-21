@@ -5,11 +5,19 @@
 package org.openoffice.gdocs.ui.dialogs;
 
 import com.sun.star.frame.XFrame;
+import java.awt.BorderLayout;
 import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import org.openoffice.gdocs.configuration.Configuration;
+import org.openoffice.gdocs.ui.LoginPanel;
 import org.openoffice.gdocs.util.Creditionals;
 import org.openoffice.gdocs.util.Util;
 import org.openoffice.gdocs.util.Wrapper;
@@ -20,25 +28,41 @@ import org.openoffice.gdocs.util.WrapperFactory;
  * @author  rmk
  */
 public class UploadDialog extends javax.swing.JFrame {
-  
+                           
     private String pathName;
     private XFrame xFrame;
-    private String system;
+    private String system;  
+    private Wrapper wrapper;
     public UploadDialog(String pathName,String system,XFrame frame) {
         super();
         xFrame = frame;
         this.pathName = pathName;
         this.system = system;
+        wrapper = WrapperFactory.getWrapperForCredentials(system);
         initComponents();
         loginPanel1.setSystem(system);
         String docName = new File(pathName).getName();            
         setVisibleForDocName(true);            
-        setMessageText("File "+pathName+" will be uploaded to "+system);
         setDocumentTitle(docName);
         jLabel3.setText(Configuration.getResources().getString("Document_name:"));
-        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));
-        //setModal(true);
+        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));        
+        setServerLineVisible(false);
+        if (wrapper.isServerSelectionNeeded()) {
+            setServerLineVisible(true);
+            for (String str:wrapper.getListOfServersForSelection()) {
+                serversComboBox.addItem(str);
+            }
+        }
         toFront();
+    }
+    
+    public void setServerLineVisible(boolean visibility) {
+        serverLabel.setVisible(visibility);
+        serverConfiguration.setVisible(visibility);
+        serversComboBox.setVisible(visibility);
+        loginPanel1.setVisible(!visibility);
+        docName.setPreferredSize(docName.getSize());
+        pack();
     }
     
     public void setVisibleForDocName(boolean visible) {
@@ -57,11 +81,13 @@ public class UploadDialog extends javax.swing.JFrame {
         documentNamePanel = new javax.swing.JPanel();
         docName = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        message = new javax.swing.JLabel();
-        okButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        serversComboBox = new javax.swing.JComboBox();
+        serverLabel = new javax.swing.JLabel();
+        serverConfiguration = new javax.swing.JButton();
         loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
         jLabel1 = new javax.swing.JLabel();
+        okButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Export to Google Docs");
@@ -84,7 +110,16 @@ public class UploadDialog extends javax.swing.JFrame {
 
         jLabel3.setText("Document name:");
 
-        message.setText("     ");
+        serversComboBox.setEditable(true);
+
+        serverLabel.setText("Server:");
+
+        serverConfiguration.setText("?");
+        serverConfiguration.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                serverConfigurationActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout documentNamePanelLayout = new javax.swing.GroupLayout(documentNamePanel);
         documentNamePanel.setLayout(documentNamePanelLayout);
@@ -93,23 +128,36 @@ public class UploadDialog extends javax.swing.JFrame {
             .addGroup(documentNamePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(serverLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(documentNamePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(docName, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
-                    .addComponent(message, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addComponent(serversComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(serverConfiguration, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(docName, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)))
         );
         documentNamePanelLayout.setVerticalGroup(
             documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, documentNamePanelLayout.createSequentialGroup()
-                .addComponent(message)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(documentNamePanelLayout.createSequentialGroup()
+                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(serversComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(serverLabel)
+                    .addComponent(serverConfiguration))
+                .addGap(12, 12, 12)
                 .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(docName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50))
+                    .addComponent(docName))
+                .addGap(32, 32, 32))
         );
+
+        jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
 
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -125,35 +173,30 @@ public class UploadDialog extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(136, 136, 136)
-                        .addComponent(okButton)
-                        .addGap(42, 42, 42)
-                        .addComponent(cancelButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(166, 166, 166)
-                        .addComponent(jLabel1)))
+                    .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(156, 156, 156)
+                .addComponent(okButton)
+                .addGap(47, 47, 47)
+                .addComponent(cancelButton)
+                .addContainerGap(121, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(181, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(179, 179, 179))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,13 +204,13 @@ public class UploadDialog extends javax.swing.JFrame {
                 .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(3, 3, 3)
+                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cancelButton)
+                    .addComponent(okButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(okButton)
-                    .addComponent(cancelButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
                 .addComponent(jLabel1))
         );
 
@@ -201,10 +244,69 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    //GoogleDocsWrapper wrapper = new GoogleDocsWrapper();
-                    Creditionals credentionals = loginPanel1.getCreditionals();
-                    Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
+                    Creditionals credentionals;                    
+                    if (wrapper.isServerSelectionNeeded()) {
+                        String serverPath = (String)serversComboBox.getEditor().getItem();
+                        wrapper.setServerPath(serverPath);
+                        credentionals = wrapper.getCreditionalsForServer(serverPath);
+                    } else {
+                        credentionals = loginPanel1.getCreditionals();
+                    }
                     String docName=getDocumentTitle();
+                    
+                    uploading.setVisible(true);
+                    
+                    if (credentionals.isEmpty() && wrapper.checkIfAuthorizationNeeded(pathName, docName)) {
+                        uploading.setVisible(false);
+                        // we need ask user for credentials :-)
+                        org.openoffice.gdocs.ui.LoginPanel loginPanel = new LoginPanel() {
+
+                            @Override
+                            public void storeCredentials(Creditionals creditionals) {
+                                wrapper.storeCredentials(creditionals);
+                            }
+                            
+                        };
+                        loginPanel.setSystem(system);
+ 
+                        final MyLoginDialog dialog = new MyLoginDialog(UploadDialog.this);
+                        dialog.setTitle("User & Password");
+                        JPanel buttonsPanel = new JPanel();
+                        JButton okButton = new JButton("OK");
+                        okButton.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                dialog.handleOK();
+                            }
+                        });
+                        JButton cancelButton = new JButton("Cancel");
+                        cancelButton.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                dialog.handleOK();
+                            }
+                        });
+                        buttonsPanel.add(okButton);
+                        buttonsPanel.add(cancelButton);
+                        dialog.getContentPane().setLayout(new BorderLayout());
+                        dialog.getContentPane().add(loginPanel,BorderLayout.NORTH);
+                        dialog.getContentPane().add(buttonsPanel,BorderLayout.SOUTH);
+                        dialog.setModal(true);
+                        dialog.pack();
+                        dialog.setVisible(true);
+                        dialog.setVisible(false);
+                        if (dialog.getReturnCode()==JOptionPane.OK_OPTION) {
+                            credentionals = loginPanel.getCreditionals();
+                        } else {
+                            upload = false;
+                        }
+
+                        uploading.setVisible(true);
+                    }
+                    if (credentionals.isEmpty() && wrapper.isServerSelectionNeeded()) {
+                        wrapper.storeCredentials(credentionals);
+                    }
+                    
                     uploading.setVisible(true);
                     wrapper.login(credentionals);
                     boolean upload = true;
@@ -256,10 +358,15 @@ private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 upload=false;
         this.setVisible(false);
 }//GEN-LAST:event_cancelButtonActionPerformed
-           
-    public void setMessageText(String messageText) {
-        message.setText(messageText);
-    }    
+
+private void serverConfigurationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverConfigurationActionPerformed
+    try {
+        new ServersManager(wrapper).setVisible(true);
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, e.getLocalizedMessage());
+    }
+}//GEN-LAST:event_serverConfigurationActionPerformed
+
     
     public boolean getUpload() {
         return upload;
@@ -281,8 +388,10 @@ upload=false;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
     private org.openoffice.gdocs.ui.LoginPanel loginPanel1;
-    private javax.swing.JLabel message;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton serverConfiguration;
+    private javax.swing.JLabel serverLabel;
+    private javax.swing.JComboBox serversComboBox;
     // End of variables declaration//GEN-END:variables
     private boolean upload = false;
 }

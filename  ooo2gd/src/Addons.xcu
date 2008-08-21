@@ -118,8 +118,27 @@
             </prop>
           </node>          
 
-          
           <node oor:name="m5" oor:op="replace">
+            <prop oor:name="URL" oor:type="xs:string">
+              <value>org.openoffice.gdocs.gdocs:ExportWebDAV</value>
+            </prop>
+            <prop oor:name="ImageIdentifier" oor:type="xs:string">
+              <value/>
+            </prop>
+            <prop oor:name="Target" oor:type="xs:string">
+              <value>_self</value>
+            </prop>
+            <prop oor:name="Context" oor:type="xs:string">
+              <value>com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument,com.sun.star.presentation.PresentationDocument</value>
+            </prop>
+            <prop oor:name="Title" oor:type="xs:string">
+              <value/>
+              <value xml:lang="en">Export with WebDAV</value>
+              <value xml:lang="pl">Eksport przez WebDAV</value>
+            </prop>
+          </node> 
+          
+          <node oor:name="m6" oor:op="replace">
             <prop oor:name="URL" oor:type="xs:string">
               <value>org.openoffice.gdocs.gdocs:Configure</value>
             </prop>
@@ -243,6 +262,25 @@
         </prop>
       </node>
 
+      <node oor:name="m5" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:ExportWebDAV</value>
+        </prop>
+        <prop oor:name="ImageIdentifier" oor:type="xs:string">
+          <value/>
+        </prop>
+        <prop oor:name="Target" oor:type="xs:string">
+          <value>_self</value>
+        </prop>
+        <prop oor:name="Context" oor:type="xs:string">
+          <value/>
+        </prop>
+        <prop oor:name="Title" oor:type="xs:string">
+          <value/>
+          <value xml:lang="en">Export with WebDAV</value>
+          <value xml:lang="pl">Eksport przez WebDAV</value>
+        </prop>
+      </node>
       
       </node>
     </node>   
@@ -296,6 +334,17 @@
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
               <value>%origin%/images/download-zoho.png</value>
+          </prop>
+        </node>
+      </node>
+      
+      <node oor:name="org.openoffice.gdocs.gdocs.export.webdev.images" oor:op="replace">
+        <prop oor:name="URL" oor:type="xs:string">
+          <value>org.openoffice.gdocs.gdocs:ExportWebDAV</value>
+        </prop>
+        <node oor:name="UserDefinedImages">
+          <prop oor:name="ImageSmallURL">
+              <value>%origin%/images/export16.png</value>
           </prop>
         </node>
       </node>

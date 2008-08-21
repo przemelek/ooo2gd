@@ -18,13 +18,23 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
         // By default we assume using of Google Docs        
         setSystem("Google Docs");
     }
+
+    public void fillCredentials(Creditionals creditionals) {
+        rememberCheckBox.setSelected(creditionals.getWsCreditionalsReadedFromDisk());
+        userNameField.setText(creditionals.getUserName());
+        passwordField.setText(creditionals.getPassword());
+    }
     
     public Creditionals getCreditionals() {        
         Creditionals creditionals = new Creditionals(getUserName(),getPassword(),system);
         if (rememberCheckBox.isSelected()) {
-            creditionals.store();
+            storeCredentials(creditionals);
         }                
         return creditionals;
+    }
+    
+    public void storeCredentials(Creditionals creditionals) {
+        creditionals.store();
     }
     
     private String getUserName() {
@@ -34,12 +44,10 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
     private String getPassword() {
         return new String(passwordField.getPassword());
     }
-    
-    private void readCreditionals() {
+                
+    public void readCreditionals() {
         Creditionals creditionals = new Creditionals(getSystem());
-        rememberCheckBox.setSelected(creditionals.getWsCreditionalsReadedFromDisk());
-        userNameField.setText(creditionals.getUserName());
-        passwordField.setText(creditionals.getPassword());
+        fillCredentials(creditionals);
     }
     
     /** This method is called from within the constructor to
@@ -163,7 +171,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         jLabel1.setText(Configuration.getStringFromResources("Google_User_Name:",system));
         jLabel2.setText(Configuration.getStringFromResources("Google_Password:",system));
         rememberCheckBox.setText(Configuration.getResources().getString("Remember_Password_(It_will_be_stored_on_local_disk)"));
-        jButton1.setText(Configuration.getResources().getString("CONFIGURATION"));        
+        jButton1.setText(Configuration.getResources().getString("CONFIGURATION"));         
         readCreditionals();
     }
     

@@ -28,7 +28,7 @@ import org.openoffice.gdocs.util.Util;
 public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;
-    private static String versionStr = "1.1.2";
+    private static String versionStr = "1.2";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;

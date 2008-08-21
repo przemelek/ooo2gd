@@ -61,6 +61,30 @@ public class GoogleDocsWrapper implements Wrapper {
               return result;
 	}
 
+        public boolean checkIfAuthorizationNeeded(String path, String documentTitle) throws Exception {
+            return true;
+        }
+
+        public void storeCredentials(Creditionals credentials) {
+            credentials.store();
+        }
+
+        public void setServerPath(String serverPath) {
+            // do nothing
+        }
+
+        public boolean isServerSelectionNeeded() {
+            return false;
+        }
+
+        public List<String> getListOfServersForSelection() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public Creditionals getCreditionalsForServer(String serverPath) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+                
          private File getFileForPath(final String path) throws FileNotFoundException, IOException {
         
             File documentFile = new File(path);
