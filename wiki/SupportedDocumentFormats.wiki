@@ -1,18 +1,20 @@
 = Supported Document Formats =
 
-List of supported document formats for this !AddOn is an intersection between list of formats supported by !OpenOffice.org and Google Docs.
 
-Documents:
-  * !OpenDocument Text (.odt)
-  * !StarOffice (.sxw)
-  * Microsoft Word (.doc, but not MS XML)
-  * Rich Text (.rtf)
+|| ||Documents||Spreadsheets||Presentations||
+||export to Google Docs||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
+||export to Zoho||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
+||export to WebDAV||all formats supported by OO.org||all formats supported by OO.org||all formats supported by OO.org||
+||import from Google Docs||as ODT||_none_||as PPT||
+||import from Zoho||as ODT||as ODS||as PPT||
 
-Spreadsheets:
-  * !OpenDocument Spreadsheet (.ods)
-  * Microsoft Excel (.xls)
-  * Comma Separated Value (.csv)
+ODT - !OpenDocument Text
+SXW - !StarOffice
+DOC - Microsoft Word
+RTF - Rich Text
 
-Presentations:
-  * Microsoft PowerPoint (.ppt, .pps)
- 
+ODS - !OpenDocument Spreadsheet
+XLS - Microsoft Excel
+CSV - Comma Separated Value
+
+PPT, PPS - Microsoft !PowerPoint
