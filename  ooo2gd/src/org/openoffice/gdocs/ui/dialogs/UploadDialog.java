@@ -12,8 +12,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.openoffice.gdocs.configuration.Configuration;
@@ -91,7 +89,6 @@ public class UploadDialog extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Export to Google Docs");
-        setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -355,8 +352,8 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 }//GEN-LAST:event_okButtonActionPerformed
 
 private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-upload=false;
-        this.setVisible(false);
+    upload=false;
+    this.setVisible(false);
 }//GEN-LAST:event_cancelButtonActionPerformed
 
 private void serverConfigurationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_serverConfigurationActionPerformed

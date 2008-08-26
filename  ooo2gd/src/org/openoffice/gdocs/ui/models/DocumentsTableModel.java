@@ -4,7 +4,6 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.models;
 
-import com.google.gdata.data.docs.DocumentListEntry;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;

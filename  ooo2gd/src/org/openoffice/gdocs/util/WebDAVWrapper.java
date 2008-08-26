@@ -1,7 +1,6 @@
 package org.openoffice.gdocs.util;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -107,7 +106,7 @@ public class WebDAVWrapper implements Wrapper {
         }
     }
     
-    private String serverPath = "";
+    private String serverPath = "";    
     
     public Downloader getDownloader(URI uri, String documentUrl) throws URISyntaxException, MalformedURLException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -142,8 +141,6 @@ public class WebDAVWrapper implements Wrapper {
             byte[] fileContent =  baos.toByteArray();
             int responseCode = upload(documentTitle, contentLength, fileContent);
             System.out.println(responseCode);
-//	    ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
-//	    getStream(conn.getInputStream(), baos2);
             return ((responseCode>=200) && (responseCode<300));
     }
 
@@ -190,6 +187,9 @@ public class WebDAVWrapper implements Wrapper {
     }
     
     public void setServerPath(String serverPath) {
+        if (!serverPath.endsWith("/")) {
+            serverPath+="/";
+        }
         this.serverPath=serverPath;
     }
     

@@ -382,7 +382,8 @@ public class ConfigDialog extends javax.swing.JFrame {
         for (JComponent component:components2) {
             component.setVisible(authProxyEnable);
             component.setEnabled(authProxyEnable);
-        }        
+        }
+        pack();
     }
     
     private void proxyCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_proxyCheckBoxActionPerformed

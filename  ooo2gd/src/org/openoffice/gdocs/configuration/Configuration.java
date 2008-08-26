@@ -28,7 +28,7 @@ import org.openoffice.gdocs.util.Util;
 public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;
-    private static String versionStr = "1.2";
+    private static String versionStr = "1.2.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -129,23 +129,23 @@ public class Configuration {
         setProxyProperties(isUseProxy(), isProxyAuth());
     }
 
-	private static void setProxyProperties(boolean isUseProxy,
-			boolean isProxyAuth) {
-		if (isUseProxy) { 
-            setProxyAuthenticator(isProxyAuth);            
-            Properties systemProperties = System.getProperties();
-            systemProperties.setProperty("http.proxyHost", getProxyServer());
-            systemProperties.setProperty("http.proxyPort", getProxyPort());
-            systemProperties.setProperty("https.proxyHost", getProxyServer());
-            systemProperties.setProperty("https.proxyPort", getProxyPort());            
-        } else {
-            Authenticator.setDefault(null);
-            Properties systemProperties = System.getProperties(); 
-            systemProperties.remove("http.proxyHost");
-            systemProperties.remove("http.proxyPort");
-            systemProperties.remove("https.proxyHost");
-            systemProperties.remove("https.proxyPort");
-        }
+        private static void setProxyProperties(boolean isUseProxy,
+                        boolean isProxyAuth) {
+            if (isUseProxy) { 
+                setProxyAuthenticator(isProxyAuth);            
+                Properties systemProperties = System.getProperties();
+                systemProperties.setProperty("http.proxyHost", getProxyServer());
+                systemProperties.setProperty("http.proxyPort", getProxyPort());
+                systemProperties.setProperty("https.proxyHost", getProxyServer());
+                systemProperties.setProperty("https.proxyPort", getProxyPort());            
+            } else {
+                Authenticator.setDefault(null);
+                Properties systemProperties = System.getProperties(); 
+                systemProperties.remove("http.proxyHost");
+                systemProperties.remove("http.proxyPort");
+                systemProperties.remove("https.proxyHost");
+                systemProperties.remove("https.proxyPort");
+            }
 	}
 
 	private static void setProxyAuthenticator(boolean isProxyAuth) {
