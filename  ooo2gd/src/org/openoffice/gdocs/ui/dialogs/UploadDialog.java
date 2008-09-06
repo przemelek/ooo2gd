@@ -314,8 +314,11 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         }
                     }
                     if (upload) {
-                        wrapper.upload(pathName,docName);
-                        JOptionPane.showMessageDialog(null,"File Uploaded");
+                        if (wrapper.upload(pathName,docName)) {
+                            JOptionPane.showMessageDialog(null,"File Uploaded");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Cannot upload document "+pathName,"Problem",JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
