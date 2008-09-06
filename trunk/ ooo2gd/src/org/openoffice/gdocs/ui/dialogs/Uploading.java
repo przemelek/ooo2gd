@@ -4,6 +4,9 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 /**
  *
  * @author  rmk
@@ -17,6 +20,13 @@ public class Uploading extends javax.swing.JDialog {
         hideProgressBar();
         jProgressBar1.setMinimum(0);
         jProgressBar1.setMaximum(100);
+        try {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();  
+            Dimension screenSize = toolkit.getScreenSize();
+            this.setLocation((int)screenSize.getWidth()-this.getWidth(),(int)screenSize.getHeight()-this.getHeight()-25);
+        } catch (Exception e) {
+            // we will ignore this
+        }
     }
     
     public void showProgressBar() {

@@ -212,10 +212,10 @@ public class WebDAVWrapper implements Wrapper {
     
     
     private int upload(String documentTitle, long contentLength, byte[] fileContent) throws MalformedURLException, IOException, IOException, ProtocolException {
-
-        String uploadUri = getServerPath() + documentTitle;
+        String uploadUri = getServerPath() + documentTitle.replace(" ", "%20");
         System.out.println(uploadUri);
         URL source = new URL(uploadUri);
+
         HttpURLConnection.setDefaultAllowUserInteraction(true);
 
         HttpURLConnection conn = (HttpURLConnection) source.openConnection();
@@ -232,7 +232,7 @@ public class WebDAVWrapper implements Wrapper {
     
 //    public static void main(String[] args) throws Exception {
 //        Wrapper wrapper = new WebDAVWrapper();
-//        ((WebDAVWrapper)(wrapper)).setServerPath("http://localhost:8080/webdav/");
+//        ((WebDAVWrapper)(wrapper)).setServerPath("http://localhost:8080/webdavek/");
 //        Authenticator.setDefault(new Authenticator() {
 //
 //            @Override
@@ -243,8 +243,8 @@ public class WebDAVWrapper implements Wrapper {
 //            
 //        });
 //        wrapper.login(new Creditionals("a", "a"));
-//        System.out.println(((WebDAVWrapper)wrapper).checkIfAuthorizationNeeded("e:\\eksportTest.odt", "eksportTest2.odt"));
-//        boolean b = wrapper.upload("e:\\eksportTest.odt", "eksportTest2.odt");
+//        System.out.println(((WebDAVWrapper)wrapper).checkIfAuthorizationNeeded("e:\\test 001.ppt", "test 001.ppt"));
+//        boolean b = wrapper.upload("e:\\test 001.ppt", "test 001.ppt");
 //        System.out.println(b);
 //    }
     
