@@ -3,6 +3,7 @@
 For now !AddOn works under:
   * Windows (tested under Windows XP Home/Pro in Polish and English edition).
   * Linux (tested on Ubuntu 7.04 with Java 6)
+  * Vista Home Premium 32-bit, Java SE 6, OpenOffice 2.4.1
 
 !AddOn should also works under other systems. 
 If somebody tried it under any other OS please inform [http://przemelek.googlepages.com/kontakt me].
