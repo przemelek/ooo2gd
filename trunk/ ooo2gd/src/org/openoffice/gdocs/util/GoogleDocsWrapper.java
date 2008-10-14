@@ -4,6 +4,7 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.util;
 
+import com.google.gdata.client.GoogleService;
 import com.google.gdata.util.ServiceException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +26,8 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
+import javax.swing.JOptionPane;
+import org.openoffice.gdocs.ui.dialogs.CaptchaDialog;
 
 public class GoogleDocsWrapper implements Wrapper {	
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
@@ -42,8 +45,18 @@ public class GoogleDocsWrapper implements Wrapper {
 	public void login(Creditionals creditionals) throws AuthenticationException {
             if (!isLogedIn) {
 		service = new DocsService(APP_NAME);
-		service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());                
-                isLogedIn=true;
+                try {
+                    service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
+                    isLogedIn=true;
+                } catch (GoogleService.CaptchaRequiredException captchaException) {
+                    CaptchaDialog dialog = new CaptchaDialog(captchaException.getCaptchaUrl());
+                    dialog.setModal(true);
+                    dialog.setVisible(true);
+                    if (dialog.getReturnCode()==JOptionPane.OK_OPTION) {
+                        service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword(),captchaException.getCaptchaToken(),dialog.getReturnValue());
+                        isLogedIn=true;
+                    }
+                }                
             } else {
                 System.out.println("LogedIn :-)");
                 Throwable t = new Throwable();
