@@ -177,7 +177,7 @@ public class WebDAVWrapper implements Wrapper {
         return "WebDAV";
     }
 
-    public List<Document> getListOfDocs() throws Exception {
+    public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws Exception {
         // PROPFIND
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -229,6 +229,13 @@ public class WebDAVWrapper implements Wrapper {
         int responseCode = conn.getResponseCode();
         return responseCode;
     }
+
+    @Override
+    public boolean updateSupported() {
+        return false;
+    }
+
+    
     
 //    public static void main(String[] args) throws Exception {
 //        Wrapper wrapper = new WebDAVWrapper();

@@ -296,6 +296,7 @@ public class ImportDialog extends JFrame {
         progressWindow.setMessage(wrapper.getSystem()+" -> OpenOffice.org");
         progressWindow.setVisible(true);            
         progressWindow.showProgressBar();
+        Configuration.storeLinkToFile(documentUrl, uri.toString());
         downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow));
         downloader.start();
     }
@@ -319,7 +320,7 @@ public class ImportDialog extends JFrame {
             wrapper.login(loginPanel1.getCreditionals());
             jTable1.setEnabled(true);
             DocumentsTableModel dtm = new DocumentsTableModel();                    
-            for (Document entry:wrapper.getListOfDocs()) {
+            for (Document entry:wrapper.getListOfDocs(false)) {
                 dtm.add(entry);
             }
             jTable1.setModel(dtm);

@@ -34,6 +34,7 @@ public class GoogleDocsWrapper implements Wrapper {
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
 	private DocsService service;
         private boolean isLogedIn = false;
+        private List<Document> listOfDocuments;
 	
         public GoogleDocsWrapper() {
         }
@@ -129,9 +130,9 @@ public class GoogleDocsWrapper implements Wrapper {
                   newDocument);
 	}
 	
-//	public List<DocumentListEntry> getListOfDocs() throws IOException, ServiceException {
-        public List<Document> getListOfDocs() throws IOException, ServiceException {
-		List<Document> list = new LinkedList<Document>();
+        public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws IOException, ServiceException {
+            if (!useCachedListIfPossible || listOfDocuments==null) {
+		listOfDocuments = new LinkedList<Document>();
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
                 List<DocumentListEntry> listOfEntries = feed.getEntries();
@@ -140,10 +141,11 @@ public class GoogleDocsWrapper implements Wrapper {
                     docEntry.setDocumentLink(entry.getDocumentLink().getHref());
                     docEntry.setId(entry.getId());
                     docEntry.setTitle(entry.getTitle().getPlainText());
-                    docEntry.setUpdated(entry.getUpdated().toStringRfc822());
-                    list.add(docEntry);
+                    docEntry.setUpdated(entry.getUpdated().toStringRfc822());                    
+                    listOfDocuments.add(docEntry);
                 }
-		return list;
+            }
+            return listOfDocuments;                
         }
         
         public URI getUriForEntry(final Document entry) throws URISyntaxException {
@@ -194,6 +196,8 @@ public class GoogleDocsWrapper implements Wrapper {
             return new Downloader(uri, documentUrl, this);
         }
 
-        
-        
+        @Override
+        public boolean updateSupported() {
+            return true;
+        }               
 }

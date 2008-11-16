@@ -16,10 +16,11 @@ public interface Wrapper {
     public boolean neeedConversion(String path);
     public String closestSupportedFormat(String path);
     public String getSystem();
-    public List<Document> getListOfDocs() throws Exception;
+    public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws Exception;
     public void storeCredentials(Creditionals credentials);
     public void setServerPath(String serverPath);
     public boolean isServerSelectionNeeded();
     public List<String> getListOfServersForSelection();
     public Creditionals getCreditionalsForServer(String serverPath);
+    public boolean updateSupported();    
 }
