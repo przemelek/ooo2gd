@@ -35,7 +35,8 @@ import org.openoffice.gdocs.configuration.Configuration;
 public class ZohoWrapper implements Wrapper {
 	
 	public static String API_KEY = "5836e626337ffd39bfd3a8114e4956e5";
-	
+        private List<org.openoffice.gdocs.util.Document> listOfDocuments;
+        
 	private class ZohoDownloader extends Downloader {
 		public ZohoDownloader(URI source, OutputStream out,Wrapper wrapper) throws MalformedURLException {
 			super(source,out,wrapper);
@@ -509,11 +510,13 @@ public class ZohoWrapper implements Wrapper {
             }
         }                
         
-        public List<org.openoffice.gdocs.util.Document> getListOfDocs() throws IOException, ServiceException, URISyntaxException, ParserConfigurationException, SAXException {
-            List<org.openoffice.gdocs.util.Document> entries = new ArrayList<org.openoffice.gdocs.util.Document>();            
-            fillListWithDocuments(entries);
-            fillListWithWorkbooks(entries);
-            return entries;
+        public List<org.openoffice.gdocs.util.Document> getListOfDocs(boolean useCachedListIfPossible) throws IOException, ServiceException, URISyntaxException, ParserConfigurationException, SAXException {
+            if (!useCachedListIfPossible || listOfDocuments==null) {
+                listOfDocuments = new ArrayList<org.openoffice.gdocs.util.Document>();
+                fillListWithDocuments(listOfDocuments);
+                fillListWithWorkbooks(listOfDocuments);
+            }
+            return listOfDocuments;
         }
         
 	private void setTicket(String ticket) {
@@ -548,6 +551,11 @@ public class ZohoWrapper implements Wrapper {
             //String documentUri = "https://export.writer.zoho.com/api/private/odt/download/"+documentId+"?apikey="+API_KEY+"&ticket="+getTicket();
             return new ZohoDownloader(uri,documentUrl,this);
         }
+
+        @Override
+        public boolean updateSupported() {
+            return false;
+        }
         
         
                
@@ -558,7 +566,7 @@ public class ZohoWrapper implements Wrapper {
 		zohoWrapper.login(creds);
 		//List<ZohoDocument> list = zohoWrapper.getListOfDocuments();
                 //List<ZohoDocument> list2 = zohoWrapper.getListOfZohoWorkbooks();
-                for (org.openoffice.gdocs.util.Document doc:zohoWrapper.getListOfDocs()) {
+                for (org.openoffice.gdocs.util.Document doc:zohoWrapper.getListOfDocs(false)) {
                     System.out.println(doc.getDocumentLink());
                 }
 //		for (ZohoDocument document:list) {
