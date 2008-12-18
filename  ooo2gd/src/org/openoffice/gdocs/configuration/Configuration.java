@@ -304,6 +304,7 @@ public class Configuration {
                 line = Util.xorString(line, CONFIG_SECRET_PHRASE);
                 String[] elems = line.split(",");
                 localUrl2DocID.put(elems[0], elems[1]);
+                log(">>"+elems[0]+":"+elems[1]);
             }
         } catch (Exception ex) {
             // If something goes wrong we simply ignore it
@@ -324,4 +325,8 @@ public class Configuration {
         }
     }
     
+    public static String getUrlForFileName(String fileName) {
+        readMapOfFileLinks();
+        return localUrl2DocID.get(fileName);
+    }
 }

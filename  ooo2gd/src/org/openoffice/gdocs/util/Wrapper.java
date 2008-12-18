@@ -22,5 +22,6 @@ public interface Wrapper {
     public boolean isServerSelectionNeeded();
     public List<String> getListOfServersForSelection();
     public Creditionals getCreditionalsForServer(String serverPath);
-    public boolean updateSupported();    
+    public boolean updateSupported();
+    public boolean update(String path,String docId) throws Exception;
 }

@@ -38,4 +38,8 @@ public class Document {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return title;
+    }
 }

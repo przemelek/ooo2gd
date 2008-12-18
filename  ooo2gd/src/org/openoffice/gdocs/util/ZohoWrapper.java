@@ -556,10 +556,12 @@ public class ZohoWrapper implements Wrapper {
         public boolean updateSupported() {
             return false;
         }
-        
-        
-               
-        
+
+        @Override
+        public boolean update(String path, String docId) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+                
 	public static void main(String[] args) throws Exception {
 		ZohoWrapper zohoWrapper = new ZohoWrapper();
                 Creditionals creds = new Creditionals("", "");

@@ -235,6 +235,12 @@ public class WebDAVWrapper implements Wrapper {
         return false;
     }
 
+    @Override
+    public boolean update(String path, String docId) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
     
     
 //    public static void main(String[] args) throws Exception {
