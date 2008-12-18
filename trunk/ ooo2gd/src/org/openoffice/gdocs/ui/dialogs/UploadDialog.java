@@ -10,13 +10,20 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.LoginPanel;
 import org.openoffice.gdocs.util.Creditionals;
+import org.openoffice.gdocs.util.Document;
 import org.openoffice.gdocs.util.Util;
 import org.openoffice.gdocs.util.Wrapper;
 import org.openoffice.gdocs.util.WrapperFactory;
@@ -28,6 +35,7 @@ import org.openoffice.gdocs.util.WrapperFactory;
 public class UploadDialog extends javax.swing.JFrame {
                            
     private String pathName;
+    private boolean getNameFromComboBox = false;
     private XFrame xFrame;
     private String system;  
     private Wrapper wrapper;
@@ -38,20 +46,78 @@ public class UploadDialog extends javax.swing.JFrame {
         this.system = system;
         wrapper = WrapperFactory.getWrapperForCredentials(system);
         initComponents();
+        docNameLabel2.setVisible(false);
+        docNameComboBox.setVisible(false);
+        refreshButton.setVisible(false);
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("org/openoffice/gdocs/resources/refresh.png");
+        byte[] buf = new byte[1024*10];
+        try {
+            int size = is.read(buf);                        
+            refreshButton.setIcon(new ImageIcon(java.util.Arrays.copyOf(buf, size),"Refresh list"));
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        pack();
         loginPanel1.setSystem(system);
         String docName = new File(pathName).getName();            
         setVisibleForDocName(true);            
         setDocumentTitle(docName);
-        jLabel3.setText(Configuration.getResources().getString("Document_name:"));
+        docNameLabel1.setText(Configuration.getResources().getString("Document_name:"));
+        docNameLabel2.setText(Configuration.getResources().getString("Document_name:"));
         setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));        
         setServerLineVisible(false);
         if (wrapper.isServerSelectionNeeded()) {
             setServerLineVisible(true);
             for (String str:wrapper.getListOfServersForSelection()) {
-                serversComboBox.addItem(str);
+                serversComboBox.addItem(str);                
             }
         }
+        if (wrapper.updateSupported()) {
+            refreshListOfDocumentsInDocNameComboBox(wrapper,true);
+        }
         toFront();
+    }
+    
+    private void refreshListOfDocumentsInDocNameComboBox(Wrapper wrapper,boolean useExistinListIfPossible) {
+            boolean hasList = false;
+            docNameComboBox.removeAllItems();
+            List<Document> docsList = null;
+            try {
+                docsList = wrapper.getListOfDocs(useExistinListIfPossible);
+                hasList = true;
+            } catch(Exception e) {
+                // we left empty... Update is impossible, because we cannot get list of documents :-(
+                Configuration.log("Cannot get list of documents :-(");
+                Configuration.log(e);
+            }
+            if (!hasList) {
+                try {
+                    wrapper.login(loginPanel1.getCreditionals());
+                    docsList = wrapper.getListOfDocs(useExistinListIfPossible);
+                    hasList=true;
+                } catch(Exception e) {
+                    // we left empty... Update is impossible, because we cannot get list of documents :-(
+                    Configuration.log("Cannot get list of documents :-(");
+                    Configuration.log(e);
+                }                    
+            }
+            if (hasList && docsList!=null) {
+                docNameLabel1.setVisible(false);
+                docName.setVisible(false);
+                docNameLabel2.setVisible(true);
+                docNameComboBox.setVisible(true);
+                refreshButton.setVisible(true);
+                docNameComboBox.addItem(docName.getText());
+                Map<String,Document> map = new HashMap<String,Document>();
+                for (Document doc:docsList) {
+                    docNameComboBox.addItem(doc);
+                    map.put(doc.getId(),doc);
+                }
+                Configuration.log(pathName);
+                String fileUrl = Configuration.getUrlForFileName(pathName);
+                Configuration.log(fileUrl);
+                getNameFromComboBox=true;
+            }
     }
     
     public void setServerLineVisible(boolean visibility) {
@@ -78,10 +144,13 @@ public class UploadDialog extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         documentNamePanel = new javax.swing.JPanel();
         docName = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        docNameLabel1 = new javax.swing.JLabel();
         serversComboBox = new javax.swing.JComboBox();
         serverLabel = new javax.swing.JLabel();
         serverConfiguration = new javax.swing.JButton();
+        docNameLabel2 = new javax.swing.JLabel();
+        docNameComboBox = new javax.swing.JComboBox();
+        refreshButton = new javax.swing.JButton();
         loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
         jLabel1 = new javax.swing.JLabel();
         okButton = new javax.swing.JButton();
@@ -105,7 +174,7 @@ public class UploadDialog extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Document name:");
+        docNameLabel1.setText("Document name:");
 
         serversComboBox.setEditable(true);
 
@@ -118,6 +187,16 @@ public class UploadDialog extends javax.swing.JFrame {
             }
         });
 
+        docNameLabel2.setText("Document name:");
+
+        docNameComboBox.setEditable(true);
+
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout documentNamePanelLayout = new javax.swing.GroupLayout(documentNamePanel);
         documentNamePanel.setLayout(documentNamePanelLayout);
         documentNamePanelLayout.setHorizontalGroup(
@@ -125,15 +204,24 @@ public class UploadDialog extends javax.swing.JFrame {
             .addGroup(documentNamePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(serverLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(documentNamePanelLayout.createSequentialGroup()
-                        .addComponent(serversComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(serverConfiguration, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(docName, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)))
+                        .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(docNameLabel1)
+                            .addComponent(serverLabel))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(documentNamePanelLayout.createSequentialGroup()
+                                .addComponent(serversComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(serverConfiguration, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(docName)))
+                    .addGroup(documentNamePanelLayout.createSequentialGroup()
+                        .addComponent(docNameLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(docNameComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         documentNamePanelLayout.setVerticalGroup(
             documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,9 +232,14 @@ public class UploadDialog extends javax.swing.JFrame {
                     .addComponent(serverConfiguration))
                 .addGap(12, 12, 12)
                 .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                    .addComponent(docNameLabel1)
                     .addComponent(docName))
-                .addGap(32, 32, 32))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(docNameLabel2)
+                    .addComponent(docNameComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12))
         );
 
         jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
@@ -180,20 +273,22 @@ public class UploadDialog extends javax.swing.JFrame {
                     .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(156, 156, 156)
-                .addComponent(okButton)
-                .addGap(47, 47, 47)
-                .addComponent(cancelButton)
-                .addContainerGap(121, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(181, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(179, 179, 179))
+                .addContainerGap(156, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(okButton)
+                        .addGap(47, 47, 47)
+                        .addComponent(cancelButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addGap(58, 58, 58)))
+                .addGap(121, 121, 121))
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -202,13 +297,14 @@ public class UploadDialog extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1))
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -250,6 +346,19 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         credentionals = loginPanel1.getCreditionals();
                     }
                     String docName=getDocumentTitle();
+                    
+                    boolean updateInsteadOfCreatingNew = false;
+                    
+                    if (getNameFromComboBox) {
+                        Object obj = docNameComboBox.getSelectedItem();
+                        if (obj instanceof String) {
+                            docName = (String)obj;
+                        } else {
+                            docName = ((Document)obj).getTitle();
+                            updateInsteadOfCreatingNew = true;
+                            ///((Document)obj).getDocumentLink()
+                        }
+                    }
                     
                     uploading.setVisible(true);
                     
@@ -314,8 +423,19 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         }
                     }
                     if (upload) {
-                        if (wrapper.upload(pathName,docName)) {
-                            JOptionPane.showMessageDialog(null,"File Uploaded");
+                        boolean success = false;
+                        if (updateInsteadOfCreatingNew) {
+                            Document docToUpdate = ((Document)docNameComboBox.getSelectedItem());
+                            success = wrapper.update(pathName, docToUpdate.getDocumentLink());
+                        } else {
+                            success = wrapper.upload(pathName,docName);
+                        }
+                        if (success) {
+                            String successMsg = "File Uploaded";
+                            if (updateInsteadOfCreatingNew) {                            
+                                successMsg = "File Updated";
+                            } 
+                            JOptionPane.showMessageDialog(null, successMsg);
                         } else {
                             JOptionPane.showMessageDialog(null, "Cannot upload document "+pathName,"Problem",JOptionPane.ERROR_MESSAGE);
                         }
@@ -367,6 +487,10 @@ private void serverConfigurationActionPerformed(java.awt.event.ActionEvent evt) 
     }
 }//GEN-LAST:event_serverConfigurationActionPerformed
 
+private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+    refreshListOfDocumentsInDocNameComboBox(WrapperFactory.getWrapperForCredentials(system),false);
+}//GEN-LAST:event_refreshButtonActionPerformed
+
     
     public boolean getUpload() {
         return upload;
@@ -383,15 +507,23 @@ private void serverConfigurationActionPerformed(java.awt.event.ActionEvent evt) 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JTextField docName;
+    private javax.swing.JComboBox docNameComboBox;
+    private javax.swing.JLabel docNameLabel1;
+    private javax.swing.JLabel docNameLabel2;
     private javax.swing.JPanel documentNamePanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JSeparator jSeparator1;
     private org.openoffice.gdocs.ui.LoginPanel loginPanel1;
     private javax.swing.JButton okButton;
+    private javax.swing.JButton refreshButton;
     private javax.swing.JButton serverConfiguration;
     private javax.swing.JLabel serverLabel;
     private javax.swing.JComboBox serversComboBox;
     // End of variables declaration//GEN-END:variables
     private boolean upload = false;
+    
+    public static void main(String... args) {
+        new UploadDialog("toster.odt", "Google Docs", null).setVisible(true);
+    }
+    
 }

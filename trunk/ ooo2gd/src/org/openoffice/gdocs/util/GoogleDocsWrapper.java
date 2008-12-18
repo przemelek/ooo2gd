@@ -26,7 +26,10 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
+import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.dialogs.CaptchaDialog;
 
 public class GoogleDocsWrapper implements Wrapper {	
@@ -34,8 +37,9 @@ public class GoogleDocsWrapper implements Wrapper {
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
 	private DocsService service;
         private boolean isLogedIn = false;
-        private List<Document> listOfDocuments;
-	
+        private static List<Document> listOfDocuments;
+        private static Map<Document,DocumentListEntry> doc2Entry = null;
+        
         public GoogleDocsWrapper() {
         }
         
@@ -43,13 +47,19 @@ public class GoogleDocsWrapper implements Wrapper {
             return service;
         }
         
-	public void login(Creditionals creditionals) throws AuthenticationException {
+	public void login(Creditionals creditionals) throws AuthenticationException {            
             if (!isLogedIn) {
+                Configuration.log("Try to create DocsService");
 		service = new DocsService(APP_NAME);
+                Configuration.log("DocsService created");
                 try {
+                    Configuration.log("Try to login");
                     service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
                     isLogedIn=true;
+                    Configuration.log("LogedIn");
                 } catch (GoogleService.CaptchaRequiredException captchaException) {
+                    Configuration.log("Problem with login");
+                    Configuration.log(captchaException);
                     CaptchaDialog dialog = new CaptchaDialog(captchaException.getCaptchaUrl());
                     dialog.setModal(true);
                     dialog.setVisible(true);
@@ -132,7 +142,9 @@ public class GoogleDocsWrapper implements Wrapper {
 	
         public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws IOException, ServiceException {
             if (!useCachedListIfPossible || listOfDocuments==null) {
-		listOfDocuments = new LinkedList<Document>();
+                Configuration.log("Try to get list of docs...");                
+		List<Document> listOfDocuments = new LinkedList<Document>();
+                doc2Entry = new HashMap<Document, DocumentListEntry>();
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
                 List<DocumentListEntry> listOfEntries = feed.getEntries();
@@ -141,11 +153,14 @@ public class GoogleDocsWrapper implements Wrapper {
                     docEntry.setDocumentLink(entry.getDocumentLink().getHref());
                     docEntry.setId(entry.getId());
                     docEntry.setTitle(entry.getTitle().getPlainText());
-                    docEntry.setUpdated(entry.getUpdated().toStringRfc822());                    
+                    docEntry.setUpdated(entry.getUpdated().toStringRfc822());
+                    doc2Entry.put(docEntry, entry);
                     listOfDocuments.add(docEntry);
                 }
+                Configuration.log("List has "+listOfDocuments.size()+" elements.");
+                this.listOfDocuments=listOfDocuments;
             }
-            return listOfDocuments;                
+            return this.listOfDocuments;
         }
         
         public URI getUriForEntry(final Document entry) throws URISyntaxException {
@@ -199,5 +214,22 @@ public class GoogleDocsWrapper implements Wrapper {
         @Override
         public boolean updateSupported() {
             return true;
-        }               
+        }
+
+        @Override
+        public boolean update(String path, String docId)  throws Exception {
+            List<Document> docs = getListOfDocs(true);
+            Map<String,Document> mapOfDocs = new HashMap<String,Document>();
+            for (Document doc:docs) {
+                mapOfDocs.put(doc.getDocumentLink(),doc);
+            }
+            Document docToUpdate = mapOfDocs.get(docId);
+            DocumentListEntry entry = doc2Entry.get(docToUpdate);
+            entry.setFile(getFileForPath(path));
+            service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
+            return true;
+        }
+        
+        
+        
 }
