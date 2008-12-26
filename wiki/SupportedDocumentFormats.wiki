@@ -4,6 +4,7 @@
 
 || ||Documents||Spreadsheets||Presentations||
 ||export to Google Docs||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
+||update in Google Docs||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
 ||export to Zoho||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
 ||export to WebDAV||all formats supported by OO.org||all formats supported by OO.org||all formats supported by OO.org||
 ||import from Google Docs||as ODT||_none_||as PPT||
