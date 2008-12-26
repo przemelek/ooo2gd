@@ -296,7 +296,6 @@ public class ImportDialog extends JFrame {
         progressWindow.setMessage(wrapper.getSystem()+" -> OpenOffice.org");
         progressWindow.setVisible(true);            
         progressWindow.showProgressBar();
-        Configuration.storeLinkToFile(documentUrl, uri.toString());
         downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow));
         downloader.start();
     }

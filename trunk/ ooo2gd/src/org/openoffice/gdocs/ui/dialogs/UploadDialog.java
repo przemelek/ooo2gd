@@ -20,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.LoginPanel;
 import org.openoffice.gdocs.util.Creditionals;
@@ -54,6 +55,7 @@ public class UploadDialog extends javax.swing.JFrame {
         try {
             int size = is.read(buf);                        
             refreshButton.setIcon(new ImageIcon(java.util.Arrays.copyOf(buf, size),"Refresh list"));
+            refreshButton.setToolTipText("Refresh list");
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -102,6 +104,7 @@ public class UploadDialog extends javax.swing.JFrame {
                 }                    
             }
             if (hasList && docsList!=null) {
+                
                 docNameLabel1.setVisible(false);
                 docName.setVisible(false);
                 docNameLabel2.setVisible(true);
@@ -113,9 +116,6 @@ public class UploadDialog extends javax.swing.JFrame {
                     docNameComboBox.addItem(doc);
                     map.put(doc.getId(),doc);
                 }
-                Configuration.log(pathName);
-                String fileUrl = Configuration.getUrlForFileName(pathName);
-                Configuration.log(fileUrl);
                 getNameFromComboBox=true;
             }
     }
@@ -523,7 +523,9 @@ private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     private boolean upload = false;
     
     public static void main(String... args) {
-        new UploadDialog("toster.odt", "Google Docs", null).setVisible(true);
+        UploadDialog dialog = new UploadDialog("toster.odt", "Google Docs", null);
+        dialog.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        dialog.setVisible(true);        
     }
     
 }
