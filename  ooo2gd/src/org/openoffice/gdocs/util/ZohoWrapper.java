@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
 
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
@@ -325,7 +326,6 @@ public class ZohoWrapper implements Wrapper {
         byte[] buffer = new byte[1024*8];            
         int readCount;        
         while((readCount=is.read(buffer))>0) {
-            String bufStr = new String(buffer);
           out.write(buffer, 0, readCount);
           progress += readCount;
         }
@@ -338,7 +338,6 @@ public class ZohoWrapper implements Wrapper {
 	private boolean uploadDocumentForUrl(String sourceFileName,String documentName,String url,Map<String,String> parameters) throws IOException {
             //String uploadUri = "https://export.writer.zoho.com/api/private/xml/uploadDocument?apikey="+API_KEY+"&ticket="+getTicket();
             String uploadUri = url+"?apikey="+API_KEY+"&ticket="+getTicket();
-            System.out.println(uploadUri);
             URL source = new URL(uploadUri);
 	    HttpURLConnection.setDefaultAllowUserInteraction(true);
 	    String fileName = sourceFileName.substring(sourceFileName.lastIndexOf("\\")+1);
@@ -558,8 +557,62 @@ public class ZohoWrapper implements Wrapper {
         }
 
         @Override
-        public boolean update(String path, String docId) {
-            throw new UnsupportedOperationException("Not supported yet.");
+        public boolean update(String path, String docId) throws IOException {
+            docId = docId.substring(0,docId.indexOf("?"));
+            docId = docId.substring(docId.lastIndexOf("/")+1);
+            String updateUrl = "http://export.writer.zoho.com/api/private/xml/saveDocument/"+docId+"?apikey="+API_KEY+"&ticket="+getTicket();
+            URL source = new URL(updateUrl);            
+	    HttpURLConnection.setDefaultAllowUserInteraction(true);
+	    //String fileName = path.substring(sourceFileName.lastIndexOf("\\")+1);	    
+	    HttpURLConnection conn = (HttpURLConnection)source.openConnection();
+            
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();            
+            FileInputStream fis = new FileInputStream(path);
+	    conn.setRequestProperty("User-Agent", "ooo2gd");
+	    conn.setRequestMethod("POST");
+//            conn.setRequestProperty("Content-Type", "application/download");
+	    baos.write("content=".getBytes());
+            long contentLength = getStream(fis,baos);
+	    conn.setRequestProperty("Content-Length", ""+contentLength);
+	    conn.setDoOutput(true);
+	    conn.connect();            
+            OutputStream os = conn.getOutputStream();                        
+            os.write(baos.toByteArray());
+	    os.flush();
+	    os.close();
+            
+	    ByteArrayOutputStream baos2 = new ByteArrayOutputStream();
+	    getStream(conn.getInputStream(), baos2);	               
+            
+	    BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(baos2.toByteArray())));
+            String answer = "";
+            String line = "";
+//		String documentId = null;
+            boolean looksForCorrectAnswer = false;
+            while ((line=br.readLine())!=null) {
+                    System.out.println(line);
+                    if (line.indexOf("documentId")!=-1) {
+                        looksForCorrectAnswer = true;
+                        //break;
+                    }
+                    if (line.indexOf("workbookId")!=-1) {
+                        looksForCorrectAnswer = true;
+                        //break;
+                    }
+                    if (line.indexOf("presentationId")!=-1) {
+                        looksForCorrectAnswer = true;
+                        //break;                            
+                    }
+                    answer+=line;
+            }	    
+	    
+	    baos.close();
+            if (!looksForCorrectAnswer) {
+                Configuration.log("Cannot update file "+path);
+                Configuration.log(answer);
+                throw new IOException("Cannot update file");                
+            }
+	    return looksForCorrectAnswer;            
         }
                 
 	public static void main(String[] args) throws Exception {

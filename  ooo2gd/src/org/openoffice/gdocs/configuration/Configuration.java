@@ -28,7 +28,7 @@ import org.openoffice.gdocs.util.Util;
 public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;
-    private static String versionStr = "1.3 beta 1";
+    private static String versionStr = "1.3";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -40,11 +40,6 @@ public class Configuration {
     private static Map<String,String> langsMap = new HashMap<String,String>();
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
     private static String lang = "system";
-    private static Map<String,String> localUrl2DocID = new LinkedHashMap<String, String>() {
-        protected boolean removeEldestEntry(Map.Entry<String,String> eldest) {
-            return size() > 50;
-        }
-    };
     
     static {
         // OK, it's realy ugly method...        
@@ -131,7 +126,6 @@ public class Configuration {
         } catch (IOException e) {
             // Intentionaly left empty
         }
-        readMapOfFileLinks();
         setProxyProperties(isUseProxy(), isProxyAuth());
     }
 
@@ -293,40 +287,5 @@ public class Configuration {
     
     public static String getVersionStr() {
         return versionStr;
-    }
-    
-    public static void readMapOfFileLinks() {
-        try {
-            FileReader fr = new FileReader(getWorkingPath()+"ooo2gd_map.dat");
-            BufferedReader br = new BufferedReader(fr);
-            String line = "";
-            while ((line=br.readLine())!=null) {
-                line = Util.xorString(line, CONFIG_SECRET_PHRASE);
-                String[] elems = line.split(",");
-                localUrl2DocID.put(elems[0], elems[1]);
-                log(">>"+elems[0]+":"+elems[1]);
-            }
-        } catch (Exception ex) {
-            // If something goes wrong we simply ignore it
-        }
-    }
-    
-    public static void storeLinkToFile(String fileName,String url) {
-        localUrl2DocID.put(fileName, url);
-        try {
-            FileWriter fw = new FileWriter(getWorkingPath()+"ooo2gd_map.dat");            
-            for (Map.Entry<String,String> element:localUrl2DocID.entrySet()) {
-                final String line = Util.xorString(element.getKey() + "," + element.getValue(),CONFIG_SECRET_PHRASE);
-                fw.write(line+"\n");                
-            }
-            fw.close();
-        } catch (IOException ioEx) {
-            // left empty, if we cannot write it we will store it only in memory
-        }
-    }
-    
-    public static String getUrlForFileName(String fileName) {
-        readMapOfFileLinks();
-        return localUrl2DocID.get(fileName);
     }
 }
