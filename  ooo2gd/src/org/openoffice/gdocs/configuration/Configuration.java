@@ -28,7 +28,9 @@ import org.openoffice.gdocs.util.Util;
 public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;
-    private static String versionStr = "1.3";
+    private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
+    private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
+    private static String versionStr = "1.3.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -37,12 +39,11 @@ public class Configuration {
     private static String proxyUser;
     private static String proxyPassword;
     private static Map<String,String> map = new LinkedHashMap<String, String>();
-    private static Map<String,String> langsMap = new HashMap<String,String>();
-    private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
+    private static Map<String,String> langsMap = new HashMap<String,String>();    
     private static String lang = "system";
-    
+        
     static {
-        // OK, it's realy ugly method...        
+        // OK, it's ugly method...        
         map.put("English","en");
         map.put("Bulgarian", "bg");
         map.put("German","de");
@@ -56,11 +57,6 @@ public class Configuration {
             langsMap.put(entry.getValue(),entry.getKey());
         }                
         restore();
-    }
-    
-    /** Creates a new instance of Configuration */
-    public Configuration() {
-
     }
 
 //    public void storeConfig() {
@@ -97,7 +93,7 @@ public class Configuration {
             // Intentionaly left empty
         } finally {
         	if (pr!=null) {
-        			pr.close();
+                    pr.close();
         	}
         }
         restore();
@@ -129,8 +125,7 @@ public class Configuration {
         setProxyProperties(isUseProxy(), isProxyAuth());
     }
 
-        private static void setProxyProperties(boolean isUseProxy,
-                        boolean isProxyAuth) {
+        private static void setProxyProperties(boolean isUseProxy, boolean isProxyAuth) {
             if (isUseProxy) { 
                 setProxyAuthenticator(isProxyAuth);            
                 Properties systemProperties = System.getProperties();
@@ -160,8 +155,7 @@ public class Configuration {
 		    Authenticator.setDefault(null);
 		}
 	}
-    
-    private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
+          
     public static ResourceBundle getResources() {        
         Locale locale = Locale.getDefault();
         if ((lang!=null) && (!"system".equals(lang))) locale = new Locale(lang);
