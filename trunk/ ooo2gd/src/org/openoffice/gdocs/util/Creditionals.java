@@ -98,6 +98,14 @@ public class Creditionals {
         storeCreditionals();
     }
     
+    public void remove() {
+        String credentionalsFileName = getCredentionalsfileName();
+        File credentionalsFile = new File(credentionalsFileName);
+        if (credentionalsFile.exists()) {
+            credentionalsFile.delete();
+        }
+    }
+    
     public String getUserName() {
         return userName;
     }

@@ -37,6 +37,11 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
         creditionals.store();
     }
     
+    private void removeCredentials() {
+        Creditionals creditionals = new Creditionals(getUserName(),getPassword(),system);
+        creditionals.remove();
+    }
+    
     private String getUserName() {
         return userNameField.getText();
     }
@@ -135,7 +140,10 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rememberCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rememberCheckBoxActionPerformed
-
+        boolean value = rememberCheckBox.isSelected();
+        if (!value) {
+            removeCredentials();
+        }
     }//GEN-LAST:event_rememberCheckBoxActionPerformed
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
