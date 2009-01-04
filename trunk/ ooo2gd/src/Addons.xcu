@@ -344,7 +344,7 @@
         </prop>
         <node oor:name="UserDefinedImages">
           <prop oor:name="ImageSmallURL">
-              <value>%origin%/images/export16.png</value>
+              <value>%origin%/images/upload-webdav.png</value>
           </prop>
         </node>
       </node>

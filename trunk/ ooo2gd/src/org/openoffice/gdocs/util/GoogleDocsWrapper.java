@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gdata.client.docs.DocsService;
+import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
@@ -148,7 +149,18 @@ public class GoogleDocsWrapper implements Wrapper {
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
                 List<DocumentListEntry> listOfEntries = feed.getEntries();
+                int i=0;
                 for (DocumentListEntry entry:listOfEntries) {
+//                    Configuration.log("1:"+entry.getMediaEditLink());
+//                    Configuration.log("2:"+entry.getContent());
+//                    com.google.gdata.data.media.MediaSource ms = service.getMedia((MediaContent)entry.getContent());
+//                    Configuration.log("2:"+ms);                                        
+//                    FileOutputStream fos = new FileOutputStream("e:\\t2\\"+entry.getTitle().getPlainText()+".dat");
+//                    InputStream is = ms.getInputStream();
+//                    getStream(is, fos);
+//                    fos.close();
+//                    is.close();
+//                    Configuration.log("3:"+entry.getMediaSource());
                     Document docEntry = new Document();
                     docEntry.setDocumentLink(entry.getDocumentLink().getHref());
                     docEntry.setId(entry.getId());
@@ -163,9 +175,24 @@ public class GoogleDocsWrapper implements Wrapper {
             return this.listOfDocuments;
         }
         
+       private int getStream(final InputStream is, OutputStream out) throws IOException {
+        int progress = 0;
+        byte[] buffer = new byte[1024*8];            
+        int readCount;        
+        while((readCount=is.read(buffer))>0) {
+          out.write(buffer, 0, readCount);
+          progress += readCount;
+        }
+        out.flush();
+        out.close();
+        out = null;
+        return progress;
+    }
+        
         public URI getUriForEntry(final Document entry) throws URISyntaxException {
             String id = entry.getId().split("%3A")[1];
             String type = entry.getId().split("%3A")[0];
+            type = type.substring(type.lastIndexOf("/")+1);
             String entryLink = entry.getDocumentLink();
             String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
             if ("document".equals(type)) {
@@ -224,7 +251,7 @@ public class GoogleDocsWrapper implements Wrapper {
                 mapOfDocs.put(doc.getDocumentLink(),doc);
             }
             Document docToUpdate = mapOfDocs.get(docId);
-            DocumentListEntry entry = doc2Entry.get(docToUpdate);
+            DocumentListEntry entry = doc2Entry.get(docToUpdate);            
             entry.setFile(getFileForPath(path));
             service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
             return true;
