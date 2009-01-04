@@ -327,7 +327,7 @@ public class ImportDialog extends JFrame {
                 public void valueChanged(ListSelectionEvent e) {
                     Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
                     boolean googleAppsAccount = entry.getDocumentLink().indexOf("/a/")!=-1;
-                    if ( entry.getId().startsWith("spreadsheet") ) {
+                    if ( entry.getId().indexOf("/spreadsheet%3A")!=-1 ) {
                         setButtonsEnable(false, false, true);
                     } else {
                     	setButtonsEnable(!googleAppsAccount, true, true);                                      
