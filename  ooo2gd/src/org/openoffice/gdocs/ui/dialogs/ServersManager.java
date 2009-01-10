@@ -146,7 +146,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     String serverPath = (String)serversList.getSelectedValue();    
     MyLoginDialog dialog = getDialog(serverPath, wrapper.getCreditionalsForServer(serverPath));
-    dialog.setModal(true);
+    dialog.setModal(false);
     dialog.setVisible(true); 
 }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -154,7 +154,7 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     String serverPath = "";
     Creditionals creditionals = new Creditionals("","");
     MyLoginDialog dialog = getDialog(serverPath, creditionals);
-    dialog.setModal(true);
+    dialog.setModal(false);
     dialog.setVisible(true);     
 }//GEN-LAST:event_jButton3ActionPerformed
 
