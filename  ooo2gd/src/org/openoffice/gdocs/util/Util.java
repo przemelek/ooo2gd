@@ -88,4 +88,10 @@ public class Util {
             XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
         }
         
+            
+        public static void startNewThread(ClassLoader classLoader, Runnable runnable) {
+            Thread thread = new Thread(runnable);
+            thread.setContextClassLoader(classLoader);
+            thread.start();        
+        }
 }

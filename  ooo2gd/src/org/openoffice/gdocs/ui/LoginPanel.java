@@ -8,6 +8,7 @@ import java.io.Serializable;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.dialogs.ConfigDialog;
 import org.openoffice.gdocs.util.Creditionals;
+import org.openoffice.gdocs.util.Util;
 
 public class LoginPanel extends javax.swing.JPanel implements Serializable {
     
@@ -148,7 +149,7 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
 
 private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-    Thread thread = new Thread(new Runnable() {
+    Util.startNewThread(Configuration.getClassLoader(),new Runnable() {
                     public void run() {
                         try {
                             new ConfigDialog(null,true).setVisible(true);
@@ -156,10 +157,7 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             
                         }
                     }
-                });
-    thread.setContextClassLoader(this.getClass().getClassLoader());
-    thread.start();        
-
+                });   
 }//GEN-LAST:event_jButton1ActionPerformed
     
     

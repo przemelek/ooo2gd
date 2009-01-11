@@ -112,6 +112,7 @@ public class Downloader implements Runnable {
   
   public void start() {
     Thread t = new Thread(this, "Document fetcher thread");
+    t.setContextClassLoader(Configuration.getClassLoader());
     t.setDaemon(true);
     t.start();
   }

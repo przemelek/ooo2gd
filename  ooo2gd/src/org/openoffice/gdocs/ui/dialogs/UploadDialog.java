@@ -516,7 +516,7 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         upload=true;
         this.setVisible(false);
         final Uploading uploading = new Uploading();
-        new Thread(new Runnable() {
+        Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             public void run() {
                 try {
                     Creditionals credentionals;                    
@@ -653,7 +653,7 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
                 return wrapper.neeedConversion(pathName);
             }
-        }).start();
+        });
 }//GEN-LAST:event_okButtonActionPerformed
 
 private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed

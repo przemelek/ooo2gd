@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gdata.client.docs.DocsService;
-import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
