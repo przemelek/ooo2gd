@@ -23,6 +23,7 @@ import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.dialogs.ConfigDialog;
 import org.openoffice.gdocs.ui.dialogs.ImportDialog;
 import org.openoffice.gdocs.ui.dialogs.UploadDialog;
+import org.openoffice.gdocs.util.Util;
 
 public final class GDocs extends WeakBase
    implements com.sun.star.lang.XServiceInfo,
@@ -269,9 +270,8 @@ public final class GDocs extends WeakBase
     }
     
     private void startNewThread(Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        thread.setContextClassLoader(this.getClass().getClassLoader());
-        thread.start();        
+        Configuration.setClassLoader(this.getClass().getClassLoader());        
+        Util.startNewThread(Configuration.getClassLoader(), runnable);
     }
     
     private String getCurrentDocumentPath() {

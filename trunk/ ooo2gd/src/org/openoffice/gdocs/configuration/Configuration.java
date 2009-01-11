@@ -30,7 +30,7 @@ public class Configuration {
     private static final int MAX_SIZE_OF_LOG = 1000;
     private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.4.0";
+    private static String versionStr = "1.4.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -41,7 +41,8 @@ public class Configuration {
     private static Map<String,String> map = new LinkedHashMap<String, String>();
     private static Map<String,String> langsMap = new HashMap<String,String>();    
     private static String lang = "system";
-        
+    private static ClassLoader classLoader;    
+    
     static {
         // OK, it's ugly method...        
         map.put("English","en");
@@ -281,5 +282,13 @@ public class Configuration {
     
     public static String getVersionStr() {
         return versionStr;
+    }
+    
+    public static void setClassLoader(ClassLoader cl) {
+        classLoader = cl;
+    }
+    
+    public static ClassLoader getClassLoader() {
+        return classLoader;
     }
 }
