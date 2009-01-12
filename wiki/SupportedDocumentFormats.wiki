@@ -7,8 +7,10 @@
 ||update in Google Docs||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
 ||export to Zoho||ODT, SXW, DOC, RTF||ODS, XLS, CSV||PPT,PPS||
 ||export to WebDAV||all formats supported by OO.org||all formats supported by OO.org||all formats supported by OO.org||
-||import from Google Docs||as ODT||_none_||as PPT||
+||import from Google Docs||as ODT (1)||_none_||as PPT (1)]||
 ||import from Zoho||as ODT||as ODS||as PPT||
+
+(1) - for Google Apps accounts only Open via Browser
 
 ODT - !OpenDocument Text
 SXW - !StarOffice
