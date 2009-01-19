@@ -284,7 +284,13 @@ public class ImportDialog extends JFrame {
     }//GEN-LAST:event_openButtonActionPerformed
 
     private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
-        final String documentUrl = this.currentDocumentPath +"/"+entry.getTitle();
+        String documentUrl = this.currentDocumentPath +"/"+entry.getTitle();
+        boolean isDoc = (entry.getId().indexOf("/documents/")!=-1);
+        if (isDoc) {
+            if (!documentUrl.toLowerCase().endsWith(".odt")) {
+                documentUrl+=".odt";
+            }
+        }
         final URI uri = wrapper.getUriForEntry(entry);
         downloadURI(documentUrl, uri, wrapper);
     }
