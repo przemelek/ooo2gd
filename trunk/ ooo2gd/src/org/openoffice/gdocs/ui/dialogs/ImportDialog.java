@@ -22,16 +22,16 @@ import javax.swing.event.ListSelectionListener;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.models.DocumentsTableModel;
 import org.openoffice.gdocs.util.Creditionals;
+import org.openoffice.gdocs.util.Document;
 import org.openoffice.gdocs.util.Downloader;
 import org.openoffice.gdocs.util.IOEvent;
 import org.openoffice.gdocs.util.IOListener;
 import org.openoffice.gdocs.util.Util;
-import org.openoffice.gdocs.util.Document;
 import org.openoffice.gdocs.util.Wrapper;
+import org.openoffice.gdocs.util.WrapperFactory;
 
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
-import org.openoffice.gdocs.util.WrapperFactory;
 
 /**
  *
@@ -285,10 +285,15 @@ public class ImportDialog extends JFrame {
 
     private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         String documentUrl = this.currentDocumentPath +"/"+entry.getTitle();
-        boolean isDoc = (entry.getId().indexOf("/documents/")!=-1);
+        boolean isDoc = (entry.getId().indexOf("/document%3A")!=-1);
+        boolean isPresentation = (entry.getId().indexOf("/presentation%3A")!=-1);
         if (isDoc) {
             if (!documentUrl.toLowerCase().endsWith(".odt")) {
                 documentUrl+=".odt";
+            }
+        } else  if (isPresentation) {
+            if (!documentUrl.toLowerCase().endsWith(".ppt")) {
+                documentUrl+=".ppt";
             }
         }
         final URI uri = wrapper.getUriForEntry(entry);
