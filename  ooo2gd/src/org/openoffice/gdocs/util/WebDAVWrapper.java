@@ -55,7 +55,7 @@ public class WebDAVWrapper implements Wrapper {
                         map.put(serverPath,new Creditionals(userName, userPassword, "WebDAV"));
                     }                    
                 }
-            } catch (Exception e) {                
+            } catch (IOException e) {                
             }
         }
         

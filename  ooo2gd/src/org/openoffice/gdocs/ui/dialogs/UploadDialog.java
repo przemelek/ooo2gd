@@ -4,45 +4,35 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
-import com.sun.star.frame.XFrame;
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
-import javax.swing.ComboBoxEditor;
+import java.util.Map;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
 import javax.swing.WindowConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.LoginPanel;
+import org.openoffice.gdocs.ui.models.MyCellRenderer;
+import org.openoffice.gdocs.ui.models.MyEditorRenderer;
 import org.openoffice.gdocs.util.Creditionals;
 import org.openoffice.gdocs.util.Document;
 import org.openoffice.gdocs.util.Util;
 import org.openoffice.gdocs.util.Wrapper;
 import org.openoffice.gdocs.util.WrapperFactory;
+
+import com.sun.star.frame.XFrame;
 
 /**
  *
@@ -120,173 +110,8 @@ public class UploadDialog extends javax.swing.JFrame {
                 }                    
             }
             if (hasList && docsList!=null) {
-                
-                
-                 class MyCellRenderer extends JComponent implements ListCellRenderer {
-                     private JLabel label;
-                     JLabel l = new JLabel("[update]");
-                     public MyCellRenderer() {
-                         setOpaque(true);
-                         setLayout(new BorderLayout());
-                         l.setFont(new Font(Font.SERIF,Font.PLAIN,9));
-                         l.setPreferredSize(new Dimension(50, 25));
-                         this.add(l,BorderLayout.WEST);
-                         label = new JLabel();
-                         this.add(label,BorderLayout.CENTER);
-                         label.setOpaque(true);
-                         l.setOpaque(true);
-                     }
-
-                    @Override
-                    public void setBackground(Color bg) {
-                        super.setBackground(bg);
-                        label.setBackground(bg);
-                        l.setBackground(bg);
-                    }
-
-                    @Override
-                    public void setForeground(Color fg) {
-                        super.setForeground(fg);
-                        label.setForeground(fg);
-                        l.setForeground(fg);
-                    }
-                    
-                    
-                     @Override
-                     public Component getListCellRendererComponent(JList list,
-                                                                   Object value,
-                                                                   int index,
-                                                                   boolean isSelected,
-                                                                   boolean cellHasFocus) {
-
-                         label.setText(value.toString());
-                         Color background;
-                         Color foreground;
-                         // check if this cell represents the current DnD drop location
-                         JList.DropLocation dropLocation = list.getDropLocation();
-                         if (dropLocation != null
-                                 && !dropLocation.isInsert()
-                                 && dropLocation.getIndex() == index) {
-                             background = Color.BLUE;
-                             foreground = Color.WHITE;
-                         // check if this cell is selected
-                         } else if (isSelected) {
-                             background = Color.LIGHT_GRAY;
-                             foreground = Color.WHITE;
-                         // unselected, and not the DnD drop location
-                         } else {
-                             background = Color.WHITE;
-                             foreground = Color.BLACK;
-                         };
-                         setBackground(background);
-                         setForeground(foreground);
-                         if (value instanceof String) {
-                             l.setText("[new]");
-                         } else {
-                             l.setText("[update]");
-                         }
-                         return this;
-                     }
-                 }
-
-                 docNameComboBox.setRenderer(new MyCellRenderer());
-                 
-                 class MyEditorRenderer extends JComponent implements ComboBoxEditor {
-                     private JLabel label = new JLabel("[new]");
-                     private JTextField editor = new JTextField();
-                     private Object item;                     
-                     private DocumentListener docListener = new DocumentListener() {
-
-                                @Override
-                                public void insertUpdate(DocumentEvent e) {
-                                    label.setText("[new]");
-                                    isUpdate=false;
-                                    item = editor.getText();
-                                }
-
-                                @Override
-                                public void removeUpdate(DocumentEvent e) {
-                                    label.setText("[new]");
-                                    isUpdate=false;
-                                    item = editor.getText();
-                                }
-
-                                @Override
-                                public void changedUpdate(DocumentEvent e) {
-                                    label.setText("[new]");
-                                    isUpdate=false;
-                                    item = editor.getText();
-                                }
-                            };
-                     private MouseListener mouseListener = new MouseAdapter() {
-
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            super.mouseClicked(e);                            
-                            editor.setEditable(true);                            
-                            editor.getDocument().addDocumentListener(docListener);
-                        }
-                            
-                        };
-                            
-                     public MyEditorRenderer() {
-                         //setOpaque(true);                         
-                         //setBackground(Color.WHITE);
-                         label.setBackground(Color.WHITE);
-                         this.setLayout(new BorderLayout());
-                         label.setFont(new Font(Font.SERIF,Font.PLAIN,9));
-                         this.add(label,BorderLayout.WEST);
-                         this.add(editor);
-                     }
-
-                    @Override
-                    public void addActionListener(ActionListener l) {
-                        editor.addActionListener(l);
-                    }
-
-                    @Override
-                    public Component getEditorComponent() {
-                        return this;
-                    }
-
-                    @Override
-                    public Object getItem() {
-                        return item;
-                    }
-
-                    @Override
-                    public void removeActionListener(ActionListener l) {
-                        editor.removeActionListener(l);
-                    }
-
-                    @Override
-                    public void selectAll() {
-                        editor.selectAll();
-                    }
-
-                    @Override
-                    public void setItem(Object anObject) {
-                        String str = "";
-                        isUpdate = true;
-                        editor.removeMouseListener(mouseListener);
-                        editor.getDocument().removeDocumentListener(docListener);
-                        this.item = anObject;
-                        if (anObject instanceof String) {
-                            str = (String)anObject;
-                            label.setText("[new]");
-                            isUpdate = false;
-                        } else if (anObject instanceof Document) {
-                            str = ((Document)anObject).getTitle();
-                            label.setText("[update]");
-                            isUpdate = true;
-                        }
-                        editor.setText(str);                        
-                        editor.addMouseListener(mouseListener);
-                    }                                        
-                 }
-                
-                 docNameComboBox.setEditor(new MyEditorRenderer());
-                 
+                docNameComboBox.setRenderer(new MyCellRenderer());                                
+                docNameComboBox.setEditor(new MyEditorRenderer());                 
                 docNameLabel1.setVisible(false);
                 docName.setVisible(false);
                 docNameLabel2.setVisible(true);

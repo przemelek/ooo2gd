@@ -35,7 +35,7 @@ import org.openoffice.gdocs.configuration.Configuration;
 
 public class ZohoWrapper implements Wrapper {
 	
-	public static String API_KEY = "5836e626337ffd39bfd3a8114e4956e5";
+	public final static String API_KEY = "5836e626337ffd39bfd3a8114e4956e5";
         private List<org.openoffice.gdocs.util.Document> listOfDocuments;
         
 	private class ZohoDownloader extends Downloader {
