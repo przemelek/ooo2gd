@@ -247,8 +247,8 @@ public final class GDocs extends WeakBase
     private void importFrom(final String system) throws HeadlessException {
         startNewThread(new Runnable() {
             public void run() {
-                try {
-                    new ImportDialog(null,true, getTempPath(), system, m_xFrame).setVisible(true);
+                try {                    
+                    new ImportDialog(null,true, Configuration.getWorkingPath(), system, m_xFrame).setVisible(true);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,e.getMessage());
                 }
@@ -279,11 +279,6 @@ public final class GDocs extends WeakBase
         XModel.class, m_xFrame.getController().getModel());
         return xDoc.getURL();
     }    
-
-    private String getTempPath() {
-        String tmpDir = System.getProperty("java.io.tmpdir");
-        return tmpDir;
-    }
     
     private boolean isModified() throws HeadlessException {
         XModifiable xModifable = (XModifiable) UnoRuntime.queryInterface(
