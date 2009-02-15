@@ -53,8 +53,12 @@ public class DocumentsTableModel extends AbstractTableModel {
         list.add(entry);
     }
 
-    public Document getEntry(int idx) {            
-        return list.get(idx);
+    public Document getEntry(int idx) {
+        Document document = null;
+        if (idx>=0 && idx<list.size()) {
+            document = list.get(idx);
+        }
+        return document;
     }
     
 }

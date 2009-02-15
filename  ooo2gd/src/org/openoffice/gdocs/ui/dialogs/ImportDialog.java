@@ -32,6 +32,7 @@ import org.openoffice.gdocs.util.WrapperFactory;
 
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
+import java.awt.Cursor;
 
 /**
  *
@@ -324,41 +325,60 @@ public class ImportDialog extends JFrame {
         setVisible(false);
     }//GEN-LAST:event_closeButtonActionPerformed
     
+    private void setButtonsEnable(boolean openState, boolean openViaBrowserState, boolean openInBrowserState) {
+        openButton.setEnabled(openState);
+        openViaBrowserButton.setEnabled(openViaBrowserState);
+        openInBrowser.setEnabled(openInBrowserState);
+    }
     
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
         final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
-        try {
-            wrapper.login(loginPanel1.getCreditionals());
-            jTable1.setEnabled(true);
-            DocumentsTableModel dtm = new DocumentsTableModel();                    
-            for (Document entry:wrapper.getListOfDocs(false)) {
-                dtm.add(entry);
-            }
-            jTable1.setModel(dtm);
-            jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                public void valueChanged(ListSelectionEvent e) {
-                    Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-                    boolean googleAppsAccount = entry.getDocumentLink().indexOf("/a/")!=-1;
-                    if ( entry.getId().indexOf("/spreadsheet%3A")!=-1 ) {
-                        setButtonsEnable(false, false, true);
-                    } else {
-                    	setButtonsEnable(!googleAppsAccount, true, true);                                      
+        getListButton.setEnabled(false);
+        jTable1.setEnabled(false);
+        final Cursor currentCursor = ImportDialog.this.getCursor();
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        setButtonsEnable(false, false, false);        
+        Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
+            @Override
+            public void run() {
+                try {           
+                    wrapper.login(loginPanel1.getCreditionals());
+                    DocumentsTableModel dtm = new DocumentsTableModel();                    
+                    for (Document entry:wrapper.getListOfDocs(false)) {
+                        dtm.add(entry);
                     }
+                    jTable1.clearSelection();
+                    jTable1.setModel(dtm);
+                    jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+                        public void valueChanged(ListSelectionEvent e) {
+                            Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+                            if (entry!=null) {
+                                boolean googleAppsAccount = entry.getDocumentLink().indexOf("/a/")!=-1;
+                                if ( entry.getId().indexOf("/spreadsheet%3A")!=-1 ) {
+                                    ImportDialog.this.setButtonsEnable(false, false, true);
+                                } else {
+                                    ImportDialog.this.setButtonsEnable(!googleAppsAccount, true, true);                                      
+                                }
+                            } else {
+                                ImportDialog.this.setButtonsEnable(false, false, false);
+                            }
+                        }
+                    });                
+                } catch (Exception e) {
+                    ImportDialog.this.setCursor(currentCursor);
+                    e.printStackTrace();            
+                    Configuration.log(Configuration.getResources().getString("Problem:_")+e.getMessage());
+                    Configuration.log(e);
+                    JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("Problem:_")+e.getMessage());
                 }
-				private void setButtonsEnable(boolean openState, boolean openViaBrowserState, boolean openInBrowserState) {
-					openButton.setEnabled(openState);
-					openViaBrowserButton.setEnabled(openViaBrowserState);
-					openInBrowser.setEnabled(openInBrowserState);
-				}
-            });                
-        } catch (Exception e) {
-            e.printStackTrace();            
-            Configuration.log(Configuration.getResources().getString("Problem:_")+e.getMessage());
-            Configuration.log(e);
-            JOptionPane.showMessageDialog(this,Configuration.getResources().getString("Problem:_")+e.getMessage());
-        }
-
-        this.repaint();
+                finally {
+                    ImportDialog.this.setCursor(currentCursor);
+                    ImportDialog.this.jTable1.setEnabled(true);
+                    ImportDialog.this.getListButton.setEnabled(true);
+                }
+                ImportDialog.this.repaint();                
+            }
+        });
     }//GEN-LAST:event_getListButtonActionPerformed
     
     /** Closes the dialog */
