@@ -9,6 +9,7 @@ import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
 import java.io.IOException;
+import java.io.File;
 
 public class Util {
     
@@ -94,4 +95,20 @@ public class Util {
             thread.setContextClassLoader(classLoader);
             thread.start();        
         }
+        
+        public String getTempPath() {
+            String tmpDir = System.getProperty("java.io.tmpdir");
+            return tmpDir;
+        }
+        
+        public static String findAvailableFileName(String destFileURI) {
+            String destFileName = destFileURI.substring(0,destFileURI.lastIndexOf("."));
+            String destFileExt = destFileURI.substring(destFileURI.lastIndexOf(".")+1);
+            int count = 1;      
+            File f;
+            while ((f=new File(destFileURI)).exists()) {
+                destFileURI=destFileName+"("+(count++)+")"+"."+destFileExt;
+            }
+            return destFileURI;
+       }
 }

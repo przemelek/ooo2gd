@@ -296,6 +296,7 @@ public class ImportDialog extends JFrame {
                 documentUrl+=".ppt";
             }
         }
+        documentUrl = Util.findAvailableFileName(documentUrl);
         final URI uri = wrapper.getUriForEntry(entry);
         downloadURI(documentUrl, uri, wrapper);
     }
