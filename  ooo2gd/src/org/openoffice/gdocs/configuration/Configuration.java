@@ -22,6 +22,7 @@ import java.util.Properties;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
+import org.openoffice.gdocs.ui.dialogs.WaitWindow;
 import org.openoffice.gdocs.util.EncodingSensitiveControl;
 import org.openoffice.gdocs.util.Util;
 
@@ -30,7 +31,7 @@ public class Configuration {
     private static final int MAX_SIZE_OF_LOG = 1000;
     private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.4.3";
+    private static String versionStr = "1.5.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -42,6 +43,7 @@ public class Configuration {
     private static Map<String,String> langsMap = new HashMap<String,String>();    
     private static String lang = "system";
     private static ClassLoader classLoader;    
+    private static WaitWindow waitWindow = null;
     
     static {
         // OK, it's ugly method...        
@@ -291,4 +293,18 @@ public class Configuration {
     public static ClassLoader getClassLoader() {
         return classLoader;
     }
+    
+    public static void showWaitWindow() {
+        if (waitWindow==null) {
+            waitWindow = new WaitWindow();
+        }
+        waitWindow.setVisible(true);
+    }
+    
+    public static void hideWaitWindow() {
+        if (waitWindow==null) {
+            waitWindow = new WaitWindow();
+        }
+        waitWindow.setVisible(false);
+    }    
 }

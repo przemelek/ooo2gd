@@ -1,4 +1,4 @@
-// (c) 2007 by Przemyslaw Rumik
+// (c) 2007-2009 by Przemyslaw Rumik
 // myBlog: http://przemelek.blogspot.com
 // project page: http://ooo2gd.googlecode.com
 // contact with me: http://przemelek.googlepages.com/kontakt
@@ -191,7 +191,8 @@ public final class GDocs extends WeakBase
         }
     }
 
-    private void exportTo(final String system) {        
+    private void exportTo(final String system) {
+        Configuration.showWaitWindow();
         final String documentPath = getCurrentDocumentPath();
         startNewThread(new Runnable() {
             public void run() {                
@@ -215,14 +216,17 @@ public final class GDocs extends WeakBase
                                 UploadDialog dialog = new UploadDialog(pathName,system,m_xFrame);
                                 dialog.setVisible(true);
                             }
-                        } else {                            
-                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
+                        } else {
+                            Configuration.hideWaitWindow();
+                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));                            
                         }
                       } catch (Exception e) {
                             e.printStackTrace();
+                            Configuration.hideWaitWindow();
                             JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());
                       }
                   } else {
+                      Configuration.hideWaitWindow();
                       JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                   }
             }
@@ -245,6 +249,7 @@ public final class GDocs extends WeakBase
     }
 
     private void importFrom(final String system) throws HeadlessException {
+        Configuration.showWaitWindow();
         startNewThread(new Runnable() {
             public void run() {
                 try {                    
