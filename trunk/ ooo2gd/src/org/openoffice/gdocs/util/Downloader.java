@@ -27,7 +27,6 @@ import org.openoffice.gdocs.configuration.Configuration;
 //import org.apache.commons.httpclient.methods.GetMethod;
 //import org.apache.commons.httpclient.params.HttpMethodParams;
 
-import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.client.http.HttpAuthToken;
 
 public class Downloader implements Runnable {
@@ -55,6 +54,7 @@ public class Downloader implements Runnable {
   private static final IOListener[] DUMMY_IOLISTENER_ARRAY = {};
     
   private final Wrapper wrapper;
+  private HttpAuthToken authToken;
   private URL source;
   private URI destFileURI;
   
@@ -144,10 +144,9 @@ public class Downloader implements Runnable {
     //fetchImpl(is, contentLength);
     currentDownloader.fetchImpl(is, contentLength);
   }
-
+  
   protected void setAthenticationHeader(HttpURLConnection conn) {
-        DocsService docsService = ((GoogleDocsWrapper)wrapper).getService();
-	HttpAuthToken authToken = (HttpAuthToken)docsService.getAuthTokenFactory().getAuthToken();
+        HttpAuthToken authToken = getAuthToken();
         String header = authToken.getAuthorizationHeader(source, "GET");
         conn.setRequestProperty("Authorization", header);    
 }
@@ -263,4 +262,13 @@ public class Downloader implements Runnable {
   public String getUserAgent() {
     return userAgent;
   }
+  
+  public void setAuthToken(HttpAuthToken token) {
+    this.authToken = token;
+  }
+  
+  public HttpAuthToken getAuthToken() {
+      return this.authToken;
+  }
+  
 }

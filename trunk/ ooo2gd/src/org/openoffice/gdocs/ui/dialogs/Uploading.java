@@ -17,7 +17,7 @@ public class Uploading extends javax.swing.JDialog {
     public Uploading() {
         super();
         initComponents();
-        hideProgressBar();
+        hideProgressBar();        
         jProgressBar1.setMinimum(0);
         jProgressBar1.setMaximum(100);
         try {

@@ -46,16 +46,17 @@ public class UploadDialog extends javax.swing.JFrame {
     private String system;  
     private Wrapper wrapper;
     private boolean isUpdate;
-    public UploadDialog(String pathName,String system,XFrame frame) {
+    public UploadDialog(String pathName,final String system,XFrame frame) {
         super();
+        this.setVisible(false);
         xFrame = frame;
         this.pathName = pathName;
-        this.system = system;
-        wrapper = WrapperFactory.getWrapperForCredentials(system);
+        this.system = system;        
         initComponents();
+        this.setVisible(false);
         docNameLabel2.setVisible(false);
         docNameComboBox.setVisible(false);
-        refreshButton.setVisible(false);
+        refreshButton.setVisible(false);        
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("org/openoffice/gdocs/resources/refresh.png");
         byte[] buf = new byte[1024*10];
         try {
@@ -67,24 +68,40 @@ public class UploadDialog extends javax.swing.JFrame {
         }
         pack();
         loginPanel1.setSystem(system);
-        String docName = new File(pathName).getName();            
-        setVisibleForDocName(true);            
+        String docName = new File(pathName).getName();
+        setVisibleForDocName(true);
         setDocumentTitle(docName);
         docNameLabel1.setText(Configuration.getResources().getString("Document_name:"));
         docNameLabel2.setText(Configuration.getResources().getString("Document_name:"));
-        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));        
+        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));
         setServerLineVisible(false);
-        if (wrapper.isServerSelectionNeeded()) {
-            setServerLineVisible(true);
-            for (String str:wrapper.getListOfServersForSelection()) {
-                serversComboBox.addItem(str);                
+        Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
+            @Override
+            public void run() {
+                wrapper = WrapperFactory.getWrapperForCredentials(system);
+                if (wrapper.isServerSelectionNeeded()) {
+                    setServerLineVisible(true);
+                    for (String str:wrapper.getListOfServersForSelection()) {
+                        serversComboBox.addItem(str);
+                    }
+                }
+                if (wrapper.updateSupported()) {
+                    refreshListOfDocumentsInDocNameComboBox(wrapper,true);
+                }
+                UploadDialog.this.setVisible(true);
+                UploadDialog.this.toFront();
+                Configuration.hideWaitWindow();
             }
-        }
-        if (wrapper.updateSupported()) {
-            refreshListOfDocumentsInDocNameComboBox(wrapper,true);
-        }
-        toFront();
+        });        
     }
+
+    @Override
+    public void setVisible(boolean b) {
+        if (wrapper==null) b = false;
+        super.setVisible(b);        
+    }
+    
+    
     
     private void refreshListOfDocumentsInDocNameComboBox(Wrapper wrapper,boolean useExistinListIfPossible) {
             boolean hasList = false;

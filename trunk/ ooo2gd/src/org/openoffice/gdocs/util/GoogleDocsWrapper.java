@@ -1,4 +1,4 @@
-// (c) 2007 by Przemyslaw Rumik
+// (c) 2007-2009 by Przemyslaw Rumik
 // myBlog: http://przemelek.blogspot.com
 // project page: http://ooo2gd.googlecode.com
 // contact with me: http://przemelek.googlepages.com/kontakt
@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gdata.client.docs.DocsService;
+import com.google.gdata.client.http.HttpAuthToken;
+import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
@@ -36,6 +38,7 @@ public class GoogleDocsWrapper implements Wrapper {
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
 	private DocsService service;
+        private SpreadsheetService spreadsheetService;
         private boolean isLogedIn = false;
         private static List<Document> listOfDocuments;
         private static Map<Document,DocumentListEntry> doc2Entry = null;
@@ -47,14 +50,20 @@ public class GoogleDocsWrapper implements Wrapper {
             return service;
         }
         
+        public SpreadsheetService getSpreadsheetService() {
+            return spreadsheetService;
+        }
+        
 	public void login(Creditionals creditionals) throws AuthenticationException {            
             if (!isLogedIn) {
                 Configuration.log("Try to create DocsService");
 		service = new DocsService(APP_NAME);
+                spreadsheetService = new SpreadsheetService(APP_NAME);
                 Configuration.log("DocsService created");
                 try {
                     Configuration.log("Try to login");
                     service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
+                    spreadsheetService.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
                     isLogedIn=true;
                     Configuration.log("LogedIn");
                 } catch (GoogleService.CaptchaRequiredException captchaException) {
@@ -65,6 +74,7 @@ public class GoogleDocsWrapper implements Wrapper {
                     dialog.setVisible(true);
                     if (dialog.getReturnCode()==JOptionPane.OK_OPTION) {
                         service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword(),captchaException.getCaptchaToken(),dialog.getReturnValue());
+                        spreadsheetService.setUserCredentials(creditionals.getUserName(),creditionals.getPassword(),captchaException.getCaptchaToken(),dialog.getReturnValue());
                         isLogedIn=true;
                     }
                 }                
@@ -150,16 +160,6 @@ public class GoogleDocsWrapper implements Wrapper {
                 List<DocumentListEntry> listOfEntries = feed.getEntries();
                 int i=0;
                 for (DocumentListEntry entry:listOfEntries) {
-//                    Configuration.log("1:"+entry.getMediaEditLink());
-//                    Configuration.log("2:"+entry.getContent());
-//                    com.google.gdata.data.media.MediaSource ms = service.getMedia((MediaContent)entry.getContent());
-//                    Configuration.log("2:"+ms);                                        
-//                    FileOutputStream fos = new FileOutputStream("e:\\t2\\"+entry.getTitle().getPlainText()+".dat");
-//                    InputStream is = ms.getInputStream();
-//                    getStream(is, fos);
-//                    fos.close();
-//                    is.close();
-//                    Configuration.log("3:"+entry.getMediaSource());
                     Document docEntry = new Document();
                     docEntry.setDocumentLink(entry.getDocumentLink().getHref());
                     docEntry.setId(entry.getId());
@@ -195,14 +195,11 @@ public class GoogleDocsWrapper implements Wrapper {
             String entryLink = entry.getDocumentLink();
             String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
             if ("document".equals(type)) {
-                uriStr += "MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=oo";
+                uriStr+="feeds/download/documents/Export?docID="+id+"&exportFormat=ODT";
             } else if ("spreadsheet".equals(type)) {
-                //uriStr = "http://spreadsheets.google.com/fm?id="+id+"&hl=en&fmcmd=13";
-                //uriStr = "https://docs.google.com/"+googleApsName+"MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ods";
-                uriStr += "ccc?key="+id+"&hl=en";
+                uriStr+= "feeds/download/spreadsheets/Export?key="+id+"&fmcmd=13";
             } else if ("presentation".equals(type)) {
-                //http://docs.google.com/MiscCommands?command=saveasdoc&exportFormat=ppt&docID=ajg23wkfz9qn_449gt2kn8
-                uriStr += "MiscCommands?command=saveasdoc&docID="+id+"&exportFormat=ppt";
+                uriStr+="feeds/download/presentations/Export?docID="+id+"&exportFormat=PPT";
             }
             return new URI(uriStr);
         }	
@@ -234,7 +231,17 @@ public class GoogleDocsWrapper implements Wrapper {
         }
 
         public Downloader getDownloader(URI uri, String documentUrl) throws URISyntaxException, MalformedURLException  {
-            return new Downloader(uri, documentUrl, this);
+            Downloader downloader = new Downloader(uri, documentUrl, this);
+            String path = uri.getPath();
+            GoogleService service;
+            if (path.startsWith("/feeds/download/spreadsheets")) {
+                service = getSpreadsheetService();
+            } else {
+                service = getService();
+            }
+            HttpAuthToken authToken = (HttpAuthToken)service.getAuthTokenFactory().getAuthToken();
+            downloader.setAuthToken(authToken);
+            return downloader;
         }
 
         @Override
@@ -254,8 +261,5 @@ public class GoogleDocsWrapper implements Wrapper {
             entry.setFile(getFileForPath(path));
             service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
             return true;
-        }
-        
-        
-        
+        }        
 }

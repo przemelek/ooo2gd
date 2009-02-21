@@ -50,22 +50,27 @@ public class ImportDialog extends JFrame {
 			this.window = window;
 		}
 
-		public void ioProgress(IOEvent ioEvent) {   
-                    int progress = (int)((float)ioEvent.getCompletedSize()/(float)ioEvent.getTotalSize()*100.0);
-                    window.setProgress(progress);
-		    if (ioEvent.isCompleted()) {		        		        
-		        try {                            
-                            File docFile = new File(url);
-                            String fName = docFile.getCanonicalPath();
-                            String sLoadUrl = Util.fileNameToOOoURL(fName);
-                            Util.openInOpenOffice(sLoadUrl, xFrame);
-		        } catch (Exception e) {
-                            Configuration.log(e);
-		            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
-		        } finally {
-                            window.dispose();
+		public void ioProgress(IOEvent ioEvent) {
+                    if (ioEvent.getThrowable()!=null) {
+                        window.dispose();
+                        JOptionPane.showMessageDialog(ImportDialog.this,ioEvent.getMessage());
+                    } else {
+                        int progress = (int)((float)ioEvent.getCompletedSize()/(float)ioEvent.getTotalSize()*100.0);
+                        window.setProgress(progress);
+                        if (ioEvent.isCompleted()) {
+                            try {
+                                File docFile = new File(url);
+                                String fName = docFile.getCanonicalPath();
+                                String sLoadUrl = Util.fileNameToOOoURL(fName);
+                                Util.openInOpenOffice(sLoadUrl, xFrame);
+                            } catch (Exception e) {
+                                Configuration.log(e);
+                                JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
+                            } finally {
+                                window.dispose();
+                            }
                         }
-		    }
+                    }
 		}        
 	}
 
@@ -140,6 +145,7 @@ public class ImportDialog extends JFrame {
         jTable1.setModel(new DocumentsTableModel());
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.currentDocumentPath = currentDocumentPath;
+        Configuration.hideWaitWindow();
     }
     
     
@@ -288,13 +294,18 @@ public class ImportDialog extends JFrame {
         String documentUrl = this.currentDocumentPath +"/"+entry.getTitle();
         boolean isDoc = (entry.getId().indexOf("/document%3A")!=-1);
         boolean isPresentation = (entry.getId().indexOf("/presentation%3A")!=-1);
+        boolean isSpreadsheet = (entry.getId().indexOf("/spreadsheet%3A")!=-1);
         if (isDoc) {
             if (!documentUrl.toLowerCase().endsWith(".odt")) {
                 documentUrl+=".odt";
             }
-        } else  if (isPresentation) {
+        } else if (isPresentation) {
             if (!documentUrl.toLowerCase().endsWith(".ppt")) {
                 documentUrl+=".ppt";
+            }
+        } else if (isSpreadsheet) {
+            if (!documentUrl.toLowerCase().endsWith(".ods")) {
+                documentUrl+=".ods";
             }
         }
         documentUrl = Util.findAvailableFileName(documentUrl);
@@ -332,7 +343,6 @@ public class ImportDialog extends JFrame {
     }
     
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
-        final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
         getListButton.setEnabled(false);
         jTable1.setEnabled(false);
         final Cursor currentCursor = ImportDialog.this.getCursor();
@@ -341,6 +351,7 @@ public class ImportDialog extends JFrame {
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             @Override
             public void run() {
+                final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);                
                 try {           
                     wrapper.login(loginPanel1.getCreditionals());
                     DocumentsTableModel dtm = new DocumentsTableModel();                    
@@ -353,12 +364,7 @@ public class ImportDialog extends JFrame {
                         public void valueChanged(ListSelectionEvent e) {
                             Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
                             if (entry!=null) {
-                                boolean googleAppsAccount = entry.getDocumentLink().indexOf("/a/")!=-1;
-                                if ( entry.getId().indexOf("/spreadsheet%3A")!=-1 ) {
-                                    ImportDialog.this.setButtonsEnable(false, false, true);
-                                } else {
-                                    ImportDialog.this.setButtonsEnable(!googleAppsAccount, true, true);                                      
-                                }
+                                ImportDialog.this.setButtonsEnable(true, true, true);
                             } else {
                                 ImportDialog.this.setButtonsEnable(false, false, false);
                             }
