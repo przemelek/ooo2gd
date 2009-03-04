@@ -1,5 +1,3 @@
-[MacOS_Support I'm searching for somebody with MacOS with Java 6 and free time to help with support of MacOS]
-
 = Supported Operating Systems. =
 
 For now !AddOn works under:
