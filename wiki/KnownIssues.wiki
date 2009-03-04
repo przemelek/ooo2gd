@@ -1,6 +1,4 @@
 #labels Featured
-[MacOS_Support I'm searching for somebody with MacOS with Java 6 and free time to help with support of MacOS]
-
 *Known issues*
 
 0) Google Docs is still in beta, API for Google Docs is also in beta. This means that sometimes you may not log into account (I have had some problems with Google Apps account, never with Google account), uploading of some files may end with error results, some format may doesn't work even if was working yesterday. If error message says something about URI, URL or Enum this *in most of cases* was caused by Google Docs. Google Docs is very complicated and innovative tool so sometimes it may have no too so good day ;-)
