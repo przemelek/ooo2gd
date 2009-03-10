@@ -1,14 +1,9 @@
 #labels Featured
 = Introduction =
 
-From technical point of view OOo2GD should work everywhere where is present proper implementation of Java 6.
-It works for sure everywhere where is Sun Java 6.
-On MacOS users must use Apple Java instead of Sun Java, and here is a problem.
-I'm searching for some good soul with MacOS with Java 6 and some free time, if you are programmer it will be wonderful and easier, but it is not required.
+OOo2GD is written in Java 6.
+For MacOS only available Java 6 is 64 bit application.
+OpenOffice.org on MacOS is 32 bit application.
+32 bit application cannot use 64 bit application, so OOo2GD doesn't work on MacOS.
 
-
-= Details =
-
-*If you are Java programmer, and you have Mac with Java 6 you may help :-)*
-If you want to help with support for MacOS: 
-mail me on [http://przemelek.googlepages.com/przemelekMail.png/przemelekMail-full.jpg], you can use English or Polish.
+Currently I try to make Java 5 version of OOo2GD. I hope this version will have as much as possible of features from current OOo2GD.
