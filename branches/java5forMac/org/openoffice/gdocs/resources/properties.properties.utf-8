@@ -1,0 +1,54 @@
+# Sample ResourceBundle properties file
+
+Google_User_Name\:=User Name\:
+
+Google_Password\:=Password\:
+
+Google_Account_Info=${system} Account Info
+
+Remember_Password_(It_will_be_stored_on_local_disk)=Remember Password (It will be stored on local disk)
+
+Import_from_Google_Docs=Import from ${system}
+
+Close=Close
+
+Get_list=Get list
+
+Open=Open
+
+Export_to_Google_Docs=Export to ${system}
+
+Document_name\:=Document name\:
+
+OK=OK
+
+Cancel=Cancel
+
+Uploading_in_progress...=Uploading in progress...
+
+Document_Title=Document Title
+
+Published=Published
+
+Your_file_was_modified=Your file was modified from the last save; only last saved version of file will be exported.\nWould you like to save this version and export?
+
+Cannot_save_file_on_disk....=Cannot save file on disk....\nFile won't be uploaded.
+
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Sorry... you must first save your file on hard disk.
+
+Problem\:_=Problem\: 
+
+CANNOT_OPEN_BROWSER=Cannot open document in default browser
+
+INVALID_CREDITIONALS=Invalid Credentials.
+
+ERROR_IMPORTING_FILE = Error importing file
+
+PROBLEM_CANNOT_OPEN = Cannot open downloaded file
+
+NEED_CONVERT_PPT =Before upload your presentation must be converted to MS PowerPoint 97 format (PPT).\nDo you want to convert and upload your presentation?
+
+OPEN_IN_BROWSER = Open in Browser
+OPEN_VIA_BROWSER = Open via Browser
+
+CONFIGURATION = Configuration

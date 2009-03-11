@@ -1,0 +1,55 @@
+# Sample ResourceBundle properties file
+
+Google_User_Name\:=Nazwa u¿ytkownika\:
+
+Google_Password\:=Has³o:
+
+Google_Account_Info=Informacje o koncie ${system}
+
+Remember_Password_(It_will_be_stored_on_local_disk)=Pamiêtaj has³o (zostanie zapisane na dysku)
+
+Import_from_Google_Docs=Import z ${system}
+
+Close=Zamknij
+
+Get_list=Pobierz listê
+
+Open=Otwórz
+
+Export_to_Google_Docs=Eksport do ${system}
+
+Document_name\:=Nazwa dokumentu\:
+
+OK=OK
+
+Cancel=Anuluj
+
+Uploading_in_progress...=Eksport w toku...
+
+Document_Title=Tytu³ dokumentu
+
+Published=Opublikowano
+
+Your_file_was_modified=Plik zosta³ zmodyfikowany od ostatniego zapisu; tylko zapisana na dysku wersja pliku mo¿e zostaæ wyeksportowana.\nCzy chcesz zapisaæ plik przed eksportem?
+
+Cannot_save_file_on_disk....=Nie mo¿na zapisaæ pliku na dysk....\nPlik nie zostanie wyeksportowany.
+
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Musisz najpierw zapisaæ plik na dysku.
+
+Problem\:_=Problem\: 
+
+CANNOT_OPEN_BROWSER=Cannot open document in default browser
+
+INVALID_CREDITIONALS=Invalid Credentials.
+
+ERROR_IMPORTING_FILE = Problem z pobraniem pliku
+
+PROBLEM_CANNOT_OPEN = Nie mogê otworzyæ zaimportowanego pliku.
+
+NEED_CONVERT_PPT =Przed przes³aniem do ${system} Twoja prezentacja musi zostaæ skonwertowana do formatu MS PowerPoint 97 (PPT).\nCzy chcesz skonwertowaæ i przes³aæ prezentacjê?
+
+OPEN_IN_BROWSER = Otwórz w przegl±darce
+
+OPEN_VIA_BROWSER = Otwórz u¿ywaj±c przegl±darki
+
+CONFIGURATION = Konfiguracja
