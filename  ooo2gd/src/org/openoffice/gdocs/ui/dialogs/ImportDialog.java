@@ -33,6 +33,7 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
 import java.awt.Cursor;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -158,6 +159,7 @@ public class ImportDialog extends JFrame {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        googleDocsWrapper1 = new org.openoffice.gdocs.util.GoogleDocsWrapper();
         jPanel1 = new javax.swing.JPanel();
         loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -291,22 +293,35 @@ public class ImportDialog extends JFrame {
     }//GEN-LAST:event_openButtonActionPerformed
 
     private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
-        String documentUrl = this.currentDocumentPath +"/"+entry.getTitle();
+        String directory = Configuration.getDirectoryToStoreFiles();
+        String documentUrl = null;
+        String documentTitle = entry.getTitle();
         boolean isDoc = (entry.getId().indexOf("/document%3A")!=-1);
         boolean isPresentation = (entry.getId().indexOf("/presentation%3A")!=-1);
         boolean isSpreadsheet = (entry.getId().indexOf("/spreadsheet%3A")!=-1);
         if (isDoc) {
-            if (!documentUrl.toLowerCase().endsWith(".odt")) {
-                documentUrl+=".odt";
+            if (!documentTitle.toLowerCase().endsWith(".odt")) {
+                documentTitle+=".odt";
             }
         } else if (isPresentation) {
-            if (!documentUrl.toLowerCase().endsWith(".ppt")) {
-                documentUrl+=".ppt";
+            if (!documentTitle.toLowerCase().endsWith(".ppt")) {
+                documentTitle+=".ppt";
             }
         } else if (isSpreadsheet) {
-            if (!documentUrl.toLowerCase().endsWith(".ods")) {
-                documentUrl+=".ods";
+            if (!documentTitle.toLowerCase().endsWith(".ods")) {
+                documentTitle+=".ods";
             }
+        }
+        if ("?".equals(directory)) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setSelectedFile(new File(documentTitle));
+            if (fileChooser.showSaveDialog(this)==JFileChooser.APPROVE_OPTION) {
+                documentUrl = fileChooser.getSelectedFile().getAbsolutePath();
+            } else {
+                return;
+            }
+        } else {
+            documentUrl = this.currentDocumentPath +"/"+documentTitle;
         }
         documentUrl = Util.findAvailableFileName(documentUrl);
         final URI uri = wrapper.getUriForEntry(entry);
@@ -420,6 +435,7 @@ public class ImportDialog extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
     private javax.swing.JButton getListButton;
+    private org.openoffice.gdocs.util.GoogleDocsWrapper googleDocsWrapper1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
