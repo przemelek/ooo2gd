@@ -1,15 +1,21 @@
 package org.openoffice.gdocs.util;
 
 import com.sun.star.beans.PropertyValue;
+import com.sun.star.beans.XPropertySet;
+import com.sun.star.comp.helper.Bootstrap;
+import com.sun.star.comp.helper.BootstrapException;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XFrame;
 import com.sun.star.frame.XStorable;
 import com.sun.star.lang.XComponent;
+import com.sun.star.lang.XMultiComponentFactory;
 import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
+import com.sun.star.uno.XComponentContext;
 import java.io.IOException;
 import java.io.File;
+import javax.swing.JOptionPane;
 
 public class Util {
     
@@ -84,9 +90,25 @@ public class Util {
         
         
         public static void openInOpenOffice(final String sLoadUrl, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
-            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
-            XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 8, new PropertyValue[0]);
-//            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+            try {
+                XComponentContext xRemoteContext = com.sun.star.comp.helper.Bootstrap.bootstrap();
+                com.sun.star.lang.XMultiComponentFactory xRemoteServiceManager = xRemoteContext.getServiceManager();
+                Object desktop = xRemoteServiceManager.createInstanceWithContext("com.sun.star.frame.Desktop", xRemoteContext);
+                com.sun.star.frame.XComponentLoader xComponentLoader = (com.sun.star.frame.XComponentLoader)com.sun.star.uno.UnoRuntime.queryInterface(com.sun.star.frame.XComponentLoader.class, desktop);
+
+                com.sun.star.beans.PropertyValue[] loadProps = new   com.sun.star.beans.PropertyValue[1];
+                loadProps[0] = new com.sun.star.beans.PropertyValue();
+                loadProps[0].Name = "Hidden";
+                loadProps[0].Value = Boolean.FALSE;
+
+                com.sun.star.lang.XComponent xDocComponent = xComponentLoader.loadComponentFromURL(sLoadUrl, "_default", 0,  loadProps );
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Problem:"+ex.getMessage());
+            }
+    //            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
+    //            XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 8, new PropertyValue[0]);
+    //            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);                
+
         }
         
             

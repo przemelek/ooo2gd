@@ -33,7 +33,7 @@ public class Configuration {
     private static final int MAX_SIZE_OF_LOG = 1000;
     private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.5.0 experimental Java 5";
+    private static String versionStr = "1.5.1\nJava 5";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -44,8 +44,10 @@ public class Configuration {
     private static Map<String,String> map = new LinkedHashMap<String, String>();
     private static Map<String,String> langsMap = new HashMap<String,String>();    
     private static String lang = "system";
+    // null means store in work dir, ? means ask, otherwise we have here path to directory.
+    private static String directoryToStoreFiles;
     private static ClassLoader classLoader;    
-    private static WaitWindow waitWindow = null;
+    private static WaitWindow waitWindow = null;    
     
     static {
         // OK, it's ugly method...        
@@ -87,13 +89,16 @@ public class Configuration {
             FileWriter fw = new FileWriter(getWorkingPath()+"gdocs.lang");
             bw = new BufferedWriter(fw);
             pr = new PrintWriter(bw);
-        	pr.println(lang);
-        	pr.println(isUseProxy()?"1":"0");
-        	pr.println(getProxyServer());
-        	pr.println(getProxyPort());
-        	pr.println(isProxyAuth()?"1":"0");
-        	pr.println(Util.xorString(getProxyUser(),CONFIG_SECRET_PHRASE));
-        	pr.println(Util.xorString(getProxyPassword(),CONFIG_SECRET_PHRASE));
+            pr.println(lang);
+            pr.println(isUseProxy()?"1":"0");
+            pr.println(getProxyServer());
+            pr.println(getProxyPort());
+            pr.println(isProxyAuth()?"1":"0");
+            pr.println(Util.xorString(getProxyUser(),CONFIG_SECRET_PHRASE));
+            pr.println(Util.xorString(getProxyPassword(),CONFIG_SECRET_PHRASE));
+            String directoryToStoreFiles = getDirectoryToStoreFiles();
+            if (directoryToStoreFiles==null) directoryToStoreFiles="";
+            pr.println(directoryToStoreFiles);
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -123,6 +128,9 @@ public class Configuration {
             	setProxyUser(Util.xorString(proxyUser, CONFIG_SECRET_PHRASE));
             	setProxyPassword(Util.xorString(proxyPassword, CONFIG_SECRET_PHRASE));
             }
+            String directoryToStoreFiles = br.readLine();
+            if ("".equals(directoryToStoreFiles)) directoryToStoreFiles = null;
+            setDirectoryToStoreFiles(directoryToStoreFiles);
             br.close();            
         } catch (IOException e) {
             // Intentionaly left empty
@@ -311,5 +319,19 @@ public class Configuration {
             waitWindow = new WaitWindow();
         }
         waitWindow.setVisible(false);
-    }    
+    }
+
+    public static String getDirectoryToStoreFiles() {
+        return directoryToStoreFiles;
+    }
+
+    public static void setDirectoryToStoreFiles(String aDirectoryToStoreFiles) {
+        directoryToStoreFiles = aDirectoryToStoreFiles;
+    }
+    
+    public static String getPathToDirectoryToStorefiles() {
+        String directoryToStoreFiles = getDirectoryToStoreFiles();
+        if (directoryToStoreFiles==null) directoryToStoreFiles = getWorkingPath();
+        return directoryToStoreFiles;
+    }
 }

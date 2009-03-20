@@ -1,9 +1,8 @@
 package org.openoffice.gdocs.ui.dialogs;
 
-//import java.awt.Desktop;
-import java.net.URI;
 import java.util.List;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -16,6 +15,8 @@ public class ConfigDialog extends javax.swing.JFrame {
     public ConfigDialog(java.awt.Frame parent, boolean modal) {
         super("Configuration");
         initComponents();
+        buttonGroup1.add(jRadioButton1);
+        buttonGroup1.add(jRadioButton2);        
         jComboBox1.setModel(Configuration.getLanguagesModel());
         proxyCheckBox.setSelected(Configuration.isUseProxy());        
         proxyServer.setText(Configuration.getProxyServer());
@@ -25,6 +26,36 @@ public class ConfigDialog extends javax.swing.JFrame {
         authProxyPassword.setText(Configuration.getProxyPassword());
         setEnableForProxy(Configuration.isUseProxy());
         jLabel11.setText("version: "+Configuration.getVersionStr());
+        configureDirectoryToSaveUI();
+    }
+
+    private void configureDirectoryToSaveUI() {
+        String directory = Configuration.getPathToDirectoryToStorefiles();
+        if ("?".equals(directory)) {
+            jRadioButton1.setSelected(false);
+            jRadioButton2.setSelected(true);
+
+        } else {
+            jRadioButton1.setSelected(true);
+            jRadioButton2.setSelected(false);
+        }
+        enableProperLineForDirectoryToSave();
+    }
+    
+    private void enableProperLineForDirectoryToSave() {
+        String directory = Configuration.getPathToDirectoryToStorefiles();
+        if (jRadioButton1.isSelected()) {
+            if ("?".equals(directory)) {
+                directory = Configuration.getWorkingPath();
+            }
+            saveDirectoryTextField.setText(directory);            
+            saveDirectoryTextField.setEnabled(true);
+            browseButton.setEnabled(true);            
+        } else {
+            saveDirectoryTextField.setText("");
+            saveDirectoryTextField.setEnabled(false);
+            browseButton.setEnabled(false);            
+        }
     }
     
     /** This method is called from within the constructor to
@@ -35,6 +66,7 @@ public class ConfigDialog extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
@@ -63,9 +95,13 @@ public class ConfigDialog extends javax.swing.JFrame {
         authProxyUser = new javax.swing.JTextField();
         authProxyPasswordLabel = new javax.swing.JLabel();
         authProxyPassword = new javax.swing.JPasswordField();
-        jLabel14 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        saveDirectoryTextField = new javax.swing.JTextField();
+        browseButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Configuration");
@@ -241,8 +277,6 @@ public class ConfigDialog extends javax.swing.JFrame {
 
         authProxyPassword.setEnabled(false);
 
-        jLabel14.setText("About:");
-
         jButton3.setText("Error Log");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -252,49 +286,89 @@ public class ConfigDialog extends javax.swing.JFrame {
 
         jLabel11.setText("version:");
 
+        jLabel14.setText("About:");
+
+        jRadioButton1.setSelected(true);
+        jRadioButton1.setText("Downloaded files save to:");
+        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton1ActionPerformed(evt);
+            }
+        });
+
+        jRadioButton2.setText("Ask, where save downloaded file");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
+
+        saveDirectoryTextField.setEditable(false);
+
+        browseButton.setText("Browse");
+        browseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browseButtonActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(jLabel1)
-                                .add(18, 18, 18)
-                                .add(jComboBox1, 0, 453, Short.MAX_VALUE))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, proxyCheckBox)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                    .add(layout.createSequentialGroup()
-                                        .add(authProxyUserLabel)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(authProxyUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                        .add(authProxyPasswordLabel)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(authProxyPassword))
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, proxyServerLabel)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, proxyServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(org.jdesktop.layout.GroupLayout.LEADING, authProxyLabel))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(proxyPort)
-                                    .add(proxyPortLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, jLabel14)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel11)
-                                    .add(jButton3)))))
+                    .add(proxyCheckBox)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(authProxyUserLabel)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(authProxyUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                            .add(authProxyPasswordLabel)
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(authProxyPassword))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .add(113, 113, 113)
+                            .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(80, 80, 80)
+                            .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .add(jLabel14)
                     .add(layout.createSequentialGroup()
-                        .add(123, 123, 123)
-                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(80, 80, 80)
-                        .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(jLabel1)
+                        .add(18, 18, 18)
+                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 422, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                            .add(proxyServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                            .add(proxyServerLabel))
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                            .add(proxyPort)
+                                            .add(proxyPortLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                    .add(authProxyLabel))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE))
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(layout.createSequentialGroup()
+                                        .add(jRadioButton1)
+                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                        .add(saveDirectoryTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE))
+                                    .add(jRadioButton2))
+                                .add(4, 4, 4)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                .add(jLabel11)
+                                .add(jButton3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(browseButton))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -313,29 +387,34 @@ public class ConfigDialog extends javax.swing.JFrame {
                 .add(2, 2, 2)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(proxyServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(proxyPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(proxyPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(authProxyLabel)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(authProxyLabel)
+                    .add(jLabel11))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(authProxyUserLabel)
                     .add(authProxyUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(authProxyPasswordLabel)
                     .add(authProxyPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel14)
-                .add(5, 5, 5)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jButton3)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel11))
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(18, 18, 18)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jRadioButton1)
+                    .add(saveDirectoryTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(browseButton))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jRadioButton2)
+                .add(11, 11, 11)
+                .add(jLabel14)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jButton1)
                     .add(jButton2))
-                .addContainerGap())
+                .add(50, 50, 50))
         );
 
         pack();
@@ -369,6 +448,11 @@ public class ConfigDialog extends javax.swing.JFrame {
         Configuration.setProxyAuth(authProxyLabel.isSelected());
         Configuration.setProxyUser(authProxyUser.getText());
         Configuration.setProxyPassword(new String(authProxyPassword.getPassword()));
+        if (jRadioButton1.isSelected()) {
+            Configuration.setDirectoryToStoreFiles(saveDirectoryTextField.getText());
+        } else {
+            Configuration.setDirectoryToStoreFiles("?");
+        }
         Configuration.store();
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -413,6 +497,29 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }            
             textArea.setText(sb.toString());
 }//GEN-LAST:event_jButton3ActionPerformed
+
+private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    enableProperLineForDirectoryToSave();
+}//GEN-LAST:event_jRadioButton1ActionPerformed
+
+private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+    enableProperLineForDirectoryToSave();
+}//GEN-LAST:event_jRadioButton2ActionPerformed
+
+private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseButtonActionPerformed
+    String directory = Configuration.getPathToDirectoryToStorefiles();
+    JFileChooser fileChooser;
+    if ("?".equals(directory)) {
+        fileChooser = new JFileChooser(Configuration.getWorkingPath());
+    } else {
+        fileChooser = new JFileChooser(directory);
+    }
+    fileChooser.setDialogType(JFileChooser.DIRECTORIES_ONLY);
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    if (fileChooser.showOpenDialog(this)==JFileChooser.APPROVE_OPTION) {
+        saveDirectoryTextField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+    }
+}//GEN-LAST:event_browseButtonActionPerformed
     
     /**
      * @param args the command line arguments
@@ -431,6 +538,8 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JLabel authProxyPasswordLabel;
     private javax.swing.JTextField authProxyUser;
     private javax.swing.JLabel authProxyUserLabel;
+    private javax.swing.JButton browseButton;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -452,11 +561,14 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JCheckBox proxyCheckBox;
     private javax.swing.JTextField proxyPort;
     private javax.swing.JLabel proxyPortLabel;
     private javax.swing.JTextField proxyServer;
     private javax.swing.JLabel proxyServerLabel;
+    private javax.swing.JTextField saveDirectoryTextField;
     // End of variables declaration//GEN-END:variables
     
 }
