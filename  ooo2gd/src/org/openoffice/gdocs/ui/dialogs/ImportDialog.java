@@ -295,7 +295,7 @@ public class ImportDialog extends JFrame {
     private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         String directory = Configuration.getDirectoryToStoreFiles();
         String documentUrl = null;
-        String documentTitle = entry.getTitle();
+        String documentTitle = entry.getTitle().replaceAll("\\?", "").replaceAll("\\*", "");
         boolean isDoc = (entry.getId().indexOf("/document%3A")!=-1);
         boolean isPresentation = (entry.getId().indexOf("/presentation%3A")!=-1);
         boolean isSpreadsheet = (entry.getId().indexOf("/spreadsheet%3A")!=-1);
@@ -321,7 +321,7 @@ public class ImportDialog extends JFrame {
                 return;
             }
         } else {
-            documentUrl = this.currentDocumentPath +"/"+documentTitle;
+            documentUrl = directory +"/"+documentTitle;
         }
         documentUrl = Util.findAvailableFileName(documentUrl);
         final URI uri = wrapper.getUriForEntry(entry);
