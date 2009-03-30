@@ -4,6 +4,7 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
+import com.sun.star.beans.PropertyValue;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -33,6 +34,9 @@ import org.openoffice.gdocs.util.Wrapper;
 import org.openoffice.gdocs.util.WrapperFactory;
 
 import com.sun.star.frame.XFrame;
+import com.sun.star.frame.XModel;
+import com.sun.star.uno.UnoRuntime;
+import org.openoffice.gdocs.util.OOoFormats;
 
 /**
  *
@@ -54,6 +58,8 @@ public class UploadDialog extends javax.swing.JFrame {
         this.system = system;        
         initComponents();
         this.setVisible(false);
+        okButton.setText(Configuration.getResources().getString("OK"));
+        cancelButton.setText(Configuration.getResources().getString("Cancel"));
         docNameLabel2.setVisible(false);
         docNameComboBox.setVisible(false);
         refreshButton.setVisible(false);        
@@ -293,9 +299,7 @@ public class UploadDialog extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(156, Short.MAX_VALUE)
@@ -313,6 +317,10 @@ public class UploadDialog extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(44, Short.MAX_VALUE)
+                .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -361,6 +369,22 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             public void run() {
                 try {
+                    OOoFormats currentFormat = null;
+                    if (xFrame!=null) {
+                    try {
+                        XModel xDoc = (XModel) UnoRuntime.queryInterface(
+                        XModel.class, xFrame.getController().getModel());
+                        PropertyValue[] properties = xDoc.getArgs();
+                        for (PropertyValue property:properties) {
+                            if ("FilterName".equals(property.Name)) {
+                                currentFormat = Util.findFormatForFilterName((String)property.Value);
+                                break;
+                            }
+                        }                        
+                    } catch (Exception e) {
+                        // we will ignore this
+                    }
+                    }
                     Creditionals credentionals;                    
                     if (wrapper.isServerSelectionNeeded()) {
                         String serverPath = (String)serversComboBox.getEditor().getItem();
@@ -402,14 +426,14 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         final MyLoginDialog dialog = new MyLoginDialog(UploadDialog.this);
                         dialog.setTitle("User & Password");
                         JPanel buttonsPanel = new JPanel();
-                        JButton okButton = new JButton("OK");
+                        JButton okButton = new JButton(Configuration.getResources().getString("OK"));
                         okButton.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
                                 dialog.handleOK();
                             }
                         });
-                        JButton cancelButton = new JButton("Cancel");
+                        JButton cancelButton = new JButton(Configuration.getResources().getString("Cancel"));
                         cancelButton.addActionListener(new ActionListener() {
 
                             public void actionPerformed(ActionEvent e) {
@@ -440,19 +464,36 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     uploading.setVisible(true);
                     wrapper.login(credentionals);
                     boolean upload = true;
+                    
                     // File to store is OpenOffice Impress Presentation?
-                    if (needConversion(pathName,system)) {
-                        if (pathName.toLowerCase().indexOf(".odp")!=-1) {                        
-                            upload = convertPresentation(upload);
+//                    if (needConversion(pathName,system)) {
+//                        if (pathName.toLowerCase().indexOf(".odp")!=-1) {                        
+//                            upload = convertPresentation(upload);
+//                        }
+//                    }
+                    if (wrapper.neededConversion(currentFormat)) {
+                        OOoFormats destinationFormat = wrapper.convertTo(currentFormat);
+                        //String msg = Configuration.getStringFromResources("NEED_CONVERT_PPT",system);
+                        String[] types = {"document","spreadsheet","presentation"};
+                        String type = types[currentFormat.getHandlerType()];
+                        String msg = "Your "+types[currentFormat.getHandlerType()]+" need to be converted to "+destinationFormat.getFormatName()+"\nDo you want to convert and upload your "+type+"?";
+			int option = JOptionPane.showConfirmDialog(null,msg,currentFormat.getFormatName()+" -> "+destinationFormat.getFormatName(),JOptionPane.YES_NO_OPTION);
+			if (option == JOptionPane.YES_OPTION) {                        
+                            pathName=Util.convertDocumentToFormat(pathName, currentFormat, destinationFormat, xFrame);
+                            currentFormat = destinationFormat;
                         }
                     }
                     if (upload) {
                         boolean success = false;
+                        String mimeType = null;
+                        if (currentFormat!=null) {
+                            mimeType = currentFormat.getMimeType();
+                        }
                         if (updateInsteadOfCreatingNew) {
                             Document docToUpdate = ((Document)docNameComboBox.getSelectedItem());
-                            success = wrapper.update(pathName, docToUpdate.getDocumentLink());
+                            success = wrapper.update(pathName, docToUpdate.getDocumentLink(), mimeType);
                         } else {
-                            success = wrapper.upload(pathName,docName);
+                            success = wrapper.upload(pathName,docName,mimeType);
                         }
                         if (success) {
                             String successMsg = "File Uploaded";
@@ -493,7 +534,7 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
             private boolean needConversion(String pathName, String system) {
                 Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
-                return wrapper.neeedConversion(pathName);
+                return wrapper.neededConversion(pathName);
             }
         });
 }//GEN-LAST:event_okButtonActionPerformed

@@ -12,8 +12,10 @@ public interface Wrapper {
     public URI getUriForEntryInBrowser(final Document entry) throws URISyntaxException;
     public void login(Creditionals creditionals) throws Exception;
     public boolean checkIfAuthorizationNeeded(String path,String documentTitle) throws Exception;
-    public boolean upload(String path,String documentTitle) throws Exception;
-    public boolean neeedConversion(String path);
+    public boolean upload(String path,String documentTitle,String mimeType) throws Exception;
+    public boolean neededConversion(String path);
+    public boolean neededConversion(OOoFormats format);
+    public OOoFormats convertTo(OOoFormats format);
     public String closestSupportedFormat(String path);
     public String getSystem();
     public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws Exception;
@@ -23,5 +25,5 @@ public interface Wrapper {
     public List<String> getListOfServersForSelection();
     public Creditionals getCreditionalsForServer(String serverPath);
     public boolean updateSupported();
-    public boolean update(String path,String docId) throws Exception;
+    public boolean update(String path,String docId,String mimeType) throws Exception;
 }
