@@ -87,7 +87,6 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton1.setText("Configure");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -112,7 +111,7 @@ public class LoginPanel extends javax.swing.JPanel implements Serializable {
                             .addComponent(userNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(rememberCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(124, 124, 124)

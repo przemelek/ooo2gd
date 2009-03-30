@@ -134,7 +134,7 @@ public class WebDAVWrapper implements Wrapper {
         });
     }
     
-    public boolean upload(String path, String documentTitle) throws Exception {
+    public boolean upload(String path, String documentTitle,String mimeType) throws Exception {
             FileInputStream fis = new FileInputStream(path);
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
             long contentLength = getStream(fis,baos);
@@ -165,10 +165,18 @@ public class WebDAVWrapper implements Wrapper {
         return progress;
     }
     
-    public boolean neeedConversion(String path) {
+    public boolean neededConversion(String path) {
         return false;
     }
 
+    public boolean neededConversion(OOoFormats format) {
+        return false;
+    }
+    
+    public OOoFormats convertTo(OOoFormats format) {
+        return format;
+    }
+    
     public String closestSupportedFormat(String path) {
         return path.substring(path.lastIndexOf("."));
     }
@@ -236,7 +244,7 @@ public class WebDAVWrapper implements Wrapper {
     }
 
     @Override
-    public boolean update(String path, String docId) {
+    public boolean update(String path, String docId, String mimeType) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -28,6 +28,7 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -35,13 +36,19 @@ import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.ui.dialogs.CaptchaDialog;
 
 public class GoogleDocsWrapper implements Wrapper {	
+        public static final OOoFormats[] SUPPORTED_FORMATS = {OOoFormats.Text,OOoFormats.HTML_Document_OpenOfficeorg_Writer,OOoFormats.OpenDocument_Text,
+                                                              OOoFormats.OpenOfficeorg_10_Text_Document,OOoFormats.Microsoft_Word_97_2000_XP,
+                                                              OOoFormats.Microsoft_Word_95,OOoFormats.Microsoft_Word_60,OOoFormats.Rich_Text_Format,
+                                                              OOoFormats.Microsoft_PowerPoint_97_2000_XP,OOoFormats.Microsoft_Excel_97_2000_XP,
+                                                              OOoFormats.Microsoft_Excel_95,OOoFormats.Microsoft_Excel_50,OOoFormats.OpenDocument_Spreadsheet,
+                                                              OOoFormats.Text_CSV};
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
-	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";
+	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";        
 	private DocsService service;
         private SpreadsheetService spreadsheetService;
         private boolean isLogedIn = false;
         private static List<Document> listOfDocuments;
-        private static Map<Document,DocumentListEntry> doc2Entry = null;
+        private static Map<Document,DocumentListEntry> doc2Entry = null;        
         
         public GoogleDocsWrapper() {
         }
@@ -85,10 +92,10 @@ public class GoogleDocsWrapper implements Wrapper {
             }
 	}
 	
-	public boolean upload(String path,String documentTitle) throws IOException, ServiceException {
+	public boolean upload(String path,String documentTitle,String mimeType) throws IOException, ServiceException {
               boolean result = false;
               File documentFile = getFileForPath(path);               
-              uploadFile(documentFile, documentTitle);
+              uploadFile(documentFile, documentTitle,mimeType);
               result=true;
               return result;
 	}
@@ -141,9 +148,9 @@ public class GoogleDocsWrapper implements Wrapper {
             return documentFile;
         }
 
-        private void uploadFile(final File documentFile, final String documentTitle) throws IOException, MalformedURLException, ServiceException {
+        private void uploadFile(final File documentFile, final String documentTitle, final String mimeType) throws IOException, MalformedURLException, ServiceException {
               DocumentEntry newDocument = new DocumentEntry();
-              newDocument.setFile(documentFile);
+              newDocument.setFile(documentFile,mimeType);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
               DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
@@ -210,11 +217,15 @@ public class GoogleDocsWrapper implements Wrapper {
             return new URI(uriStr);            
         }
 
-        public boolean neeedConversion(String path) {
+        public boolean neededConversion(String path) {
             if (path.toLowerCase().endsWith(".odp")) {
                 return true;
             }
             return false;
+        }
+        
+        public boolean neededConversion(OOoFormats format) {
+            return !(java.util.Arrays.asList(SUPPORTED_FORMATS).contains(format));
         }
 
         public String closestSupportedFormat(String path) {
@@ -224,6 +235,23 @@ public class GoogleDocsWrapper implements Wrapper {
             } else {
                 return extension;
             }
+        }
+        
+        public OOoFormats convertTo(OOoFormats format) {
+            OOoFormats destinationFormat = format;
+            if (neededConversion(format)) {
+                if (format.getHandlerType()==0) {
+                    // Text document
+                    destinationFormat = OOoFormats.OpenDocument_Text;
+                } else if (format.getHandlerType()==1) {
+                    // Spreadsheet
+                    destinationFormat = OOoFormats.OpenDocument_Spreadsheet;
+                } if (format.getHandlerType()==2) {
+                    // Presentations
+                    destinationFormat = OOoFormats.Microsoft_PowerPoint_97_2000_XP;
+                }
+            }
+            return destinationFormat;
         }
 
         public String getSystem() {
@@ -250,16 +278,16 @@ public class GoogleDocsWrapper implements Wrapper {
         }
 
         @Override
-        public boolean update(String path, String docId)  throws Exception {
+        public boolean update(String path, String docId,String mimeType)  throws Exception {
             List<Document> docs = getListOfDocs(true);
             Map<String,Document> mapOfDocs = new HashMap<String,Document>();
             for (Document doc:docs) {
                 mapOfDocs.put(doc.getDocumentLink(),doc);
             }
             Document docToUpdate = mapOfDocs.get(docId);
-            DocumentListEntry entry = doc2Entry.get(docToUpdate);            
-            entry.setFile(getFileForPath(path));
+            DocumentListEntry entry = doc2Entry.get(docToUpdate);
+            entry.setFile(getFileForPath(path),mimeType);
             service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
             return true;
-        }        
+        }
 }

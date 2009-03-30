@@ -27,14 +27,20 @@ import org.xml.sax.SAXException;
 
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
-import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import org.openoffice.gdocs.configuration.Configuration;
 
-public class ZohoWrapper implements Wrapper {
-	
+public class ZohoWrapper implements Wrapper {  
+        public static final OOoFormats[] SUPPORTED_FORMATS = {OOoFormats.OpenDocument_Text,OOoFormats.Microsoft_Word_97_2000_XP,
+                                                              OOoFormats.Microsoft_Word_95,OOoFormats.Microsoft_Word_60,OOoFormats.Rich_Text_Format,
+                                                              OOoFormats.Microsoft_Excel_97_2000_XP,
+                                                              OOoFormats.Microsoft_Excel_95,OOoFormats.Microsoft_Excel_50,OOoFormats.OpenDocument_Spreadsheet,
+                                                              OOoFormats.OpenOfficeorg_10_Spreadsheet,OOoFormats.Text_CSV,
+                                                              OOoFormats.Microsoft_PowerPoint_97_2000_XP,OOoFormats.OpenOfficeorg_10_Presentation,
+                                                              OOoFormats.OpenDocument_Presentation};	
 	public final static String API_KEY = "5836e626337ffd39bfd3a8114e4956e5";
         private List<org.openoffice.gdocs.util.Document> listOfDocuments;
         
@@ -155,7 +161,6 @@ public class ZohoWrapper implements Wrapper {
 		String loginUrl = "https://accounts.zoho.com/login?servicename=ZohoWriter&FROM_AGENT=true&LOGIN_ID="+user+"&PASSWORD="+password;
 		BufferedReader br = getBufferedReaderForUriString(loginUrl);
 		String line = "";
-		String ticket = null;
 		while ((line=br.readLine())!=null) {
 			System.out.println(line);
 			if (line.startsWith("TICKET")) {
@@ -433,7 +438,7 @@ public class ZohoWrapper implements Wrapper {
             return false;
         }
         
-        public boolean upload(String sourceFileName,String documentName) throws IOException {
+        public boolean upload(String sourceFileName,String documentName,String mimeType) throws IOException {
             // https://export.writer.zoho.com/api/private/xml/uploadDocument DOC/ODT/RTF
             // https://sheet.zoho.com/api/private/xml/uploadbook xls|sxc|csv            
             // https://show.zoho.com/api/private/xml/uploadpresentation ppt|pps|sxi|odp
@@ -478,8 +483,10 @@ public class ZohoWrapper implements Wrapper {
                 org.openoffice.gdocs.util.Document docEntry = new org.openoffice.gdocs.util.Document();
                 docEntry.setDocumentLink("https://export.writer.zoho.com/api/private/odt/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
-                docEntry.setTitle(doc.getDocumentName()+".odt");                                
-                docEntry.setUpdated(new Date(Long.valueOf(doc.getLastModifiedTime())).toLocaleString());
+                docEntry.setTitle(doc.getDocumentName()+".odt");  
+                DateFormat df = DateFormat.getDateInstance();                
+                docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
+//                docEntry.setUpdated(new Date(Long.valueOf(doc.getLastModifiedTime())).toLocaleString());
                 entries.add(docEntry);
             }
         }
@@ -491,7 +498,9 @@ public class ZohoWrapper implements Wrapper {
                 docEntry.setDocumentLink("http://sheet.zoho.com/api/private/ods/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
                 docEntry.setTitle(doc.getDocumentName()+".ods");
-                docEntry.setUpdated(new Date(Long.valueOf(doc.getLastModifiedTime())).toLocaleString());
+                DateFormat df = DateFormat.getDateInstance();  
+                docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
+//                docEntry.setUpdated(new Date(Long.valueOf(doc.getLastModifiedTime())).toLocaleString());
                 entries.add(docEntry);
             }
         }        
@@ -504,7 +513,8 @@ public class ZohoWrapper implements Wrapper {
                 docEntry.setDocumentLink("http://sheet.zoho.com/api/private/xls/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
                 docEntry.setTitle(doc.getDocumentName());
-                docEntry.setUpdated(doc.getLastModifiedTime());
+                DateFormat df = DateFormat.getDateInstance();  
+                docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
                 entries.add(docEntry);
             }
         }                
@@ -514,6 +524,7 @@ public class ZohoWrapper implements Wrapper {
                 listOfDocuments = new ArrayList<org.openoffice.gdocs.util.Document>();
                 fillListWithDocuments(listOfDocuments);
                 fillListWithWorkbooks(listOfDocuments);
+                //fillListWithPresentations(listOfDocuments);
             }
             return listOfDocuments;
         }
@@ -526,8 +537,29 @@ public class ZohoWrapper implements Wrapper {
 		return this.ticket;
 	}
 
-        public boolean neeedConversion(String path) {
+        public boolean neededConversion(String path) {
             return false;
+        }
+        
+        public boolean neededConversion(OOoFormats format) {
+            return !(java.util.Arrays.asList(SUPPORTED_FORMATS).contains(format));
+        }
+        
+        public OOoFormats convertTo(OOoFormats format) {
+            OOoFormats destinationFormat = format;
+            if (neededConversion(format)) {
+                if (format.getHandlerType()==0) {
+                    // Text document
+                    destinationFormat = OOoFormats.OpenDocument_Text;
+                } else if (format.getHandlerType()==1) {
+                    // Spreadsheet
+                    destinationFormat = OOoFormats.OpenDocument_Spreadsheet;
+                } if (format.getHandlerType()==2) {
+                    // Presentations
+                    destinationFormat = OOoFormats.OpenDocument_Presentation;
+                }
+            }
+            return destinationFormat;
         }
 
         public String closestSupportedFormat(String path) {
@@ -557,7 +589,7 @@ public class ZohoWrapper implements Wrapper {
         }
 
         @Override
-        public boolean update(String path, String docId) throws IOException {
+        public boolean update(String path, String docId, String mimeType) throws IOException {
             docId = docId.substring(0,docId.indexOf("?"));
             docId = docId.substring(docId.lastIndexOf("/")+1);
             String updateUrl = "http://export.writer.zoho.com/api/private/xml/saveDocument/"+docId+"?apikey="+API_KEY+"&ticket="+getTicket();

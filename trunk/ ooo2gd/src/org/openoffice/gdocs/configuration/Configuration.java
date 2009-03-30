@@ -31,7 +31,7 @@ public class Configuration {
     private static final int MAX_SIZE_OF_LOG = 1000;
     private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.5.2";
+    private static String versionStr = "1.6.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -57,6 +57,7 @@ public class Configuration {
         map.put("Spanish","es");
         map.put("Italian","it");
         map.put("Portuguese (Brazilian)","pt-br");
+        map.put("Chinese (Simplified)","zh-cn");
         map.put("System","system");
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());
