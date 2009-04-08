@@ -473,14 +473,19 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 //                    }
                     if (wrapper.neededConversion(currentFormat)) {
                         OOoFormats destinationFormat = wrapper.convertTo(currentFormat);
-                        //String msg = Configuration.getStringFromResources("NEED_CONVERT_PPT",system);
-                        String[] types = {"document","spreadsheet","presentation"};
-                        String type = types[currentFormat.getHandlerType()];
-                        String msg = "Your "+types[currentFormat.getHandlerType()]+" need to be converted to "+destinationFormat.getFormatName()+"\nDo you want to convert and upload your "+type+"?";
+                        String msg = null;
+                        switch (currentFormat.getHandlerType()) {
+                            case 0: { msg = Configuration.getStringFromResources("NEED_CONVERSION_DOCUMENT", destinationFormat.getFormatName(), destinationFormat.getFileExtension(), system); break; }
+                            case 1: { msg = Configuration.getStringFromResources("NEED_CONVERSION_SPREADSHEET", destinationFormat.getFormatName(), destinationFormat.getFileExtension(), system); break; }
+                            case 2: { msg = Configuration.getStringFromResources("NEED_CONVERSION_PRESENTATION", destinationFormat.getFormatName(), destinationFormat.getFileExtension(), system); break; }
+                        }
 			int option = JOptionPane.showConfirmDialog(null,msg,currentFormat.getFormatName()+" -> "+destinationFormat.getFormatName(),JOptionPane.YES_NO_OPTION);
 			if (option == JOptionPane.YES_OPTION) {                        
                             pathName=Util.convertDocumentToFormat(pathName, currentFormat, destinationFormat, xFrame);
                             currentFormat = destinationFormat;
+                            upload = true;
+                        } else {
+                            upload = false;
                         }
                     }
                     if (upload) {

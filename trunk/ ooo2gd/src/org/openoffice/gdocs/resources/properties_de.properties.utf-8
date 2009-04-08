@@ -1,56 +1,59 @@
-﻿# Sample ResourceBundle properties file
+# Sample ResourceBundle properties file
 
-Google_User_Name\:=Nome utente\:
+Google_User_Name\:=Benutzername\:
 
-Google_Password\:=Password\:
+Google_Password\:=Passwort\:
 
-Google_Account_Info=${system} Informazioni account
+Google_Account_Info=${system} Account Info
 
-Remember_Password_(It_will_be
-_stored_on_local_disk)=Ricorda Password (verrà conservata sul disco locale)
+Remember_Password_(It_will_be_stored_on_local_disk)=Passwort merken? (Es wird lokal gesichert)
 
-Import_from_Google_Docs=Importa da ${system}
+Import_from_Google_Docs=Import aus Google Text und Tabellen
 
-Close=Chiudi
+Close=Schließen
 
-Get_list=Guarda elenco
+Get_list=Dateiliste laden
 
-Open=Apri
+Open=öffnen
 
-Export_to_Google_Docs=Esporta in ${system}
+Export_to_Google_Docs=Export zu ${system}
 
-Document_name\:=Nome documento\:
+Document_name\:=Dateiname\:
 
 OK=OK
 
-Cancel=Annulla
+Cancel=Abbrechen
 
-Uploading_in_progress...=Caricamento in corso...
+Uploading_in_progress...=Upload...
 
-Document_Title=Titolo documento
+Document_Title=Dateiname
 
-Published=Pubblicato
+Published=Erstellt
 
-Your_file_was_modified=Il file è stato modificato dall'ultimo salvataggio; solo l'ultima versione salvata del file verrà esportata.\nVuoi salvare questa versione ed esportarla?
+Your_file_was_modified=Ihre Datei wurde nach dem Speichern geändert. Leider können nur Dateien bei Google Text und Tabellen hochgeladen werden, die zuvor gespeichert wurden.\nMöchten Sie die aktuelle Version speichern und dann exportieren?
 
-Cannot_save_file_on_disk....=Non è possibile salvare il file sul disco....\nIl file non verrà caricato.
+Cannot_save_file_on_disk....=Die Datei konnte nicht auf der Festplatte gespeichert werden,\ndeswegen wurde die Datei nicht hochgeladen.
 
-Sorry..._you_must_first_save_your_file_on_hard_disk.=Spiacente... devi prima salvare il file sul tuo hard disk.
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Sie müssen die Datei erst auf der Festplatte speichern.
 
-Problem\:_=Problema\:
+Problem\:_=Problem\: 
 
-CANNOT_OPEN_BROWSER=Impossibile aprire il documento nel Browser standard
+CANNOT_OPEN_BROWSER=Datei konnte nicht im Standard-Browser geöffnet werden
 
-INVALID_CREDITIONALS=Credenziali non valide.
+INVALID_CREDITIONALS=Benutzername/Passwort falsch.
 
-ERROR_IMPORTING_FILE =Errore importazione del file
+ERROR_IMPORTING_FILE =Fehler beim Datei-Import
 
-PROBLEM_CANNOT_OPEN =Impossibile aprire il file scaricato
+PROBLEM_CANNOT_OPEN =Die heruntergeladene Datei konnte nicht geöffnet werden
 
-NEED_CONVERT_PPT =Prima di caricare la presentazione il file deve essere convertito  nel formato MS PowerPoint 97 (PPT).\nVuoi convertire e caricare la tua presentazione?
+NEED_CONVERT_PPT =Vor dem Upload muss Ihre Präsentation ins MS PowerPoint Format (PPT) konvertiert werden.\nWollen Sie Ihre Präsentation konvertiert und hochladen?
 
-OPEN_IN_BROWSER = Apri nel Browser
+OPEN_IN_BROWSER = Im Browser öffnen
 
-OPEN_VIA_BROWSER = Apri attraverso il Browser
+OPEN_VIA_BROWSER = Via Browser öffnen
 
-CONFIGURATION = Configurazione
+CONFIGURATION = Einstellungen
+
+NEED_CONVERSION_DOCUMENT =Vor dem Upload Ihres Textdokuments muss Sie in das ${0} Format (${1}) konvertiert werden.\nWollen Sie die Datei umwandeln und Ihr Textdokument hochladen?
+NEED_CONVERSION_SPREADSHEET =Vor dem Upload Ihrer Tabelle muss Sie in das ${0} Format (${1}) konvertiert werden.\nWollen Sie die Datei umwandeln und Ihre Tabelle hochladen?
+NEED_CONVERSION_PRESENTATION =Vor dem Upload Ihrer Präsentation muss Sie in das ${0} Format (${1}) konvertiert werden.\nWollen Sie die Datei umwandeln und Ihre Präsentation hochladen?

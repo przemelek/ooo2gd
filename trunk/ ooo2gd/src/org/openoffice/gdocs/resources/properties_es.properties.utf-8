@@ -53,3 +53,7 @@ OPEN_IN_BROWSER = Abrir en Navegador
 OPEN_VIA_BROWSER = Abrir via Navegador
 
 CONFIGURATION = Configuración
+
+NEED_CONVERSION_DOCUMENT =Antes de subir tu documento debe ser convertido al formato ${0} (${1}).\n¿Quieres convertir y subir tu documento?
+NEED_CONVERSION_SPREADSHEET =Antes de subir tu hoja de cálculo debe ser convertida al formato ${0} (${1}).\n¿Quieres convertir y subir tu hoja de cálculo?
+NEED_CONVERSION_PRESENTATION =Antes de subir tu presentación debe ser convertida al formato ${0} (${1}).\n¿Quieres convertir y subir tu presentación?
