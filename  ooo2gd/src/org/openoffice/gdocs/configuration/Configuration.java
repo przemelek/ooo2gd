@@ -184,6 +184,16 @@ public class Configuration {
         return getStringFromResources(stringId).replace("${system}", system);
     }
     
+    public static String getStringFromResources(String stringId,String... args) {
+          String str = getStringFromResources(stringId);
+	  int idx = 0;
+	  for (String value:args) {
+		  str = str.replaceAll("\\$\\{"+(idx++)+"\\}", value);
+	  }
+	  str=str.replaceAll("\\$\\{[^\\}]\\}", "?");
+	  return str;        
+    }
+    
     public static ComboBoxModel getLanguagesModel() {
         ComboBoxModel model = new DefaultComboBoxModel(map.keySet().toArray());
         model.setSelectedItem(langsMap.get(lang));

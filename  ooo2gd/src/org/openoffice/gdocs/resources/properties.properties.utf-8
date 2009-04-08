@@ -52,3 +52,7 @@ OPEN_IN_BROWSER = Open in Browser
 OPEN_VIA_BROWSER = Open via Browser
 
 CONFIGURATION = Configuration
+
+NEED_CONVERSION_DOCUMENT =Before uploading your document must be converted to ${0} format (${1}).\nDo you want to convert and upload your document?
+NEED_CONVERSION_SPREADSHEET =Before uploading your spreadsheet must be converted to ${0} format (${1}).\nDo you want to convert and upload your spreadsheet?
+NEED_CONVERSION_PRESENTATION =Before uploading your presentation must be converted to ${0} format (${1}).\nDo you want to convert and upload your presentation?

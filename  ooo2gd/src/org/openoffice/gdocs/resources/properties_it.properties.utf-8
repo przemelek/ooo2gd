@@ -53,3 +53,7 @@ OPEN_IN_BROWSER = Apri nel Browser
 OPEN_VIA_BROWSER = Apri attraverso il Browser
 
 CONFIGURATION = Configurazione
+
+NEED_CONVERSION_DOCUMENT =Prima di caricare il tuo documento questo deve essere convertito in ${0} formato (${1})\nVuoi convertire e caricare il tuo documento?
+NEED_CONVERSION_SPREADSHEET =Prima di caricare il tuo foglio di calcolo questo deve essere convertito in ${0} formato (${1})\nVuoi convertire e caricare il tuo foglio di calcolo?
+NEED_CONVERSION_PRESENTATION =Prima di caricare la tua presentazione questa deve essere convertita in ${0} formato (${1})\nVuoi convertire e caricare la tua presentazione?

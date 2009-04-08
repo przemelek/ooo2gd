@@ -1,0 +1,61 @@
+# Sample ResourceBundle properties file
+
+Google_User_Name\:=Имя учетной записи\:
+
+Google_Password\:=Пароль\:
+
+Google_Account_Info=Учетная запись ${system}
+
+Remember_Password_(It_will_be_stored_on_local_disk)=Запомнить пароль (будет сохранен на диск)
+
+Import_from_Google_Docs=Импортировать из ${system}
+
+Close=Закрыть
+
+Get_list=Получить список
+
+Open=Открыть
+
+Export_to_Google_Docs=Экспортировать в ${system}
+
+Document_name\:=Имя документа\:
+
+OK=OK
+
+Cancel=Отмена
+
+Uploading_in_progress...=Отправка в процессе...
+
+Document_Title=Заголовок документа
+
+Published=Опубликовано
+
+Your_file_was_modified=Файл был изменен. Только последняя сохраненная версия файла будет экспортирована в ${system}.\nЖелаете сохранить эту версию и экспортировать её?
+
+Cannot_save_file_on_disk....=Не могу сохранить файл на диск....\nФайл не будет отправлен.
+
+Sorry..._you_must_first_save_your_file_on_hard_disk.=Вы должны сначала сохранить файл на диск.
+
+Problem\:_=Проблема\: 
+
+CANNOT_OPEN_BROWSER=Не могу открыть документ в браузере по умолчанию
+
+INVALID_CREDITIONALS=Неверный логин или пароль.
+
+ERROR_IMPORTING_FILE =Ошибка при импорте файла
+
+PROBLEM_CANNOT_OPEN =Не могу открыть импортированный файл
+
+NEED_CONVERT_PPT =Перед отправкой презентация должна быть сконвертирована в формат MS PowerPoint 97 format (PPT).\nХотите сконвертировать и отправить вашу презентацию сейчас?
+
+OPEN_IN_BROWSER = Открыть в браузере
+
+OPEN_VIA_BROWSER = Скачать через браузер
+
+CONFIGURATION = Настройки
+
+NEED_CONVERSION_DOCUMENT =Перед загрузкой на сервер  ${2}  документ должен быть преобразована в формат ${0} (${1}).\n Вы хотите преобразовать документ и загрузить его на сервер?
+
+NEED_CONVERSION_SPREADSHEET =Перед загрузкой на сервер  ${2} таблица должна быть преобразована в формат  ${0}  (${1}).\nВы хотите преобразовать таблицу и загрузить её на сервер?
+
+NEED_CONVERSION_PRESENTATION =Перед загрузкой на сервер  ${2} презентация должна быть преобразована в формат  ${0}  (${1}).\nВы хотите преобразовать презентацию и загрузить её на сервер? 

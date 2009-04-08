@@ -53,3 +53,7 @@ OPEN_IN_BROWSER = 在浏览器中打开
 OPEN_VIA_BROWSER = 通过浏览器打开
 
 CONFIGURATION = 配置
+
+NEED_CONVERSION_DOCUMENT =在上传文档 之前必须将其转换为 ${0} 格式 (${1})。\n是否要转换并上传该 文档？
+NEED_CONVERSION_SPREADSHEET =在上传表格 之前必须将其转换为 ${0} 格式 (${1})。\n是否要转换并上传该 表格？
+NEED_CONVERSION_PRESENTATION =在上传幻灯片 之前必须将其转换为 ${0} 格式 (${1})。\n是否要转换并上传该 幻灯片？
