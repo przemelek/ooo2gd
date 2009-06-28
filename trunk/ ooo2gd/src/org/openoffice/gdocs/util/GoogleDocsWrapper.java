@@ -201,7 +201,7 @@ public class GoogleDocsWrapper implements Wrapper {
             String type = entry.getId().split("%3A")[0];
             type = type.substring(type.lastIndexOf("/")+1);
             String entryLink = entry.getDocumentLink();
-            String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
+            String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");            
             if ("document".equals(type)) {
                 uriStr+="feeds/download/documents/Export?docID="+id+"&exportFormat=ODT";
             } else if ("spreadsheet".equals(type)) {
@@ -263,7 +263,7 @@ public class GoogleDocsWrapper implements Wrapper {
             Downloader downloader = new Downloader(uri, documentUrl, this);
             String path = uri.getPath();
             GoogleService service;
-            if (path.startsWith("/feeds/download/spreadsheets")) {
+            if (path.indexOf("/feeds/download/spreadsheets")!=-1) {
                 service = getSpreadsheetService();
             } else {
                 service = getService();
