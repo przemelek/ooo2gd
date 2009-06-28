@@ -23,20 +23,17 @@ public class MyEditorRenderer extends JComponent implements ComboBoxEditor {
     private JTextField editor = new JTextField();
     private Object item;                     
     private DocumentListener docListener = new DocumentListener() {
-
-               @Override
+               
                public void insertUpdate(DocumentEvent e) {
                    label.setText("[new]");
                    item = editor.getText();
                }
 
-               @Override
                public void removeUpdate(DocumentEvent e) {
                    label.setText("[new]");
                    item = editor.getText();
                }
 
-               @Override
                public void changedUpdate(DocumentEvent e) {
                    label.setText("[new]");
                    item = editor.getText();
@@ -44,7 +41,6 @@ public class MyEditorRenderer extends JComponent implements ComboBoxEditor {
            };
     private MouseListener mouseListener = new MouseAdapter() {
 
-       @Override
        public void mouseClicked(MouseEvent e) {
            super.mouseClicked(e);                            
            editor.setEditable(true);                            
@@ -58,37 +54,31 @@ public class MyEditorRenderer extends JComponent implements ComboBoxEditor {
         //setBackground(Color.WHITE);
         label.setBackground(Color.WHITE);
         this.setLayout(new BorderLayout());
-        label.setFont(new Font(Font.SERIF,Font.PLAIN,9));
+//        label.setFont(new Font(Font.SERIF,Font.PLAIN,9));
         this.add(label,BorderLayout.WEST);
         this.add(editor);
     }
 
-   @Override
    public void addActionListener(ActionListener l) {
        editor.addActionListener(l);
    }
 
-   @Override
    public Component getEditorComponent() {
        return this;
    }
 
-   @Override
    public Object getItem() {
        return item;
    }
 
-   @Override
    public void removeActionListener(ActionListener l) {
        editor.removeActionListener(l);
    }
 
-   @Override
    public void selectAll() {
        editor.selectAll();
    }
 
-   @Override
    public void setItem(Object anObject) {
        String str = "";
        editor.removeMouseListener(mouseListener);

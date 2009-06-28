@@ -583,12 +583,10 @@ public class ZohoWrapper implements Wrapper {
             return new ZohoDownloader(uri,documentUrl,this);
         }
 
-        @Override
         public boolean updateSupported() {
             return false;
         }
 
-        @Override
         public boolean update(String path, String docId, String mimeType) throws IOException {
             docId = docId.substring(0,docId.indexOf("?"));
             docId = docId.substring(docId.lastIndexOf("/")+1);

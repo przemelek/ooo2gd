@@ -28,7 +28,6 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -42,6 +41,8 @@ public class GoogleDocsWrapper implements Wrapper {
                                                               OOoFormats.Microsoft_PowerPoint_97_2000_XP,OOoFormats.Microsoft_Excel_97_2000_XP,
                                                               OOoFormats.Microsoft_Excel_95,OOoFormats.Microsoft_Excel_50,OOoFormats.OpenDocument_Spreadsheet,
                                                               OOoFormats.Text_CSV};
+        // Yo Google! Sad that you didn't publish statistics for 3rd part programs using Google Docs API
+        // btw. why you are not hiring in Cracow? ;-)
 	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";        
 	private DocsService service;
@@ -272,12 +273,10 @@ public class GoogleDocsWrapper implements Wrapper {
             return downloader;
         }
 
-        @Override
         public boolean updateSupported() {
             return true;
         }
 
-        @Override
         public boolean update(String path, String docId,String mimeType)  throws Exception {
             List<Document> docs = getListOfDocs(true);
             Map<String,Document> mapOfDocs = new HashMap<String,Document>();

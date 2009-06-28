@@ -8,12 +8,15 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.task.ErrorCodeIOException;
 import com.sun.star.text.XTextDocument;
 import com.sun.star.uno.UnoRuntime;
+import java.awt.Component;
 import java.io.IOException;
 import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URI;
+import javax.swing.JOptionPane;
+import org.openoffice.gdocs.configuration.Configuration;
 
 public class Util {
-    
-    
         public static String xorString(String input,String key) {
             char[] keyChars = key.toCharArray();
             char[] inputChars = input.toCharArray();
@@ -136,10 +139,21 @@ public class Util {
         }
 
         
-        public static void openInOpenOffice(final String sLoadUrl, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
-            XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
-            XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 0, new PropertyValue[0]);
-            XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+        public static void openInOpenOffice(Component parent,final String sLoadUrl, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
+            if (!Configuration.isUseExec()) {
+                XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
+                XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 0, new PropertyValue[0]);
+                XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
+            } else {
+                // bad luck, we need to use direct method to run OO.org :-(
+                String cmd = Configuration.getPathForOOoExec(parent) + " \"" + sLoadUrl+"\"";
+                try {
+                    Runtime.getRuntime().exec(cmd);
+                    Configuration.store();
+                } catch (IOException ioe) {
+                    JOptionPane.showMessageDialog(parent, "Problem: "+ioe.getMessage(),"Problem",JOptionPane.ERROR_MESSAGE);                    
+                }
+            }
         }
         
             
@@ -173,5 +187,47 @@ public class Util {
                 }
             }
             return null;
+        }
+        
+        public static boolean isMac() {
+            String lcOSName = System.getProperty("os.name").toLowerCase();
+            boolean MAC_OS_X = lcOSName.startsWith("mac os x");
+            return MAC_OS_X;
+        }
+        
+        public static String getJavaVersion() {
+            return System.getProperty("java.version");
+        }
+        
+        public static void openBrowserForURL(Component parent, final String url) {
+            String java6 = "1.6.0";
+            if (getJavaVersion().compareTo(java6)>=0) {
+                // OK, we may use cool Desktop.getDesktop :-)
+                try {                
+                    Class desktopClass = Class.forName("java.awt.Desktop");
+                    Method getDesktop = desktopClass.getMethod("getDesktop",(Class[])null);
+                    Object desktop = getDesktop.invoke(null, (Object[])null);
+                    Class[] paramsList = new Class[1];
+                    paramsList[0] = URI.class;
+                    Method browseMethod = desktop.getClass().getMethod("browse",paramsList);
+                    Object[] parameters = new Object[1];
+                    parameters[0]=new URI(url);
+                    browseMethod.invoke(desktop, parameters);
+                    return;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // ingore it, we will handle it in other way
+                }
+            }
+            String browserExec = Configuration.getPathForBrowserExec(parent);
+            
+            String cmd = browserExec+" "+url;
+            try {
+                Runtime.getRuntime().exec(cmd);
+                Configuration.store();
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(parent, "Problem: "+ioe.getMessage(),"Problem",JOptionPane.ERROR_MESSAGE);
+            }
+            
         }
 }

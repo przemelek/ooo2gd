@@ -16,8 +16,8 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
     JLabel l = new JLabel("[update]");
     public MyCellRenderer() {
         setOpaque(true);
-        setLayout(new BorderLayout());
-        l.setFont(new Font(Font.SERIF,Font.PLAIN,9));
+        setLayout(new BorderLayout());        
+//        l.setFont(new Font(Font.,Font.PLAIN,9));
         l.setPreferredSize(new Dimension(50, 25));
         this.add(l,BorderLayout.WEST);
         label = new JLabel();
@@ -26,14 +26,12 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
         l.setOpaque(true);
     }
 
-   @Override
    public void setBackground(Color bg) {
        super.setBackground(bg);
        label.setBackground(bg);
        l.setBackground(bg);
    }
 
-   @Override
    public void setForeground(Color fg) {
        super.setForeground(fg);
        label.setForeground(fg);
@@ -41,7 +39,6 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
    }
    
    
-    @Override
     public Component getListCellRendererComponent(JList list,
                                                   Object value,
                                                   int index,
@@ -52,14 +49,15 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
         Color background;
         Color foreground;
         // check if this cell represents the current DnD drop location
-        JList.DropLocation dropLocation = list.getDropLocation();
-        if (dropLocation != null
-                && !dropLocation.isInsert()
-                && dropLocation.getIndex() == index) {
-            background = Color.BLUE;
-            foreground = Color.WHITE;
-        // check if this cell is selected
-        } else if (isSelected) {
+//        JList.DropLocation dropLocation = list.getDropLocation();
+//        if (dropLocation != null
+//                && !dropLocation.isInsert()
+//                && dropLocation.getIndex() == index) {
+//            background = Color.BLUE;
+//            foreground = Color.WHITE;
+//        // check if this cell is selected
+//        } else 
+        if (isSelected) {
             background = Color.LIGHT_GRAY;
             foreground = Color.WHITE;
         // unselected, and not the DnD drop location

@@ -1,5 +1,7 @@
 package org.openoffice.gdocs.configuration;
 
+import java.awt.Component;
+import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -7,6 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
@@ -19,19 +23,21 @@ import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import org.openoffice.gdocs.ui.dialogs.WaitWindow;
-import org.openoffice.gdocs.util.EncodingSensitiveControl;
 import org.openoffice.gdocs.util.Util;
 
 public class Configuration {
 
-    private static final int MAX_SIZE_OF_LOG = 1000;
-    private static final EncodingSensitiveControl encodingSensitiveControl = new EncodingSensitiveControl();
+    private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.6.0";
+    private static String versionStr = "1.7.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -45,19 +51,24 @@ public class Configuration {
     // null means store in work dir, ? means ask, otherwise we have here path to directory.
     private static String directoryToStoreFiles;
     private static ClassLoader classLoader;    
-    private static WaitWindow waitWindow = null;    
+    private static WaitWindow waitWindow = null;
+    private static boolean useExec = false;
+    private static String pathForOOoExec;
+    private static String pathForBrowserExec;
+    private static boolean macOverride = false;
     
     static {
         // OK, it's ugly method...        
         map.put("English","en");
         map.put("Bulgarian", "bg");
         map.put("German","de");
-        map.put("Polski","pl");                
+        map.put("Polski","pl");
         map.put("Russian","ru");
         map.put("Spanish","es");
         map.put("Italian","it");
-        map.put("Portuguese (Brazilian)","pt-br");
-        map.put("Chinese (Simplified)","zh-cn");
+        map.put("Portuguese (Brazilian)","pt_br");
+        map.put("Chinese (Simplified)","zh_cn");
+        map.put("French","fr");
         map.put("System","system");
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());
@@ -98,6 +109,9 @@ public class Configuration {
             String directoryToStoreFiles = getDirectoryToStoreFiles();
             if (directoryToStoreFiles==null) directoryToStoreFiles="";
             pr.println(directoryToStoreFiles);
+            pr.println(isUseExec()?"1":"0");
+            pr.println(pathForBrowserExec);
+            pr.println(pathForOOoExec);
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -130,11 +144,38 @@ public class Configuration {
             String directoryToStoreFiles = br.readLine();
             if ("".equals(directoryToStoreFiles)) directoryToStoreFiles = null;
             setDirectoryToStoreFiles(directoryToStoreFiles);
+            String useExecStr = br.readLine();
+            setUseExec("1".equals(useExecStr));
+            String pathForBrowserExec = br.readLine();
+            setPathForBrowserExec(pathForBrowserExec);
+            String pathForOOoExec = br.readLine();
+            setPathForOOoExec(pathForOOoExec);
             br.close();            
         } catch (IOException e) {
             // Intentionaly left empty
         }
         setProxyProperties(isUseProxy(), isProxyAuth());
+    }
+
+    private static String getPathToExec(Component parent, String dialogText) throws HeadlessException {
+        String pathToExec = null;
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle(dialogText);
+        if (fileChooser.showDialog(parent, "Choose") == JFileChooser.APPROVE_OPTION) {
+            pathToExec = fileChooser.getSelectedFile().getAbsolutePath();
+        }
+        return pathToExec;
+    }
+
+    private static String returnFirstExistingPath(List<String> paths) {
+        String retPath = null;
+        for (String path : paths) {
+            if (new File(path).exists()) {
+                retPath = path;
+                break;
+            }
+        }
+        return retPath;
     }
 
         private static void setProxyProperties(boolean isUseProxy, boolean isProxyAuth) {
@@ -167,13 +208,20 @@ public class Configuration {
 		    Authenticator.setDefault(null);
 		}
 	}
-          
-    public static ResourceBundle getResources() {        
+        
+    public static ResourceBundle getResources() {
         Locale locale = Locale.getDefault();
         if ((lang!=null) && (!"system".equals(lang))) locale = new Locale(lang);
-        return ResourceBundle.getBundle("org/openoffice/gdocs/resources/properties", 
-            locale, 
-            encodingSensitiveControl);
+        ResourceBundle rb = null;        
+        try {            
+            rb = MyResourceBundle.getMyBundle(getWorkingPath()+"ooo2gd",locale);
+        } catch (Exception e) {
+            e.printStackTrace();;
+        }
+        if (rb==null) {
+            rb = ResourceBundle.getBundle("org/openoffice/gdocs/resources/ooo2gd", locale);
+        }
+        return rb;
     }
     
     public static String getStringFromResources(String stringId) {
@@ -195,6 +243,28 @@ public class Configuration {
     }
     
     public static ComboBoxModel getLanguagesModel() {
+        
+        File f = new File(getWorkingPath());
+        final Pattern p = Pattern.compile("ooo2gd\\_(\\w{2}(\\_\\w{2}){0,1})\\.properties");
+        String[] fNames = f.list(new FilenameFilter() {
+            public boolean accept(File dir, String name) {                
+                boolean result = p.matcher(name).matches();
+                return result;
+            }
+        });
+        for (String fName:fNames) {
+            Matcher m = p.matcher(fName);
+            m.find();
+            String langCode = m.group(1);
+            String langName = new Locale(langCode).getDisplayLanguage();
+            if (!map.containsKey(langName)) {
+                map.put(langName,langCode);
+            }
+        }
+//        langsMap.clear();
+        for (Entry<String, String> entry : map.entrySet()) {
+            langsMap.put(entry.getValue(),entry.getKey());
+        }                        
         ComboBoxModel model = new DefaultComboBoxModel(map.keySet().toArray());
         model.setSelectedItem(langsMap.get(lang));
         return model;
@@ -314,19 +384,22 @@ public class Configuration {
     }
     
     public static void showWaitWindow() {
-        if (waitWindow==null) {
-            waitWindow = new WaitWindow();
-        }
+        getWaitWindow();
         waitWindow.setVisible(true);
     }
     
     public static void hideWaitWindow() {
-        if (waitWindow==null) {
-            waitWindow = new WaitWindow();
-        }
+        getWaitWindow();
         waitWindow.setVisible(false);
     }
 
+    public static Component getWaitWindow() {
+        if (waitWindow==null) {
+            waitWindow = new WaitWindow();
+        }        
+        return waitWindow;
+    }
+    
     public static String getDirectoryToStoreFiles() {
         return directoryToStoreFiles;
     }
@@ -339,5 +412,57 @@ public class Configuration {
         String directoryToStoreFiles = getDirectoryToStoreFiles();
         if (directoryToStoreFiles==null) directoryToStoreFiles = getWorkingPath();
         return directoryToStoreFiles;
+    }
+
+    public static boolean isUseExec() {
+        if (Util.isMac()) {
+            return true;
+        }
+        return useExec;
+    }
+    
+    public static void setUseExec(boolean useExecVal) {
+        useExec = useExecVal;
+    }
+
+    public static String getPathForOOoExec(Component parent) {
+        if (pathForOOoExec==null || "null".equals(pathForOOoExec)) {
+            if (Util.isMac()) {
+                List<String> paths = new ArrayList<String>();
+                paths.add("/Applications/OpenOffice.org.app");
+                paths.add("/Applications/OpenOffice.org.app/Contents/MacOS/soffice");
+                pathForOOoExec = returnFirstExistingPath(paths);
+            }
+            if (pathForOOoExec==null || "null".equals(pathForOOoExec)) {
+                JOptionPane.showMessageDialog(parent, "OOo2GD needs to know where is your OpenOffice.org executable file, please select executable file of your OpenOffice.org.");
+                pathForOOoExec = getPathToExec(parent, "Choose your OpenOffice.org executable");
+            }                
+        }
+        return pathForOOoExec;
+    }
+
+    public static void setPathForOOoExec(String pathForOOoExecVal) {
+        pathForOOoExec = pathForOOoExecVal;
+    }
+    
+    public static String getPathForBrowserExec(Component parent) {
+        if (pathForBrowserExec==null || "null".equals(pathForBrowserExec)) {
+            if (Util.isMac()) {
+                List<String> paths = new ArrayList<String>();
+                paths.add("/Applications/Safari.app/Contents/MacOS/Safari");
+                paths.add("/Applications/Safari.app");
+                paths.add("/Applications/Firefox.app ");
+                pathForBrowserExec = returnFirstExistingPath(paths);                
+            }
+            if (pathForBrowserExec==null || "null".equals(pathForBrowserExec)) {
+                JOptionPane.showMessageDialog(parent, "OOo2GD needs to know where is your browser executable file, please select executable file of your browser.");
+                pathForBrowserExec = getPathToExec(parent,"Choose your browser executable");            
+            }
+        }        
+        return pathForBrowserExec;
+    }
+    
+    public static void setPathForBrowserExec(String pathForBrowserExecVal) {
+        pathForBrowserExec = pathForBrowserExecVal;
     }
 }

@@ -216,29 +216,29 @@ public final class GDocs extends WeakBase
                                 UploadDialog dialog = new UploadDialog(pathName,system,m_xFrame);
                                 dialog.setVisible(true);
                             }
-                        } else {
+                        } else {                                                        
+                            JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));                            
                             Configuration.hideWaitWindow();
-                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));                            
                         }
                       } catch (Exception e) {
-                            e.printStackTrace();
+                            e.printStackTrace();                            
+                            JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Problem:_")+e.getMessage());
                             Configuration.hideWaitWindow();
-                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());
                       }
-                  } else {
+                  } else {                      
+                      JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                       Configuration.hideWaitWindow();
-                      JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                   }
             }
 
             private boolean askForDecisionAboutUploading() throws HeadlessException {
                 boolean doUpload = true;
                 String notSavedMessage = Configuration.getResources().getString("Your_file_was_modified");
-                int option = JOptionPane.showConfirmDialog(null,notSavedMessage);
+                int option = JOptionPane.showConfirmDialog(Configuration.getWaitWindow(),notSavedMessage);
                 if (option == JOptionPane.YES_OPTION) {
                         if ( !storeToDisk() ) {
                             doUpload = false;
-                            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Cannot_save_file_on_disk...."));
+                            JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Cannot_save_file_on_disk...."));
                         }
                 } else if  (option == JOptionPane.CANCEL_OPTION) {
                     doUpload = false;
@@ -255,7 +255,7 @@ public final class GDocs extends WeakBase
                 try {                    
                     new ImportDialog(null,true, Configuration.getWorkingPath(), system, m_xFrame).setVisible(true);
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,e.getMessage());
+                    JOptionPane.showMessageDialog(Configuration.getWaitWindow(),e.getMessage());
                 }
             }
         });

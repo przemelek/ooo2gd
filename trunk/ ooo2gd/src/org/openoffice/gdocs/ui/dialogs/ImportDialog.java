@@ -4,7 +4,7 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
-import java.awt.Desktop;
+//import java.awt.Desktop;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class ImportDialog extends JFrame {
                                 File docFile = new File(url);
                                 String fName = docFile.getCanonicalPath();
                                 String sLoadUrl = Util.fileNameToOOoURL(fName);
-                                Util.openInOpenOffice(sLoadUrl, xFrame);
+                                Util.openInOpenOffice(ImportDialog.this, sLoadUrl,xFrame);
                             } catch (Exception e) {
                                 Configuration.log(e);
                                 JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
@@ -96,15 +96,15 @@ public class ImportDialog extends JFrame {
         } catch (AuthenticationException e) {
             e.printStackTrace();
             Configuration.log(e);
-            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("INVALID_CREDITIONALS"));
+            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("INVALID_CREDITIONALS"));
         } catch (IOException e) {
             e.printStackTrace();
             Configuration.log(e);
-            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("CANNOT_OPEN_BROWSER"));
+            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("CANNOT_OPEN_BROWSER"));
         } catch (Exception e) {
             e.printStackTrace();
             Configuration.log(e);
-            JOptionPane.showMessageDialog(null,Configuration.getResources().getString("Problem:_")+e.getMessage());              
+            JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("Problem:_")+e.getMessage());              
         }
         }
         public Wrapper getWrapper() { return wrapper; }
@@ -121,7 +121,8 @@ public class ImportDialog extends JFrame {
         
         
         public void doOpen(Document entry) throws AuthenticationException, URISyntaxException, IOException {
-            Desktop.getDesktop().browse(getUri(entry));
+//            Desktop.getDesktop().browse(getUri(entry));            
+            Util.openBrowserForURL(ImportDialog.this, getUri(entry).toString());
         }
         public abstract URI getUri(Document entry) throws URISyntaxException;
     }  
@@ -341,7 +342,8 @@ public class ImportDialog extends JFrame {
 
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         try {
-            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
+//            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
+            Util.openBrowserForURL(this, "http://www.przemelek.pl/kontakt");
         } catch (Exception e) {
             // OK, it's not crutial problem, so we ignore it ;-)'
         }
@@ -364,7 +366,6 @@ public class ImportDialog extends JFrame {
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         setButtonsEnable(false, false, false);        
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
-            @Override
             public void run() {
                 final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);                
                 try {           
@@ -429,6 +430,7 @@ public class ImportDialog extends JFrame {
     }//GEN-LAST:event_openInBrowserActionPerformed
     
     public static void main(String[] args) {
+        System.out.println(System.getProperty("java.version"));
         new ImportDialog(null, true, ".", "Google Docs", null).setVisible(true);
     }
     
