@@ -6,18 +6,15 @@ package org.openoffice.gdocs.ui.dialogs;
 
 import com.sun.star.beans.PropertyValue;
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -67,7 +64,7 @@ public class UploadDialog extends javax.swing.JFrame {
         byte[] buf = new byte[1024*10];
         try {
             int size = is.read(buf);                        
-            refreshButton.setIcon(new ImageIcon(java.util.Arrays.copyOf(buf, size),"Refresh list"));
+//            refreshButton.setIcon(new ImageIcon(java.util.Arrays.copyOf(buf, size),"Refresh list"));
             refreshButton.setToolTipText("Refresh list");
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -82,7 +79,6 @@ public class UploadDialog extends javax.swing.JFrame {
         setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));
         setServerLineVisible(false);
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
-            @Override
             public void run() {
                 wrapper = WrapperFactory.getWrapperForCredentials(system);
                 if (wrapper.isServerSelectionNeeded()) {
@@ -227,49 +223,49 @@ public class UploadDialog extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout documentNamePanelLayout = new javax.swing.GroupLayout(documentNamePanel);
+        org.jdesktop.layout.GroupLayout documentNamePanelLayout = new org.jdesktop.layout.GroupLayout(documentNamePanel);
         documentNamePanel.setLayout(documentNamePanelLayout);
         documentNamePanelLayout.setHorizontalGroup(
-            documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(documentNamePanelLayout.createSequentialGroup()
+            documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(documentNamePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(documentNamePanelLayout.createSequentialGroup()
-                        .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(docNameLabel1)
-                            .addComponent(serverLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(documentNamePanelLayout.createSequentialGroup()
-                                .addComponent(serversComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(serverConfiguration, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(docName)))
-                    .addGroup(documentNamePanelLayout.createSequentialGroup()
-                        .addComponent(docNameLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(docNameComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(documentNamePanelLayout.createSequentialGroup()
+                        .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(docNameLabel1)
+                            .add(serverLabel))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(documentNamePanelLayout.createSequentialGroup()
+                                .add(serversComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(serverConfiguration, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(docName)))
+                    .add(documentNamePanelLayout.createSequentialGroup()
+                        .add(docNameLabel2)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(docNameComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 250, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(refreshButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         documentNamePanelLayout.setVerticalGroup(
-            documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(documentNamePanelLayout.createSequentialGroup()
-                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serversComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(serverLabel)
-                    .addComponent(serverConfiguration))
-                .addGap(12, 12, 12)
-                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(docNameLabel1)
-                    .addComponent(docName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(documentNamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(docNameLabel2)
-                    .addComponent(docNameComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12))
+            documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(documentNamePanelLayout.createSequentialGroup()
+                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(serversComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(serverLabel)
+                    .add(serverConfiguration))
+                .add(12, 12, 12)
+                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(docNameLabel1)
+                    .add(docName))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(docNameLabel2)
+                    .add(docNameComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(refreshButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(12, 12, 12))
         );
 
         jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
@@ -293,50 +289,50 @@ public class UploadDialog extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(156, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(okButton)
-                        .addGap(47, 47, 47)
-                        .addComponent(cancelButton))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)
-                        .addGap(58, 58, 58)))
-                .addGap(121, 121, 121))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(210, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(okButton)
+                        .add(47, 47, 47)
+                        .add(cancelButton))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jLabel1)
+                        .add(58, 58, 58)))
+                .add(121, 121, 121))
+            .add(layout.createSequentialGroup()
+                .add(29, 29, 29)
+                .add(documentNamePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(74, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(44, Short.MAX_VALUE)
-                .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+                .add(loginPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(41, 41, 41))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(loginPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(documentNamePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cancelButton)
-                    .addComponent(okButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .add(loginPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(3, 3, 3)
+                .add(documentNamePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(cancelButton)
+                    .add(okButton))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel1)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -355,11 +351,12 @@ public class UploadDialog extends javax.swing.JFrame {
     }//GEN-LAST:event_formComponentShown
 
 private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-try {
-            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
-        } catch (Exception e) {
+    try {
+//            Desktop.getDesktop().browse(new URI("http://przemelek.googlepages.com/kontakt"));
+        Util.openBrowserForURL(this, "http://www.przemelek.pl/kontakt");
+    } catch (Exception e) {
             // OK, it's not crutial problem, so we ignore it ;-)'
-        }
+    }
 }//GEN-LAST:event_jLabel1MouseClicked
 
 private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
@@ -479,7 +476,7 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             case 1: { msg = Configuration.getStringFromResources("NEED_CONVERSION_SPREADSHEET", destinationFormat.getFormatName(), destinationFormat.getFileExtension(), system); break; }
                             case 2: { msg = Configuration.getStringFromResources("NEED_CONVERSION_PRESENTATION", destinationFormat.getFormatName(), destinationFormat.getFileExtension(), system); break; }
                         }
-			int option = JOptionPane.showConfirmDialog(null,msg,currentFormat.getFormatName()+" -> "+destinationFormat.getFormatName(),JOptionPane.YES_NO_OPTION);
+			int option = JOptionPane.showConfirmDialog(UploadDialog.this,msg,currentFormat.getFormatName()+" -> "+destinationFormat.getFormatName(),JOptionPane.YES_NO_OPTION);
 			if (option == JOptionPane.YES_OPTION) {                        
                             pathName=Util.convertDocumentToFormat(pathName, currentFormat, destinationFormat, xFrame);
                             currentFormat = destinationFormat;
@@ -505,15 +502,15 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             if (updateInsteadOfCreatingNew) {                            
                                 successMsg = "File Updated";
                             } 
-                            JOptionPane.showMessageDialog(null, successMsg);
+                            JOptionPane.showMessageDialog(UploadDialog.this, successMsg);
                         } else {
-                            JOptionPane.showMessageDialog(null, "Cannot upload document "+pathName,"Problem",JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(UploadDialog.this, "Cannot upload document "+pathName,"Problem",JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     Configuration.log(e);
-                    JOptionPane.showMessageDialog(null,"Problem: "+e.getMessage());                    
+                    JOptionPane.showMessageDialog(UploadDialog.this,"Problem: "+e.getMessage());
                 }
                 finally {
                     uploading.setVisible(false);
@@ -522,14 +519,14 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
 			private boolean convertPresentation(boolean upload) {
 				String msg = Configuration.getStringFromResources("NEED_CONVERT_PPT",system);
-				int option = JOptionPane.showConfirmDialog(null,msg,"ODP -> PPT",JOptionPane.YES_NO_OPTION);
+				int option = JOptionPane.showConfirmDialog(UploadDialog.this,msg,"ODP -> PPT",JOptionPane.YES_NO_OPTION);
 				if (option == JOptionPane.YES_OPTION) {
 				    String filterName = "MS PowerPoint 97";
 				    try {
 				        pathName=Util.convertDocumentToFormat(pathName, filterName, "ppt", xFrame);
 				    } catch (Exception e) {
                                         Configuration.log(e);
-				        JOptionPane.showMessageDialog(null,"Sorry, OOo2GD wasn't able to convert this document.\nTry to do it using Save As.. option in File Menu,\nremember Save your document as Microsoft PowerPoint 97 (PPT).");
+				        JOptionPane.showMessageDialog(UploadDialog.this,"Sorry, OOo2GD wasn't able to convert this document.\nTry to do it using Save As.. option in File Menu,\nremember Save your document as Microsoft PowerPoint 97 (PPT).");
 				    }
 				} else {
 				    upload = false;

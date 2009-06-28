@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Arrays;
 import java.util.LinkedList;
 import org.openoffice.gdocs.configuration.Configuration;
 
@@ -42,8 +41,9 @@ public class WebDAVWrapper implements Wrapper {
                     StringBuilder sb = new StringBuilder();
                     int length;
                     char[] buf = new char[1024];
-                    while ((length=br.read(buf))!=-1) {                        
-                        sb.append(Arrays.copyOf(buf, length));
+                    while ((length=br.read(buf))!=-1) {                                                
+//                        sb.append(Arrays.copyOf(buf, length));
+                        sb.append(new String(buf, 0, length));
                     }
                     String decoded = Util.xorString(sb.toString(), SECRET_PHRASE);
                     decoded+="....";
@@ -238,12 +238,10 @@ public class WebDAVWrapper implements Wrapper {
         return responseCode;
     }
 
-    @Override
     public boolean updateSupported() {
         return false;
     }
 
-    @Override
     public boolean update(String path, String docId, String mimeType) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

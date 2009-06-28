@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import org.openoffice.gdocs.configuration.Configuration;
 
 public class Creditionals {
@@ -66,9 +65,9 @@ public class Creditionals {
                 BufferedReader br = new BufferedReader(fr);
                 char[] buf=new char[1024];
                 int length = br.read(buf);
-                buf = Arrays.copyOf(buf,length);
+//                buf = Arrays.copyOf(buf,length);                
                 br.close();
-                String decoded = xorString(new String(buf),SECRET_PHRASE);
+                String decoded = xorString(new String(buf,0,length),SECRET_PHRASE);
                 String[] lines = decoded.split("\n");
                 setUserName(lines[0]);
                 setPassword(lines[1]);
