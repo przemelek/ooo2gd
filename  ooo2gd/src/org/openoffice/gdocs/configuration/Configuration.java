@@ -170,7 +170,8 @@ public class Configuration {
     private static String returnFirstExistingPath(List<String> paths) {
         String retPath = null;
         for (String path : paths) {
-            if (new File(path).exists()) {
+            File f = new File(path);
+            if (f.exists() && f.isFile()) {
                 retPath = path;
                 break;
             }

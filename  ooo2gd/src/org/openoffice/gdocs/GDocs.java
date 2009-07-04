@@ -191,11 +191,11 @@ public final class GDocs extends WeakBase
         }
     }
 
-    private void exportTo(final String system) {
-        Configuration.showWaitWindow();
+    private void exportTo(final String system) {        
         final String documentPath = getCurrentDocumentPath();
         startNewThread(new Runnable() {
-            public void run() {                
+            public void run() {
+                Configuration.showWaitWindow();
                 String path = documentPath;
                 if (path!=null && !path.equals("")) {
                     try {
@@ -249,9 +249,9 @@ public final class GDocs extends WeakBase
     }
 
     private void importFrom(final String system) throws HeadlessException {
-        Configuration.showWaitWindow();
         startNewThread(new Runnable() {
             public void run() {
+                Configuration.showWaitWindow();
                 try {                    
                     new ImportDialog(null,true, Configuration.getWorkingPath(), system, m_xFrame).setVisible(true);
                 } catch (Exception e) {
