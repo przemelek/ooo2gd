@@ -59,13 +59,15 @@ public class ImportDialog extends JFrame {
                         int progress = (int)((float)ioEvent.getCompletedSize()/(float)ioEvent.getTotalSize()*100.0);
                         window.setProgress(progress);
                         if (ioEvent.isCompleted()) {
-                            try {
+                            try {                                
                                 File docFile = new File(url);
+                                System.out.println(url);
                                 String fName = docFile.getCanonicalPath();
                                 String sLoadUrl = Util.fileNameToOOoURL(fName);
                                 Util.openInOpenOffice(ImportDialog.this, sLoadUrl,xFrame);
                             } catch (Exception e) {
                                 Configuration.log(e);
+                                e.printStackTrace();
                                 JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
                             } finally {
                                 window.dispose();

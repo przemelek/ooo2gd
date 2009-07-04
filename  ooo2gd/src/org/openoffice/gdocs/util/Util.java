@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.configuration.Configuration;
 
@@ -175,10 +177,45 @@ public class Util {
             File f;
             while ((f=new File(destFileURI)).exists()) {
                 destFileURI=destFileName+"("+(count++)+")"+"."+destFileExt;
-            }
+            }            
+            String fName = f.getName();
+            String fPath = f.getParent();
+            // Now we need to check if given file name is valid for file system, and if it isn't we need to convert it to valid form
+            if (!(testIfFileNameIsValid(destFileURI))) {
+                List<String> forbidenCharsPatters = new ArrayList<String>();
+                forbidenCharsPatters.add("[:]+"); // Mac OS, but it looks that also Windows XP
+                forbidenCharsPatters.add("[\\*\"/\\\\\\[\\]\\:\\;\\|\\=\\,]+");  // Windows
+                forbidenCharsPatters.add("[^\\w\\d\\.]+");  // last chance... only latin letters and digits
+                for (String pattern:forbidenCharsPatters) {
+                    String nameToTest = fName;
+                    nameToTest = nameToTest.replaceAll(pattern, "_");
+                    destFileURI=fPath+"/"+nameToTest;
+                    count=1;
+                    destFileName = destFileURI.substring(0,destFileURI.lastIndexOf("."));
+                    destFileExt = destFileURI.substring(destFileURI.lastIndexOf(".")+1);
+                    while ((f=new File(destFileURI)).exists()) {
+                        destFileURI=destFileName+"("+(count++)+")"+"."+destFileExt;
+                    }
+                    if (testIfFileNameIsValid(destFileURI)) break;
+                }
+            }            
             return destFileURI;
        }
         
+        private static boolean testIfFileNameIsValid(String destFileURI) {
+            boolean valid = false;
+            try {
+                File candidate = new File(destFileURI);                
+                String canonicalPath = candidate.getCanonicalPath();                
+                boolean b = candidate.createNewFile();
+                if (b) {
+                    candidate.delete();
+                }
+                valid = true;
+            } catch (IOException ioEx) { }
+            return valid;
+        }
+                
         public static OOoFormats findFormatForFilterName(String filterName) {
             OOoFormats[] formats =  OOoFormats.values();
             for (OOoFormats format:formats) {
