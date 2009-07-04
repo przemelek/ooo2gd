@@ -61,7 +61,6 @@ public class ImportDialog extends JFrame {
                         if (ioEvent.isCompleted()) {
                             try {                                
                                 File docFile = new File(url);
-                                System.out.println(url);
                                 String fName = docFile.getCanonicalPath();
                                 String sLoadUrl = Util.fileNameToOOoURL(fName);
                                 Util.openInOpenOffice(ImportDialog.this, sLoadUrl,xFrame);
