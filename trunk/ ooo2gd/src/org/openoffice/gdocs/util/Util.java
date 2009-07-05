@@ -141,14 +141,15 @@ public class Util {
         }
 
         
-        public static void openInOpenOffice(Component parent,final String sLoadUrl, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
+        public static void openInOpenOffice(Component parent,final String fName, XFrame xFrame) throws com.sun.star.lang.IllegalArgumentException, com.sun.star.io.IOException {
             if (!Configuration.isUseExec()) {
+                String sLoadUrl = Util.fileNameToOOoURL(fName);
                 XComponentLoader loader = (XComponentLoader)UnoRuntime.queryInterface(XComponentLoader.class,xFrame);
                 XComponent xComp = loader.loadComponentFromURL(sLoadUrl, "_blank", 0, new PropertyValue[0]);
                 XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
             } else {
                 // bad luck, we need to use direct method to run OO.org :-(
-                String cmd = Configuration.getPathForOOoExec(parent) + " \"" + sLoadUrl+"\"";
+                String cmd = Configuration.getPathForOOoExec(parent) + " \"" + fName+"\"";
                 try {
                     Runtime.getRuntime().exec(cmd);
                     Configuration.store();
@@ -189,7 +190,7 @@ public class Util {
                 for (String pattern:forbidenCharsPatters) {
                     String nameToTest = fName;
                     nameToTest = nameToTest.replaceAll(pattern, "_");
-                    destFileURI=fPath+"/"+nameToTest;
+                    destFileURI=fPath+File.separator+nameToTest;
                     count=1;
                     destFileName = destFileURI.substring(0,destFileURI.lastIndexOf("."));
                     destFileExt = destFileURI.substring(destFileURI.lastIndexOf(".")+1);

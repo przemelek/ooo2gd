@@ -167,7 +167,7 @@ public class Configuration {
         return pathToExec;
     }
 
-    private static String returnFirstExistingPath(List<String> paths) {
+    private static String returnFirstExistingFile(List<String> paths) {
         String retPath = null;
         for (String path : paths) {
             File f = new File(path);
@@ -432,7 +432,7 @@ public class Configuration {
                 List<String> paths = new ArrayList<String>();
                 paths.add("/Applications/OpenOffice.org.app");
                 paths.add("/Applications/OpenOffice.org.app/Contents/MacOS/soffice");
-                pathForOOoExec = returnFirstExistingPath(paths);
+                pathForOOoExec = returnFirstExistingFile(paths);
             }
             if (pathForOOoExec==null || "null".equals(pathForOOoExec)) {
                 JOptionPane.showMessageDialog(parent, "OOo2GD needs to know where is your OpenOffice.org executable file, please select executable file of your OpenOffice.org.");
@@ -453,7 +453,7 @@ public class Configuration {
                 paths.add("/Applications/Safari.app/Contents/MacOS/Safari");
                 paths.add("/Applications/Safari.app");
                 paths.add("/Applications/Firefox.app ");
-                pathForBrowserExec = returnFirstExistingPath(paths);                
+                pathForBrowserExec = returnFirstExistingFile(paths);                
             }
             if (pathForBrowserExec==null || "null".equals(pathForBrowserExec)) {
                 JOptionPane.showMessageDialog(parent, "OOo2GD needs to know where is your browser executable file, please select executable file of your browser.");
