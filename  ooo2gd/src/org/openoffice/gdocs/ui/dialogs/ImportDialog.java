@@ -61,9 +61,8 @@ public class ImportDialog extends JFrame {
                         if (ioEvent.isCompleted()) {
                             try {                                
                                 File docFile = new File(url);
-                                String fName = docFile.getCanonicalPath();
-                                String sLoadUrl = Util.fileNameToOOoURL(fName);
-                                Util.openInOpenOffice(ImportDialog.this, sLoadUrl,xFrame);
+                                String fName = docFile.getCanonicalPath();                                
+                                Util.openInOpenOffice(ImportDialog.this, fName,xFrame);
                             } catch (Exception e) {
                                 Configuration.log(e);
                                 e.printStackTrace();
@@ -323,7 +322,7 @@ public class ImportDialog extends JFrame {
                 return;
             }
         } else {
-            documentUrl = directory +"/"+documentTitle;
+            documentUrl = directory +File.separator+documentTitle;
         }
         documentUrl = Util.findAvailableFileName(documentUrl);
         final URI uri = wrapper.getUriForEntry(entry);
