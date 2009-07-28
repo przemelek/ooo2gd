@@ -133,12 +133,12 @@ public class ImportDialog extends JFrame {
   
     /** Creates new form ImportDialog */
     public ImportDialog(java.awt.Frame parent, boolean modal, String currentDocumentPath,String system,XFrame frame) {
-        super();
+        super(Configuration.getStringFromResources("Import_from_Google_Docs", system));
         this.xFrame = frame;
         this.system = system;
         initComponents();
         loginPanel1.setSystem(system);
-        setTitle(Configuration.getStringFromResources("Import_from_Google_Docs", system));
+//        setTitle(Configuration.getStringFromResources("Import_from_Google_Docs", system));
         getListButton.setText(Configuration.getResources().getString("Get_list"));
         openButton.setText(Configuration.getResources().getString("Open"));
         openInBrowser.setText(Configuration.getResources().getString("OPEN_IN_BROWSER"));

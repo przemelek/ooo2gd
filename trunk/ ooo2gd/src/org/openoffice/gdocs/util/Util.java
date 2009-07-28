@@ -149,7 +149,7 @@ public class Util {
                 XTextDocument aTextDocument = (XTextDocument)UnoRuntime.queryInterface(com.sun.star.text.XTextDocument.class, xComp);
             } else {
                 // bad luck, we need to use direct method to run OO.org :-(
-                String cmd = Configuration.getPathForOOoExec(parent) + " \"" + fName+"\"";
+                String cmd[] = {"open", Configuration.getPathForOOoExec(parent) , fName};
                 try {
                     Runtime.getRuntime().exec(cmd);
                     Configuration.store();
@@ -259,9 +259,9 @@ public class Util {
             }
             String browserExec = Configuration.getPathForBrowserExec(parent);
             
-            String cmd = browserExec+" "+url;
+            String[] cmds = {"open", browserExec, url};                    
             try {
-                Runtime.getRuntime().exec(cmd);
+                Runtime.getRuntime().exec(cmds);
                 Configuration.store();
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(parent, "Problem: "+ioe.getMessage(),"Problem",JOptionPane.ERROR_MESSAGE);
