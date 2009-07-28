@@ -48,7 +48,7 @@ public class UploadDialog extends javax.swing.JFrame {
     private Wrapper wrapper;
     private boolean isUpdate;
     public UploadDialog(String pathName,final String system,XFrame frame) {
-        super();
+        super(Configuration.getStringFromResources("Export_to_Google_Docs", system));
         this.setVisible(false);
         xFrame = frame;
         this.pathName = pathName;
@@ -76,7 +76,7 @@ public class UploadDialog extends javax.swing.JFrame {
         setDocumentTitle(docName);
         docNameLabel1.setText(Configuration.getResources().getString("Document_name:"));
         docNameLabel2.setText(Configuration.getResources().getString("Document_name:"));
-        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));
+//        setTitle(Configuration.getStringFromResources("Export_to_Google_Docs", system));
         setServerLineVisible(false);
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             public void run() {

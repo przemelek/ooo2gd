@@ -191,10 +191,10 @@ public final class GDocs extends WeakBase
         }
     }
 
-    private void exportTo(final String system) {        
-        final String documentPath = getCurrentDocumentPath();
+    private void exportTo(final String system) {
         startNewThread(new Runnable() {
             public void run() {
+                final String documentPath = getCurrentDocumentPath();
                 Configuration.showWaitWindow();
                 String path = documentPath;
                 if (path!=null && !path.equals("")) {
@@ -204,7 +204,7 @@ public final class GDocs extends WeakBase
                         if (path.indexOf(" ")!=-1) {
                             path = path.replaceAll(" ", "%20");
                         }
-                        URL url = new URL(path);  
+                        URL url = new URL(path);
                         File file = new File(url.toURI());
                         if (file.isFile()) {
                             boolean doUpload = true;
@@ -216,16 +216,16 @@ public final class GDocs extends WeakBase
                                 UploadDialog dialog = new UploadDialog(pathName,system,m_xFrame);
                                 dialog.setVisible(true);
                             }
-                        } else {                                                        
-                            JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));                            
+                        } else {
+                            JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                             Configuration.hideWaitWindow();
                         }
                       } catch (Exception e) {
-                            e.printStackTrace();                            
+                            e.printStackTrace();
                             JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Problem:_")+e.getMessage());
                             Configuration.hideWaitWindow();
                       }
-                  } else {                      
+                  } else {
                       JOptionPane.showMessageDialog(Configuration.getWaitWindow(),Configuration.getResources().getString("Sorry..._you_must_first_save_your_file_on_hard_disk."));
                       Configuration.hideWaitWindow();
                   }
