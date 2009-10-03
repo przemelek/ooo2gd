@@ -98,4 +98,11 @@ public enum OOoFormats {
     public int getHandlerType() {
         return handlerType;
     }
+
+    @Override
+    public String toString() {
+        return fileExtension;
+    }
+    
+    
 }

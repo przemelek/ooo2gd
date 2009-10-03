@@ -586,6 +586,10 @@ public class ZohoWrapper implements Wrapper {
         public boolean updateSupported() {
             return false;
         }
+        
+        public boolean downloadInGivenFormatSupported() {
+            return false;
+        }
 
         public boolean update(String path, String docId, String mimeType) throws IOException {
             docId = docId.substring(0,docId.indexOf("?"));
@@ -644,19 +648,30 @@ public class ZohoWrapper implements Wrapper {
             }
 	    return looksForCorrectAnswer;            
         }
-                
-	public static void main(String[] args) throws Exception {
-		ZohoWrapper zohoWrapper = new ZohoWrapper();
-                Creditionals creds = new Creditionals("", "");
-		zohoWrapper.login(creds);
-		//List<ZohoDocument> list = zohoWrapper.getListOfDocuments();
-                //List<ZohoDocument> list2 = zohoWrapper.getListOfZohoWorkbooks();
-                for (org.openoffice.gdocs.util.Document doc:zohoWrapper.getListOfDocs(false)) {
-                    System.out.println(doc.getDocumentLink());
-                }
-//		for (ZohoDocument document:list) {
-//			//zohoWrapper.downloadDocument(document.getDocumentId(), document.getDocumentName()+".odt");
-//		}                
-//		System.out.println(zohoWrapper.upload("e:\\eksportTest.odt","eksportTest.odt"));
-	}
+
+    public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(org.openoffice.gdocs.util.Document entry) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public URI getUriForEntry(org.openoffice.gdocs.util.Document entry, OOoFormats format) throws URISyntaxException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+        
+//	public static void main(String[] args) throws Exception {
+//		ZohoWrapper zohoWrapper = new ZohoWrapper();
+//                Creditionals creds = new Creditionals("", "");
+//		zohoWrapper.login(creds);
+//		//List<ZohoDocument> list = zohoWrapper.getListOfDocuments();
+//                //List<ZohoDocument> list2 = zohoWrapper.getListOfZohoWorkbooks();
+//                for (org.openoffice.gdocs.util.Document doc:zohoWrapper.getListOfDocs(false)) {
+//                    System.out.println(doc.getDocumentLink());
+//                }
+////		for (ZohoDocument document:list) {
+////			//zohoWrapper.downloadDocument(document.getDocumentId(), document.getDocumentName()+".odt");
+////		}                
+////		System.out.println(zohoWrapper.upload("e:\\eksportTest.odt","eksportTest.odt"));
+//	}
+
 }

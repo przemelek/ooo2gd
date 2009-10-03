@@ -6,13 +6,33 @@ package org.openoffice.gdocs.ui.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.Document;
+import org.openoffice.gdocs.util.Wrapper;
 
-public class DocumentsTableModel extends AbstractTableModel {
+public class DocumentsTableModel extends DefaultTableModel {
 
     private List<Document> list = new ArrayList<Document>();
+    private Wrapper wrapper;
+    private int numberOfColumns;
+    
+    public DocumentsTableModel() {
+        this(null);
+    }
+    
+    public DocumentsTableModel(Wrapper wrapper) {
+        this.wrapper=wrapper;
+        numberOfColumns=2;
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        Class<?> type = String.class;
+        return type;
+    }
+    
+    
     
     public Object getValueAt(int rowIndex, int columnIndex) {
         Document entry = list.get(rowIndex);
@@ -26,7 +46,7 @@ public class DocumentsTableModel extends AbstractTableModel {
     }
 
     public int getColumnCount() {
-        return 2;
+        return numberOfColumns;
     }
 
     public int getRowCount() {
