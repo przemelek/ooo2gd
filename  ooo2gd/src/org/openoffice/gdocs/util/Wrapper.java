@@ -26,4 +26,7 @@ public interface Wrapper {
     public Creditionals getCreditionalsForServer(String serverPath);
     public boolean updateSupported();
     public boolean update(String path,String docId,String mimeType) throws Exception;
+    public boolean downloadInGivenFormatSupported();
+    public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(Document entry);
+    public URI getUriForEntry(final Document entry, final OOoFormats format) throws URISyntaxException;
 }

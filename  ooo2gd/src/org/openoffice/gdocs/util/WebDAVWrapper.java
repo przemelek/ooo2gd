@@ -246,7 +246,17 @@ public class WebDAVWrapper implements Wrapper {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
+    public boolean downloadInGivenFormatSupported() {
+        return false;
+    }
+
+    public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(Document entry) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public URI getUriForEntry(Document entry, final OOoFormats format) throws URISyntaxException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }    
     
     
 //    public static void main(String[] args) throws Exception {

@@ -28,6 +28,7 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -42,8 +43,8 @@ public class GoogleDocsWrapper implements Wrapper {
                                                               OOoFormats.Microsoft_Excel_95,OOoFormats.Microsoft_Excel_50,OOoFormats.OpenDocument_Spreadsheet,
                                                               OOoFormats.Text_CSV};
         // Yo Google! Sad that you didn't publish statistics for 3rd part programs using Google Docs API
-        // btw. why you are not hiring in Cracow? ;-)
-	public static final String APP_NAME = "RMK OpenOffice.org Docs Uploader";
+        // btw. Cracow office looks nice from inside ;-) it will be nice if I will be able to see it from inside more often ;-)
+	public static final String APP_NAME = "RMK-OpenOffice.orgDocsUploader-"+Configuration.getVersionStr();
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";        
 	private DocsService service;
         private SpreadsheetService spreadsheetService;
@@ -173,6 +174,15 @@ public class GoogleDocsWrapper implements Wrapper {
                     docEntry.setId(entry.getId());
                     docEntry.setTitle(entry.getTitle().getPlainText());
                     docEntry.setUpdated(entry.getUpdated().toStringRfc822());
+//                    System.out.println(entry.getTitle().getPlainText());
+//                    AclFeed aclFeed = service.getFeed(new URL(entry.getAclFeedLink().getHref()), AclFeed.class);
+//                    for (AclEntry entryAcl : aclFeed.getEntries()) {
+//                      System.out.println(
+//                          entryAcl.getScope().getValue() + " (" + entryAcl.getScope().getType() + ") : " + entryAcl.getRole().getValue());
+//                    }
+//                    for (Person person:entry.getAuthors()) {
+//                        System.out.println(person.getName()+" "+person.getEmail());
+//                    }
                     doc2Entry.put(docEntry, entry);
                     listOfDocuments.add(docEntry);
                 }
@@ -196,26 +206,57 @@ public class GoogleDocsWrapper implements Wrapper {
         return progress;
     }
         
-        public URI getUriForEntry(final Document entry) throws URISyntaxException {
+       public URI getUriForEntry(final Document entry) throws URISyntaxException {
+           OOoFormats defaultFormat = OOoFormats.OpenDocument_Text;
+           if (isSpreadsheet(entry)) {
+               defaultFormat = OOoFormats.OpenDocument_Spreadsheet;
+           } else if (isPresentation(entry)) {
+               defaultFormat = OOoFormats.OpenDocument_Presentation;
+           }
+           return getUriForEntry(entry,defaultFormat);
+       }
+       
+        public URI getUriForEntry(final Document entry, final OOoFormats format) throws URISyntaxException {
             String id = entry.getId().split("%3A")[1];
             String type = entry.getId().split("%3A")[0];
             type = type.substring(type.lastIndexOf("/")+1);
             String entryLink = entry.getDocumentLink();
-            String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");            
+            String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
+            String formatStr;
             if ("document".equals(type)) {
-                uriStr+="feeds/download/documents/Export?docID="+id+"&exportFormat=ODT";
+                formatStr = format.getFileExtension();
+                uriStr+="feeds/download/documents/Export?docID="+id+"&exportFormat="+formatStr;
             } else if ("spreadsheet".equals(type)) {
-                uriStr+= "feeds/download/spreadsheets/Export?key="+id+"&fmcmd=13";
+                switch (format) {
+                    case OpenDocument_Spreadsheet: {
+                        formatStr = "13";
+                        break;  
+                    }
+                    case Microsoft_Excel_97_2000_XP: {
+                        formatStr = "4";
+                        break;
+                    }
+                    case Text_CSV: {
+                        formatStr = "5";
+                        break;
+                    }
+                    default: formatStr="13";
+                }
+                uriStr+= "feeds/download/spreadsheets/Export?key="+id+"&fmcmd="+formatStr;
             } else if ("presentation".equals(type)) {
-                uriStr+="feeds/download/presentations/Export?docID="+id+"&exportFormat=PPT";
+                // not sure why, but it looks that Export servlet URL is now
+                // http://docs.google.com/present/export?format=ppt&id=
+                formatStr = format.getFileExtension();
+                uriStr+="feeds/download/presentations/Export?docID="+id+"&exportFormat="+formatStr;
             }
             return new URI(uriStr);
         }	
 	
+
         public URI getUriForEntryInBrowser(final Document entry) throws URISyntaxException {
             String uriStr = "";
             uriStr = entry.getDocumentLink();
-            return new URI(uriStr);            
+            return new URI(uriStr);
         }
 
         public boolean neededConversion(String path) {
@@ -289,4 +330,41 @@ public class GoogleDocsWrapper implements Wrapper {
             service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
             return true;
         }
+
+    public boolean downloadInGivenFormatSupported() {
+        return true;
+    }
+
+    public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(Document entry) {
+        List<OOoFormats> formats = new ArrayList<OOoFormats>();
+        if (isDoc(entry)) {
+            formats.add(OOoFormats.OpenDocument_Text);
+            formats.add(OOoFormats.Microsoft_Word_97_2000_XP);
+            formats.add(OOoFormats.Rich_Text_Format);
+            formats.add(OOoFormats.Text);
+        } else if (isPresentation(entry)) {
+            formats.add(OOoFormats.Microsoft_PowerPoint_97_2000_XP);
+        } else if (isSpreadsheet(entry)) {
+            formats.add(OOoFormats.OpenDocument_Spreadsheet);
+            formats.add(OOoFormats.Microsoft_Excel_97_2000_XP);
+            formats.add(OOoFormats.Text_CSV);
+        }
+        return formats;
+    }
+
+    
+    private boolean isDoc(Document entry) {
+        return (entry.getId().indexOf("/document%3A")!=-1);
+    }
+    
+    private boolean isPresentation(Document entry) {
+        return (entry.getId().indexOf("/presentation%3A")!=-1);
+    }
+    
+    private boolean isSpreadsheet(Document entry) {
+        return (entry.getId().indexOf("/spreadsheet%3A")!=-1);
+    }
+
+    
+        
 }

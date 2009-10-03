@@ -4,8 +4,8 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.dialogs;
 
-//import java.awt.Desktop;
 import java.awt.HeadlessException;
+import java.util.List;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,7 +33,9 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
 import java.awt.Cursor;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
+import org.openoffice.gdocs.util.OOoFormats;
 
 /**
  *
@@ -146,6 +148,8 @@ public class ImportDialog extends JFrame {
         closeButton.setText(Configuration.getResources().getString("Close"));
         jTable1.setModel(new DocumentsTableModel());
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        formatChoosePanel.setVisible(false);        
+        formatChooserLabel.setText(Configuration.getResources().getString("As"));
         this.currentDocumentPath = currentDocumentPath;
         Configuration.hideWaitWindow();
     }
@@ -172,8 +176,11 @@ public class ImportDialog extends JFrame {
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         openButton = new javax.swing.JButton();
-        openInBrowser = new javax.swing.JButton();
         openViaBrowserButton = new javax.swing.JButton();
+        openInBrowser = new javax.swing.JButton();
+        formatChoosePanel = new javax.swing.JPanel();
+        formatChooserLabel = new javax.swing.JLabel();
+        formatComboBox = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -231,17 +238,34 @@ public class ImportDialog extends JFrame {
 
         jPanel3.setMaximumSize(new java.awt.Dimension(71, 33));
 
-        jPanel4.setLayout(new java.awt.BorderLayout());
+        jPanel4.setLayout(new java.awt.GridBagLayout());
 
         openButton.setText("Open");
         openButton.setEnabled(false);
+        openButton.setMaximumSize(new java.awt.Dimension(1000, 23));
+        openButton.setPreferredSize(new java.awt.Dimension(119, 23));
         openButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openButtonActionPerformed(evt);
             }
         });
-        jPanel4.add(openButton, java.awt.BorderLayout.PAGE_START);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(openButton, gridBagConstraints);
+
+        openViaBrowserButton.setText("Open via Browser");
+        openViaBrowserButton.setEnabled(false);
+        openViaBrowserButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openViaBrowserButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(openViaBrowserButton, gridBagConstraints);
 
         openInBrowser.setText("Open in Browser");
         openInBrowser.setEnabled(false);
@@ -251,16 +275,23 @@ public class ImportDialog extends JFrame {
                 openInBrowserActionPerformed(evt);
             }
         });
-        jPanel4.add(openInBrowser, java.awt.BorderLayout.PAGE_END);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(openInBrowser, gridBagConstraints);
 
-        openViaBrowserButton.setText("Open via Browser");
-        openViaBrowserButton.setEnabled(false);
-        openViaBrowserButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openViaBrowserButtonActionPerformed(evt);
-            }
-        });
-        jPanel4.add(openViaBrowserButton, java.awt.BorderLayout.CENTER);
+        formatChooserLabel.setText("As");
+        formatChoosePanel.add(formatChooserLabel);
+
+        formatComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        formatChoosePanel.add(formatComboBox);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(formatChoosePanel, gridBagConstraints);
 
         jPanel3.add(jPanel4);
 
@@ -296,23 +327,7 @@ public class ImportDialog extends JFrame {
     private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         String directory = Configuration.getDirectoryToStoreFiles();
         String documentUrl = null;
-        String documentTitle = entry.getTitle().replaceAll("\\?", "").replaceAll("\\*", "").replace(File.separatorChar, '_').replace('/', '_');
-        boolean isDoc = (entry.getId().indexOf("/document%3A")!=-1);
-        boolean isPresentation = (entry.getId().indexOf("/presentation%3A")!=-1);
-        boolean isSpreadsheet = (entry.getId().indexOf("/spreadsheet%3A")!=-1);
-        if (isDoc) {
-            if (!documentTitle.toLowerCase().endsWith(".odt")) {
-                documentTitle+=".odt";
-            }
-        } else if (isPresentation) {
-            if (!documentTitle.toLowerCase().endsWith(".ppt")) {
-                documentTitle+=".ppt";
-            }
-        } else if (isSpreadsheet) {
-            if (!documentTitle.toLowerCase().endsWith(".ods")) {
-                documentTitle+=".ods";
-            }
-        }
+        String documentTitle = createFileName(wrapper,entry);
         if ("?".equals(directory)) {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setSelectedFile(new File(documentTitle));
@@ -325,10 +340,41 @@ public class ImportDialog extends JFrame {
             documentUrl = directory +File.separator+documentTitle;
         }
         documentUrl = Util.findAvailableFileName(documentUrl);
-        final URI uri = wrapper.getUriForEntry(entry);
+        final URI uri;
+        if (wrapper.downloadInGivenFormatSupported()) {            
+            uri = wrapper.getUriForEntry(entry,(OOoFormats)formatComboBox.getSelectedItem());
+        } else {
+            uri = wrapper.getUriForEntry(entry);
+        }
         downloadURI(documentUrl, uri, wrapper);
     }
 
+    private String createFileName(final Wrapper wrapper,final Document entry) {
+        String documentTitle = entry.getTitle().replaceAll("\\?", "").replaceAll("\\*", "").replace(File.separatorChar, '_').replace('/', '_');
+        String fileExtension = "";
+        if (wrapper.downloadInGivenFormatSupported()) {
+             fileExtension = ((OOoFormats)formatComboBox.getSelectedItem()).getFileExtension();
+        } else {
+            boolean isDoc = entry.getId().indexOf("/document%3A") != -1;
+            boolean isPresentation = entry.getId().indexOf("/presentation%3A") != -1;
+            boolean isSpreadsheet = entry.getId().indexOf("/spreadsheet%3A") != -1;            
+            if (isDoc) {
+                fileExtension="odt";
+            } else if (isPresentation) {
+                fileExtension="ppt";
+            } else if (isSpreadsheet) {
+                fileExtension="ods";
+            }
+        }
+        if (!documentTitle.toLowerCase().endsWith("."+fileExtension)) {
+                documentTitle += "."+fileExtension;
+        }
+
+        
+        return documentTitle;
+    }
+
+    
     private void downloadURI(final String documentUrl, final URI uri, final Wrapper wrapper) throws MalformedURLException, URISyntaxException {
         final Downloader downloader = wrapper.getDownloader(uri, 
             documentUrl);
@@ -370,22 +416,30 @@ public class ImportDialog extends JFrame {
                 final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);                
                 try {           
                     wrapper.login(loginPanel1.getCreditionals());
-                    DocumentsTableModel dtm = new DocumentsTableModel();                    
+                    DocumentsTableModel dtm = new DocumentsTableModel(wrapper);                    
                     for (Document entry:wrapper.getListOfDocs(false)) {
                         dtm.add(entry);
                     }
-                    jTable1.clearSelection();
-                    jTable1.setModel(dtm);
+                    jTable1.setModel(dtm);                    
+                    jTable1.clearSelection();                    
                     jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
                         public void valueChanged(ListSelectionEvent e) {
                             Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
+                            formatChoosePanel.setVisible(false);
+                            if (wrapper.downloadInGivenFormatSupported()) {                                
+                                List<OOoFormats> list = wrapper.getListOfSupportedForDownloadFormatsForEntry(entry);
+                                if (list.size()>0) {
+                                    formatChoosePanel.setVisible(true);
+                                    formatComboBox.setModel(new DefaultComboBoxModel(list.toArray()));
+                                }
+                            }
                             if (entry!=null) {
                                 ImportDialog.this.setButtonsEnable(true, true, true);
                             } else {
                                 ImportDialog.this.setButtonsEnable(false, false, false);
                             }
                         }
-                    });                
+                    });                    
                 } catch (Exception e) {
                     ImportDialog.this.setCursor(currentCursor);
                     e.printStackTrace();            
@@ -436,6 +490,9 @@ public class ImportDialog extends JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JPanel formatChoosePanel;
+    private javax.swing.JLabel formatChooserLabel;
+    private javax.swing.JComboBox formatComboBox;
     private javax.swing.JButton getListButton;
     private org.openoffice.gdocs.util.GoogleDocsWrapper googleDocsWrapper1;
     private javax.swing.JLabel jLabel1;

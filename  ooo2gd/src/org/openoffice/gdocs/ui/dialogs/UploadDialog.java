@@ -33,6 +33,7 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import com.sun.star.frame.XFrame;
 import com.sun.star.frame.XModel;
 import com.sun.star.uno.UnoRuntime;
+import javax.swing.ImageIcon;
 import org.openoffice.gdocs.util.OOoFormats;
 
 /**
@@ -64,7 +65,7 @@ public class UploadDialog extends javax.swing.JFrame {
         byte[] buf = new byte[1024*10];
         try {
             int size = is.read(buf);                        
-//            refreshButton.setIcon(new ImageIcon(java.util.Arrays.copyOf(buf, size),"Refresh list"));
+            refreshButton.setIcon(new ImageIcon(buf,"Refresh list"));
             refreshButton.setToolTipText("Refresh list");
         } catch (IOException ioe) {
             ioe.printStackTrace();

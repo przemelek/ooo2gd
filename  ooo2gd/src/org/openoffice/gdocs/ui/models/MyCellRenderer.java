@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -16,8 +15,7 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
     JLabel l = new JLabel("[update]");
     public MyCellRenderer() {
         setOpaque(true);
-        setLayout(new BorderLayout());        
-//        l.setFont(new Font(Font.,Font.PLAIN,9));
+        setLayout(new BorderLayout());
         l.setPreferredSize(new Dimension(50, 25));
         this.add(l,BorderLayout.WEST);
         label = new JLabel();
@@ -48,15 +46,6 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
         label.setText(value.toString());
         Color background;
         Color foreground;
-        // check if this cell represents the current DnD drop location
-//        JList.DropLocation dropLocation = list.getDropLocation();
-//        if (dropLocation != null
-//                && !dropLocation.isInsert()
-//                && dropLocation.getIndex() == index) {
-//            background = Color.BLUE;
-//            foreground = Color.WHITE;
-//        // check if this cell is selected
-//        } else 
         if (isSelected) {
             background = Color.LIGHT_GRAY;
             foreground = Color.WHITE;
