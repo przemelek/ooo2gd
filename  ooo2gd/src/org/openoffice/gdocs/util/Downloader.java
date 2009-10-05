@@ -121,6 +121,7 @@ public class Downloader implements Runnable {
     try {
       doFetchHttpURLConnection();      
     } catch (IOException ioex) {
+      ioex.printStackTrace();
       fireIOEvent(new IOEvent(this, 
                               IOEvent.getUNKNOWN_SIZE(), 
                               IOEvent.getUNKNOWN_SIZE(),

@@ -183,8 +183,10 @@ public class GoogleDocsWrapper implements Wrapper {
 //                    for (Person person:entry.getAuthors()) {
 //                        System.out.println(person.getName()+" "+person.getEmail());
 //                    }
-                    doc2Entry.put(docEntry, entry);
-                    listOfDocuments.add(docEntry);
+                    if (isDoc(docEntry) || isSpreadsheet(docEntry) || isPresentation(docEntry)) {
+                        doc2Entry.put(docEntry, entry);
+                        listOfDocuments.add(docEntry);
+                    }
                 }
                 Configuration.log("List has "+listOfDocuments.size()+" elements.");
                 this.listOfDocuments=listOfDocuments;
@@ -247,7 +249,8 @@ public class GoogleDocsWrapper implements Wrapper {
                 // not sure why, but it looks that Export servlet URL is now
                 // http://docs.google.com/present/export?format=ppt&id=
                 formatStr = format.getFileExtension();
-                uriStr+="feeds/download/presentations/Export?docID="+id+"&exportFormat="+formatStr;
+//                uriStr+="feeds/download/presentations/Export?docID="+id+"&exportFormat="+formatStr;
+                uriStr="https://docs.google.com/present/export?format="+formatStr+"&id="+id;
             }
             return new URI(uriStr);
         }	
