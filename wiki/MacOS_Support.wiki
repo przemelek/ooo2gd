@@ -1,5 +1,3 @@
 #labels Featured
-= Introduction =
-
 Current versions of OOo2GD should work with MacOS.
 Whole program was recompiled for Java 5, and from this what I know it works. But I didn't tested it because I have no access to any MacOS machine :-)
