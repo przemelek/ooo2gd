@@ -503,7 +503,21 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             if (updateInsteadOfCreatingNew) {                            
                                 successMsg = "File Updated";
                             } 
-                            JOptionPane.showMessageDialog(UploadDialog.this, successMsg);
+//                            JOptionPane.showMessageDialog(UploadDialog.this, successMsg);
+                            final String msg = successMsg;
+                            new Thread(new Runnable() {
+                                public void run() {
+                                    Uploading up = new Uploading();
+                                    up.setMessage(msg);
+                                    up.hideProgressBar();
+                                    up.setVisible(true);
+                                    try {
+                                        Thread.sleep(2500);
+                                    } catch(InterruptedException ie) { }
+                                    up.setVisible(false);
+                                    up.dispose();
+                                }
+                            }).start();                            
                         } else {
                             JOptionPane.showMessageDialog(UploadDialog.this, "Cannot upload document "+pathName,"Problem",JOptionPane.ERROR_MESSAGE);
                         }

@@ -45,12 +45,14 @@ public class ImportDialog extends JFrame {
 	
   private final class ImportIOListener implements IOListener {
 		private final String url;
+                private boolean openAfterDownload;
 
 		private final Uploading window;
 
-		private ImportIOListener(String url, Uploading window) {
+		private ImportIOListener(String url, Uploading window, boolean openAfterDownload) {
 			this.url = url;
 			this.window = window;
+                        this.openAfterDownload=openAfterDownload;
 		}
 
 		public void ioProgress(IOEvent ioEvent) {
@@ -61,10 +63,12 @@ public class ImportDialog extends JFrame {
                         int progress = (int)((float)ioEvent.getCompletedSize()/(float)ioEvent.getTotalSize()*100.0);
                         window.setProgress(progress);
                         if (ioEvent.isCompleted()) {
-                            try {                                
-                                File docFile = new File(url);
-                                String fName = docFile.getCanonicalPath();                                
-                                Util.openInOpenOffice(ImportDialog.this, fName,xFrame);
+                            try {
+                                if (openAfterDownload) {
+                                    File docFile = new File(url);
+                                    String fName = docFile.getCanonicalPath();
+                                    Util.openInOpenOffice(ImportDialog.this, fName,xFrame);
+                                }
                             } catch (Exception e) {
                                 Configuration.log(e);
                                 e.printStackTrace();
@@ -80,14 +84,16 @@ public class ImportDialog extends JFrame {
     private class OpenWrapper {
         private Wrapper wrapper;
         private Creditionals creditionals;
-
-        public OpenWrapper(Wrapper wrapper) {    
+        private boolean openAfterDownload;
+        
+        public OpenWrapper(Wrapper wrapper, final boolean openAfterDownload) {    
             this.wrapper = wrapper;
             creditionals = loginPanel1.getCreditionals();
+            this.openAfterDownload=openAfterDownload;
         }          
         
         public void doOpen(Document entry) throws AuthenticationException, URISyntaxException, IOException {
-            donwloadTextDocument(entry, getWrapper());
+            donwloadTextDocument(entry, getWrapper(),openAfterDownload);
         }
         
         public void open() {
@@ -117,7 +123,7 @@ public class ImportDialog extends JFrame {
     private abstract class OpenWithBrowserWrapper extends OpenWrapper {
 
         public OpenWithBrowserWrapper(Wrapper wrapper) {
-            super(wrapper);
+            super(wrapper,true);
         }
         
         
@@ -177,10 +183,12 @@ public class ImportDialog extends JFrame {
         jPanel4 = new javax.swing.JPanel();
         openButton = new javax.swing.JButton();
         openViaBrowserButton = new javax.swing.JButton();
+        downloadButton = new javax.swing.JButton();
         openInBrowser = new javax.swing.JButton();
         formatChoosePanel = new javax.swing.JPanel();
         formatChooserLabel = new javax.swing.JLabel();
         formatComboBox = new javax.swing.JComboBox();
+        jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -263,9 +271,22 @@ public class ImportDialog extends JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel4.add(openViaBrowserButton, gridBagConstraints);
+
+        downloadButton.setText("Download");
+        downloadButton.setEnabled(false);
+        downloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downloadButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel4.add(downloadButton, gridBagConstraints);
 
         openInBrowser.setText("Open in Browser");
         openInBrowser.setEnabled(false);
@@ -277,7 +298,7 @@ public class ImportDialog extends JFrame {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel4.add(openInBrowser, gridBagConstraints);
 
@@ -292,6 +313,11 @@ public class ImportDialog extends JFrame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel4.add(formatChoosePanel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        jPanel4.add(jSeparator1, gridBagConstraints);
 
         jPanel3.add(jPanel4);
 
@@ -321,10 +347,10 @@ public class ImportDialog extends JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-        new OpenWrapper(WrapperFactory.getWrapperForCredentials(system)).open();
+        new OpenWrapper(WrapperFactory.getWrapperForCredentials(system),true).open();
     }//GEN-LAST:event_openButtonActionPerformed
 
-    private void donwloadTextDocument(final Document entry, final Wrapper wrapper) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
+    private void donwloadTextDocument(final Document entry, final Wrapper wrapper, final boolean openAfterDownload) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         String directory = Configuration.getDirectoryToStoreFiles();
         String documentUrl = null;
         String documentTitle = createFileName(wrapper,entry);
@@ -346,7 +372,7 @@ public class ImportDialog extends JFrame {
         } else {
             uri = wrapper.getUriForEntry(entry);
         }
-        downloadURI(documentUrl, uri, wrapper);
+        downloadURI(documentUrl, uri, wrapper, openAfterDownload);
     }
 
     private String createFileName(final Wrapper wrapper,final Document entry) {
@@ -375,14 +401,14 @@ public class ImportDialog extends JFrame {
     }
 
     
-    private void downloadURI(final String documentUrl, final URI uri, final Wrapper wrapper) throws MalformedURLException, URISyntaxException {
+    private void downloadURI(final String documentUrl, final URI uri, final Wrapper wrapper, final boolean openAfterDownload) throws MalformedURLException, URISyntaxException {
         final Downloader downloader = wrapper.getDownloader(uri, 
             documentUrl);
         final Uploading progressWindow = new Uploading();
         progressWindow.setMessage(wrapper.getSystem()+" -> OpenOffice.org");
         progressWindow.setVisible(true);            
         progressWindow.showProgressBar();
-        downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow));
+        downloader.addIOListener(new ImportIOListener(documentUrl, progressWindow,openAfterDownload));
         downloader.start();
     }
 
@@ -403,6 +429,7 @@ public class ImportDialog extends JFrame {
         openButton.setEnabled(openState);
         openViaBrowserButton.setEnabled(openViaBrowserState);
         openInBrowser.setEnabled(openInBrowserState);
+        downloadButton.setEnabled(openState);
     }
     
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
@@ -482,6 +509,10 @@ public class ImportDialog extends JFrame {
             }
         }.open();
     }//GEN-LAST:event_openInBrowserActionPerformed
+
+private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadButtonActionPerformed
+        new OpenWrapper(WrapperFactory.getWrapperForCredentials(system),false).open();
+}//GEN-LAST:event_downloadButtonActionPerformed
     
     public static void main(String[] args) {
         System.out.println(System.getProperty("java.version"));
@@ -490,6 +521,7 @@ public class ImportDialog extends JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JButton downloadButton;
     private javax.swing.JPanel formatChoosePanel;
     private javax.swing.JLabel formatChooserLabel;
     private javax.swing.JComboBox formatComboBox;
@@ -501,6 +533,7 @@ public class ImportDialog extends JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTable jTable1;

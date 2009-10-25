@@ -30,7 +30,7 @@ public class Util {
     
         public static String fileNameToOOoURL(final String fName) {
             StringBuilder sLoadUrl = new StringBuilder("file:///");
-            sLoadUrl.append(fName.replace('\\', '/'));                              
+            sLoadUrl.append(fName.replace('\\', '/').replace("#", "%23"));
             return sLoadUrl.toString();
         }
     
