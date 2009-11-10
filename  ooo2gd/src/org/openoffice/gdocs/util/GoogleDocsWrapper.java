@@ -42,12 +42,13 @@ public class GoogleDocsWrapper implements Wrapper {
                                                               OOoFormats.Microsoft_PowerPoint_97_2000_XP,OOoFormats.Microsoft_Excel_97_2000_XP,
                                                               OOoFormats.Microsoft_Excel_95,OOoFormats.Microsoft_Excel_50,OOoFormats.OpenDocument_Spreadsheet,
                                                               OOoFormats.Text_CSV};
-        // Yo Google! Sad that you didn't publish statistics for 3rd part programs using Google Docs API
-        // btw. Cracow office looks nice from inside ;-) it will be nice if I will be able to see it from inside more often ;-)
+        // Yo Google! Sad that you didn't publish statistics for 3rd party programs using Google Docs API
+        // btw. Cracow office looks nice from inside ;-)
 	public static final String APP_NAME = "RMK-OpenOffice.orgDocsUploader-"+Configuration.getVersionStr();
 	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";        
 	private DocsService service;
         private SpreadsheetService spreadsheetService;
+        private Creditionals creditionals;
         private boolean isLogedIn = false;
         private static List<Document> listOfDocuments;
         private static Map<Document,DocumentListEntry> doc2Entry = null;        
@@ -63,8 +64,8 @@ public class GoogleDocsWrapper implements Wrapper {
             return spreadsheetService;
         }
         
-	public void login(Creditionals creditionals) throws AuthenticationException {            
-            if (!isLogedIn) {
+	public void login(Creditionals creditionals) throws AuthenticationException {
+            if (!creditionals.equals(this.creditionals) || !isLogedIn) {
                 Configuration.log("Try to create DocsService");
 		service = new DocsService(APP_NAME);
                 spreadsheetService = new SpreadsheetService(APP_NAME);
@@ -74,6 +75,8 @@ public class GoogleDocsWrapper implements Wrapper {
                     service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
                     spreadsheetService.setUserCredentials(creditionals.getUserName(),creditionals.getPassword());
                     isLogedIn=true;
+                    this.creditionals = creditionals;
+                    listOfDocuments = null;
                     Configuration.log("LogedIn");
                 } catch (GoogleService.CaptchaRequiredException captchaException) {
                     Configuration.log("Problem with login");
@@ -85,12 +88,12 @@ public class GoogleDocsWrapper implements Wrapper {
                         service.setUserCredentials(creditionals.getUserName(),creditionals.getPassword(),captchaException.getCaptchaToken(),dialog.getReturnValue());
                         spreadsheetService.setUserCredentials(creditionals.getUserName(),creditionals.getPassword(),captchaException.getCaptchaToken(),dialog.getReturnValue());
                         isLogedIn=true;
+                        this.creditionals = creditionals;
+                        listOfDocuments = null;                        
                     }
                 }                
             } else {
                 System.out.println("LogedIn :-)");
-                Throwable t = new Throwable();
-                t.printStackTrace();
             }
 	}
 	
@@ -331,6 +334,7 @@ public class GoogleDocsWrapper implements Wrapper {
             DocumentListEntry entry = doc2Entry.get(docToUpdate);
             entry.setFile(getFileForPath(path),mimeType);
             service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
+            getListOfDocs(false);
             return true;
         }
 
@@ -357,17 +361,19 @@ public class GoogleDocsWrapper implements Wrapper {
 
     
     private boolean isDoc(Document entry) {
-        return (entry.getId().indexOf("/document%3A")!=-1);
+        return (entry!=null && entry.getId().indexOf("/document%3A")!=-1);
     }
     
     private boolean isPresentation(Document entry) {
-        return (entry.getId().indexOf("/presentation%3A")!=-1);
+        return (entry!=null && entry.getId().indexOf("/presentation%3A")!=-1);
     }
     
     private boolean isSpreadsheet(Document entry) {
-        return (entry.getId().indexOf("/spreadsheet%3A")!=-1);
+        return (entry!=null && entry.getId().indexOf("/spreadsheet%3A")!=-1);
     }
 
-    
+    public boolean hasList() {
+        return (listOfDocuments!=null);
+    }
         
 }

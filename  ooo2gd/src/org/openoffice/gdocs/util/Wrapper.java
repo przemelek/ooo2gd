@@ -29,4 +29,5 @@ public interface Wrapper {
     public boolean downloadInGivenFormatSupported();
     public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(Document entry);
     public URI getUriForEntry(final Document entry, final OOoFormats format) throws URISyntaxException;
+    public boolean hasList();
 }

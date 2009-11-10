@@ -44,7 +44,7 @@ public class ZohoWrapper implements Wrapper {
 	public final static String API_KEY = "5836e626337ffd39bfd3a8114e4956e5";
         private List<org.openoffice.gdocs.util.Document> listOfDocuments;
         
-	private class ZohoDownloader extends Downloader {
+	private static class ZohoDownloader extends Downloader {
 		public ZohoDownloader(URI source, OutputStream out,Wrapper wrapper) throws MalformedURLException {
 			super(source,out,wrapper);
 		}
@@ -59,7 +59,7 @@ public class ZohoWrapper implements Wrapper {
 		}
 	}
 	
-	private class ZohoDocument {
+	private static class ZohoDocument {
 		private String documentId;
 		private String documentName;
 		private String version;
@@ -154,10 +154,14 @@ public class ZohoWrapper implements Wrapper {
 	}
 	
 	private String ticket = "";
+        private Creditionals creditionals;
+        private boolean isLogedIn;
 	
 	public void login(Creditionals creditionals) throws Exception {
+            if (!creditionals.equals(this.creditionals) || !isLogedIn) {
 		String user = creditionals.getUserName();
 		String password = creditionals.getPassword();
+                this.creditionals = creditionals;
 		String loginUrl = "https://accounts.zoho.com/login?servicename=ZohoWriter&FROM_AGENT=true&LOGIN_ID="+user+"&PASSWORD="+password;
 		BufferedReader br = getBufferedReaderForUriString(loginUrl);
 		String line = "";
@@ -173,8 +177,12 @@ public class ZohoWrapper implements Wrapper {
 		if (ticket==null) {
 			throw new AuthenticationException("Cannot authenticate");
 		}
+                isLogedIn=true;
+                this.creditionals=creditionals;
+                listOfDocuments=null;
 		System.out.println(ticket);
 		br.close();
+            }
 	}
 
 
@@ -657,7 +665,9 @@ public class ZohoWrapper implements Wrapper {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
+    public boolean hasList() {
+        return (listOfDocuments!=null);
+    }
         
 //	public static void main(String[] args) throws Exception {
 //		ZohoWrapper zohoWrapper = new ZohoWrapper();

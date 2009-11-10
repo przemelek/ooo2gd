@@ -146,7 +146,6 @@ public class ImportDialog extends JFrame {
         this.system = system;
         initComponents();
         loginPanel1.setSystem(system);
-//        setTitle(Configuration.getStringFromResources("Import_from_Google_Docs", system));
         getListButton.setText(Configuration.getResources().getString("Get_list"));
         openButton.setText(Configuration.getResources().getString("Open"));
         openInBrowser.setText(Configuration.getResources().getString("OPEN_IN_BROWSER"));
@@ -157,6 +156,15 @@ public class ImportDialog extends JFrame {
         formatChoosePanel.setVisible(false);        
         formatChooserLabel.setText(Configuration.getResources().getString("As"));
         this.currentDocumentPath = currentDocumentPath;
+        Creditionals creditionals = loginPanel1.getCreditionals();
+        Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
+        if (wrapper.hasList()) {
+            try {
+                fillListOfDocuments(wrapper,wrapper.getListOfDocs(true));
+            } catch (Exception e) {
+                // OK, this means that we were not able to obtain current docs list
+            }
+        }
         Configuration.hideWaitWindow();
     }
     
@@ -244,7 +252,7 @@ public class ImportDialog extends JFrame {
         jSplitPane2.setFocusCycleRoot(true);
         jSplitPane2.setPreferredSize(new java.awt.Dimension(300, 134));
 
-        jPanel3.setMaximumSize(new java.awt.Dimension(71, 33));
+        jPanel3.setMaximumSize(new java.awt.Dimension(130, 33));
 
         jPanel4.setLayout(new java.awt.GridBagLayout());
 
@@ -394,9 +402,7 @@ public class ImportDialog extends JFrame {
         }
         if (!documentTitle.toLowerCase().endsWith("."+fileExtension)) {
                 documentTitle += "."+fileExtension;
-        }
-
-        
+        }        
         return documentTitle;
     }
 
@@ -437,36 +443,14 @@ public class ImportDialog extends JFrame {
         jTable1.setEnabled(false);
         final Cursor currentCursor = ImportDialog.this.getCursor();
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setButtonsEnable(false, false, false);        
+        setButtonsEnable(false, false, false);            
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             public void run() {
-                final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);                
-                try {           
+                try {
+                    final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system); 
                     wrapper.login(loginPanel1.getCreditionals());
-                    DocumentsTableModel dtm = new DocumentsTableModel(wrapper);                    
-                    for (Document entry:wrapper.getListOfDocs(false)) {
-                        dtm.add(entry);
-                    }
-                    jTable1.setModel(dtm);                    
-                    jTable1.clearSelection();                    
-                    jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-                        public void valueChanged(ListSelectionEvent e) {
-                            Document entry = (((DocumentsTableModel)jTable1.getModel()).getEntry(jTable1.getSelectedRow()));
-                            formatChoosePanel.setVisible(false);
-                            if (wrapper.downloadInGivenFormatSupported()) {                                
-                                List<OOoFormats> list = wrapper.getListOfSupportedForDownloadFormatsForEntry(entry);
-                                if (list.size()>0) {
-                                    formatChoosePanel.setVisible(true);
-                                    formatComboBox.setModel(new DefaultComboBoxModel(list.toArray()));
-                                }
-                            }
-                            if (entry!=null) {
-                                ImportDialog.this.setButtonsEnable(true, true, true);
-                            } else {
-                                ImportDialog.this.setButtonsEnable(false, false, false);
-                            }
-                        }
-                    });                    
+                    List<Document> documents = wrapper.getListOfDocs(false);
+                    fillListOfDocuments(wrapper,documents);         
                 } catch (Exception e) {
                     ImportDialog.this.setCursor(currentCursor);
                     e.printStackTrace();            
@@ -483,6 +467,34 @@ public class ImportDialog extends JFrame {
             }
         });
     }//GEN-LAST:event_getListButtonActionPerformed
+    
+    
+    private void fillListOfDocuments(final Wrapper wrapper, List<Document> documents) {
+        DocumentsTableModel dtm = new DocumentsTableModel(wrapper);
+        for (Document entry : documents) {
+            dtm.add(entry);
+        }
+        jTable1.setModel(dtm);
+        jTable1.clearSelection();
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                Document entry = ((DocumentsTableModel) jTable1.getModel()).getEntry(jTable1.getSelectedRow());
+                formatChoosePanel.setVisible(false);
+                if (wrapper.downloadInGivenFormatSupported()) {
+                    List<OOoFormats> list = wrapper.getListOfSupportedForDownloadFormatsForEntry(entry);
+                    if (list.size() > 0) {
+                        formatChoosePanel.setVisible(true);
+                        formatComboBox.setModel(new DefaultComboBoxModel(list.toArray()));
+                    }
+                }
+                if (entry != null) {
+                    ImportDialog.this.setButtonsEnable(true, true, true);
+                } else {
+                    ImportDialog.this.setButtonsEnable(false, false, false);
+                }
+            }
+        });
+    }
     
     /** Closes the dialog */
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog

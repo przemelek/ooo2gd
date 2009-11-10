@@ -110,7 +110,9 @@ public class UploadDialog extends javax.swing.JFrame {
             boolean hasList = false;
             docNameComboBox.removeAllItems();
             List<Document> docsList = null;
+                    
             try {
+                wrapper.login(loginPanel1.getCreditionals());
                 docsList = wrapper.getListOfDocs(useExistinListIfPossible);
                 hasList = true;
             } catch(Exception e) {
@@ -118,17 +120,7 @@ public class UploadDialog extends javax.swing.JFrame {
                 Configuration.log("Cannot get list of documents :-(");
                 Configuration.log(e);
             }
-            if (!hasList) {
-                try {
-                    wrapper.login(loginPanel1.getCreditionals());
-                    docsList = wrapper.getListOfDocs(useExistinListIfPossible);
-                    hasList=true;
-                } catch(Exception e) {
-                    // we left empty... Update is impossible, because we cannot get list of documents :-(
-                    Configuration.log("Cannot get list of documents :-(");
-                    Configuration.log(e);
-                }                    
-            }
+
             if (hasList && docsList!=null) {
                 docNameComboBox.setRenderer(new MyCellRenderer());                                
                 docNameComboBox.setEditor(new MyEditorRenderer());                 
@@ -139,9 +131,16 @@ public class UploadDialog extends javax.swing.JFrame {
                 refreshButton.setVisible(true);
                 docNameComboBox.addItem(docName.getText());
                 Map<String,Document> map = new HashMap<String,Document>();
+                Document selected = null;
                 for (Document doc:docsList) {
                     docNameComboBox.addItem(doc);
+                    if (selected==null && doc.getTitle().equals(docName.getText())) {
+                        selected = doc;
+                    }
                     map.put(doc.getId(),doc);
+                }
+                if (selected!=null) {
+                    docNameComboBox.setSelectedItem(selected);
                 }
                 getNameFromComboBox=true;
             }
@@ -369,19 +368,19 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 try {
                     OOoFormats currentFormat = null;
                     if (xFrame!=null) {
-                    try {
-                        XModel xDoc = (XModel) UnoRuntime.queryInterface(
-                        XModel.class, xFrame.getController().getModel());
-                        PropertyValue[] properties = xDoc.getArgs();
-                        for (PropertyValue property:properties) {
-                            if ("FilterName".equals(property.Name)) {
-                                currentFormat = Util.findFormatForFilterName((String)property.Value);
-                                break;
-                            }
-                        }                        
-                    } catch (Exception e) {
-                        // we will ignore this
-                    }
+                        try {
+                            XModel xDoc = (XModel) UnoRuntime.queryInterface(
+                            XModel.class, xFrame.getController().getModel());
+                            PropertyValue[] properties = xDoc.getArgs();
+                            for (PropertyValue property:properties) {
+                                if ("FilterName".equals(property.Name)) {
+                                    currentFormat = Util.findFormatForFilterName((String)property.Value);
+                                    break;
+                                }
+                            }                        
+                        } catch (Exception e) {
+                            // we will ignore this
+                        }
                     }
                     Creditionals credentionals;                    
                     if (wrapper.isServerSelectionNeeded()) {
@@ -402,7 +401,6 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         } else {
                             docName = ((Document)obj).getTitle();
                             updateInsteadOfCreatingNew = true;
-                            ///((Document)obj).getDocumentLink()
                         }
                     }
                     

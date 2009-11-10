@@ -176,7 +176,7 @@ public class Util {
             String destFileExt = destFileURI.substring(destFileURI.lastIndexOf(".")+1);
             int count = 1;      
             File f;
-            while ((f=new File(destFileURI)).exists()) {
+            while ((f=new File(destFileURI)).exists() && !Configuration.getOverwritteFlag()) {
                 destFileURI=destFileName+"("+(count++)+")"+"."+destFileExt;
             }            
             String fName = f.getName();
