@@ -132,6 +132,20 @@ public class Creditionals {
     public String getSystem() {
         return this.system;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
+        if (obj instanceof Creditionals) {
+            Creditionals cr = (Creditionals)obj;
+            result=cr.getUserName().equals(this.getUserName()) 
+                    && cr.getPassword().equals(this.getPassword()) 
+                    && cr.getSystem().equals(this.getSystem());
+        } 
+        return result;
+    }
+    
+    
     
     public boolean isEmpty() {
         boolean empty = ( (userName==null) || ("".equals(userName)) && (password==null) || ("".equals(password)) );

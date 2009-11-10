@@ -256,8 +256,11 @@ public class WebDAVWrapper implements Wrapper {
 
     public URI getUriForEntry(Document entry, final OOoFormats format) throws URISyntaxException {
         throw new UnsupportedOperationException("Not supported yet.");
-    }    
-    
+    }
+
+    public boolean hasList() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
 //    public static void main(String[] args) throws Exception {
 //        Wrapper wrapper = new WebDAVWrapper();

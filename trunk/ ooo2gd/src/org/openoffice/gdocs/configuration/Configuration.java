@@ -37,7 +37,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.8.2";
+    private static String versionStr = "1.9.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -55,6 +55,7 @@ public class Configuration {
     private static boolean useExec = false;
     private static String pathForOOoExec;
     private static String pathForBrowserExec;
+    private static boolean overwritteFlag;
     private static boolean macOverride = false;
     
     static {
@@ -112,6 +113,7 @@ public class Configuration {
             pr.println(isUseExec()?"1":"0");
             pr.println(pathForBrowserExec);
             pr.println(pathForOOoExec);
+            pr.print(getOverwritteFlag()?"1":"0");
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -150,6 +152,8 @@ public class Configuration {
             setPathForBrowserExec(pathForBrowserExec);
             String pathForOOoExec = br.readLine();
             setPathForOOoExec(pathForOOoExec);
+            String overwritteFlagStr = br.readLine();
+            setOverwritteFlag("1".equals(overwritteFlagStr));
             br.close();            
         } catch (IOException e) {
             // Intentionaly left empty
@@ -465,5 +469,13 @@ public class Configuration {
     
     public static void setPathForBrowserExec(String pathForBrowserExecVal) {
         pathForBrowserExec = pathForBrowserExecVal;
+    }
+
+    public static void setOverwritteFlag(boolean flag) {
+        overwritteFlag = flag;
+    }
+    
+    public static boolean getOverwritteFlag() {
+        return overwritteFlag;
     }
 }
