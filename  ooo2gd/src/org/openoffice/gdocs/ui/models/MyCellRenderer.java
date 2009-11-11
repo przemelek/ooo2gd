@@ -16,7 +16,8 @@ public class MyCellRenderer extends JComponent implements ListCellRenderer {
     public MyCellRenderer() {
         setOpaque(true);
         setLayout(new BorderLayout());
-        l.setPreferredSize(new Dimension(50, 25));
+        l.setPreferredSize(new Dimension(50, 18));
+        l.setMaximumSize(new Dimension(50, 18));
         this.add(l,BorderLayout.WEST);
         label = new JLabel();
         this.add(label,BorderLayout.CENTER);
