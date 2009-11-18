@@ -23,3 +23,5 @@ For those of you using Ubuntu Hardy and unable to see any JRE under Menu>Tools>O
 Hey, I finally got OOo2gd work on Jaunty.
 Install the package which named "openoffice.org" from the repo, then OOo2gd will be
 installed properly.
+
+7) Ubuntu 9.10 - if something doesn't work you probably have something broken in your instalation. Make sure that you have Sun Java, and that your OpenOffice.org uses it (look at point 3 on this page). Easiest way is to install OpenOffice.org in standard way, simple use apt-get install openoffice.org and everything should be downloaded and installed. [http://eng-przemelek.blogspot.com/2009/11/ooo2gd-in-ubuntu-910-its-working.html Here] description how I installed OO.org 3.1 on Ubuntu 9.10
