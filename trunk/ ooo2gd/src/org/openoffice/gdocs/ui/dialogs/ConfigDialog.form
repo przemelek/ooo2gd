@@ -29,75 +29,74 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="proxyServer" alignment="0" min="-2" pref="374" max="-2" attributes="0"/>
+                          <Component id="proxyServerLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="0" attributes="1">
-                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jComboBox1" pref="380" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="proxyServer" alignment="0" min="-2" pref="374" max="-2" attributes="0"/>
-                                  <Component id="proxyServerLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="proxyPort" max="32767" attributes="1"/>
-                                  <Component id="proxyPortLabel" alignment="0" max="32767" attributes="1"/>
-                              </Group>
-                          </Group>
-                          <Component id="authProxyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="jRadioButton1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="saveDirectoryTextField" min="-2" pref="218" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="browseButton" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="1">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="overwritteCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jRadioButton2" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace pref="121" max="32767" attributes="0"/>
-                              <Component id="jButton3" min="-2" max="-2" attributes="1"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="1">
-                              <Component id="authProxyUserLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="authProxyUser" min="-2" pref="87" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="authProxyPasswordLabel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="authProxyPassword" pref="268" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="proxyCheckBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="244" max="32767" attributes="0"/>
-                              <Component id="jButton4" min="-2" pref="130" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="proxyPort" max="32767" attributes="1"/>
+                          <Component id="proxyPortLabel" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
                   </Group>
+                  <Component id="authProxyLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="124" max="-2" attributes="0"/>
+                      <Component id="jRadioButton1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="saveDirectoryTextField" min="-2" pref="218" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="browseButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="1">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="overwritteCheckBox" min="-2" max="-2" attributes="0"/>
+                          <Component id="jRadioButton2" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="131" max="32767" attributes="0"/>
+                      <Component id="jButton3" min="-2" max="-2" attributes="1"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="1">
+                      <Component id="authProxyUserLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="authProxyUser" min="-2" pref="87" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="authProxyPasswordLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="authProxyPassword" pref="284" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="proxyCheckBox" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="254" max="32767" attributes="0"/>
+                      <Component id="jButton4" min="-2" pref="130" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="114" max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" pref="83" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jPanel1" alignment="0" max="32767" attributes="1"/>
+                  <Component id="jLabel14" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace pref="272" max="-2" attributes="0"/>
                       <Component id="jButton2" min="-2" pref="82" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="105" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="420" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel19" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel1" max="32767" attributes="1"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jComboBox2" alignment="0" pref="396" max="32767" attributes="0"/>
+                          <Component id="jComboBox1" alignment="0" pref="396" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -107,10 +106,15 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="1"/>
                   <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jComboBox2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -136,14 +140,14 @@
                   <Component id="authProxyPasswordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="authProxyPassword" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jRadioButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="browseButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="saveDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
                       <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -154,20 +158,24 @@
                       <Component id="jRadioButton2" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="8" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel11" alignment="1" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="1">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
+                  <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -261,12 +269,12 @@
                       <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="85" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="95" max="-2" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel12" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="300" max="32767" attributes="0"/>
+                  <EmptySpace pref="310" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -522,6 +530,26 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="If file with given name exists try to overwrite it"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel19">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Look &amp; Feel:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="jComboBox2">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="4">
+            <StringItem index="0" value="Item 1"/>
+            <StringItem index="1" value="Item 2"/>
+            <StringItem index="2" value="Item 3"/>
+            <StringItem index="3" value="Item 4"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox2ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

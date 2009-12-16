@@ -19,6 +19,7 @@ public class ConfigDialog extends javax.swing.JFrame {
         buttonGroup1.add(jRadioButton1);
         buttonGroup1.add(jRadioButton2);
         jComboBox1.setModel(Configuration.getLanguagesModel());
+        jComboBox2.setModel(Configuration.getLooksAndFeelsModel());
         proxyCheckBox.setSelected(Configuration.isUseProxy());        
         proxyServer.setText(Configuration.getProxyServer());
         proxyPort.setText(Configuration.getProxyPort());
@@ -111,6 +112,8 @@ public class ConfigDialog extends javax.swing.JFrame {
         browseButton = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         overwritteCheckBox = new javax.swing.JCheckBox();
+        jLabel19 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Configuration");
@@ -215,11 +218,11 @@ public class ConfigDialog extends javax.swing.JFrame {
                     .add(jLabel16)
                     .add(jLabel17)
                     .add(jLabel18))
-                .add(85, 85, 85))
+                .add(95, 95, 95))
             .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel12)
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addContainerGap(310, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -340,75 +343,88 @@ public class ConfigDialog extends javax.swing.JFrame {
 
         overwritteCheckBox.setText("If file with given name exists try to overwrite it");
 
+        jLabel19.setText("Look & Feel:");
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(proxyServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(proxyServerLabel))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(proxyPort)
+                            .add(proxyPortLabel)))
+                    .add(authProxyLabel)
+                    .add(layout.createSequentialGroup()
+                        .add(jRadioButton1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(saveDirectoryTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 218, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(browseButton))
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(overwritteCheckBox)
+                            .add(jRadioButton2))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 131, Short.MAX_VALUE)
+                        .add(jButton3))
+                    .add(layout.createSequentialGroup()
+                        .add(authProxyUserLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(authProxyUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(authProxyPasswordLabel)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(authProxyPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(proxyCheckBox)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 254, Short.MAX_VALUE)
+                        .add(jButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 130, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(layout.createSequentialGroup()
+                        .add(114, 114, 114)
+                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jLabel14)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(jLabel1)
-                                .add(18, 18, 18)
-                                .add(jComboBox1, 0, 380, Short.MAX_VALUE))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(proxyServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 374, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(proxyServerLabel))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                    .add(proxyPort)
-                                    .add(proxyPortLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, authProxyLabel)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(jRadioButton1)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(saveDirectoryTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 218, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(browseButton))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(overwritteCheckBox)
-                                    .add(jRadioButton2))
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 121, Short.MAX_VALUE)
-                                .add(jButton3))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(authProxyUserLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(authProxyUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 87, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(authProxyPasswordLabel)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(authProxyPassword, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                                .add(proxyCheckBox)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 244, Short.MAX_VALUE)
-                                .add(jButton4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 130, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 272, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(105, 105, 105))
                     .add(layout.createSequentialGroup()
-                        .add(124, 124, 124)
-                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 83, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(64, 64, 64)
-                        .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(jLabel11)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 420, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel11))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel14)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel1)
+                            .add(jLabel19))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jComboBox2, 0, 396, Short.MAX_VALUE)
+                            .add(jComboBox1, 0, 396, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
                     .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel19)
+                    .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(proxyCheckBox)
@@ -429,7 +445,7 @@ public class ConfigDialog extends javax.swing.JFrame {
                     .add(authProxyUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(authProxyPasswordLabel)
                     .add(authProxyPassword, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(18, 18, 18)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jRadioButton1)
                     .add(browseButton)
@@ -443,18 +459,21 @@ public class ConfigDialog extends javax.swing.JFrame {
                         .add(overwritteCheckBox)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jRadioButton2)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel14)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel11)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jButton1)
-                            .add(jButton2))
-                        .add(19, 19, 19))))
+                .add(6, 6, 6)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                        .add(layout.createSequentialGroup()
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                            .add(jButton1))
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                            .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(jButton2)
+                            .add(19, 19, 19)))
+                    .add(jLabel11)))
         );
 
         pack();
@@ -496,6 +515,7 @@ public class ConfigDialog extends javax.swing.JFrame {
             Configuration.setDirectoryToStoreFiles("?");
         }
         Configuration.setOverwritteFlag(overwritteCheckBox.isSelected());
+        Configuration.setLookAndFeel((String)jComboBox2.getSelectedItem());
         Configuration.store();
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -567,6 +587,10 @@ private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
 private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     
 }//GEN-LAST:event_jButton4ActionPerformed
+
+private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+    Configuration.changeLookAndFeel((String)jComboBox2.getSelectedItem());
+}//GEN-LAST:event_jComboBox2ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -592,6 +616,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -602,6 +627,7 @@ private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
