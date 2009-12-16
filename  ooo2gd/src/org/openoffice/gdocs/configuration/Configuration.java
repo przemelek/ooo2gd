@@ -30,6 +30,7 @@ import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import org.openoffice.gdocs.ui.dialogs.WaitWindow;
 import org.openoffice.gdocs.util.Util;
 
@@ -37,7 +38,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.9.0";
+    private static String versionStr = "1.9.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -56,7 +57,7 @@ public class Configuration {
     private static String pathForOOoExec;
     private static String pathForBrowserExec;
     private static boolean overwritteFlag;
-    private static boolean macOverride = false;
+    private static String lookAndFeel;
     
     static {
         // OK, it's ugly method...        
@@ -75,6 +76,21 @@ public class Configuration {
             langsMap.put(entry.getValue(),entry.getKey());
         }                
         restore();
+    }
+
+    public static void changeLookAndFeel(String lookAndFeel) {       
+        if (!UIManager.getLookAndFeel().getName().equals(lookAndFeel)) {
+            for (UIManager.LookAndFeelInfo lafInfo : UIManager.getInstalledLookAndFeels()) {
+                if (lafInfo.getName().equals(lookAndFeel)) {
+                    try {
+                        UIManager.setLookAndFeel(lafInfo.getClassName());
+                    } catch (Exception e) {
+                        log(e);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
 //    public void storeConfig() {
@@ -113,7 +129,8 @@ public class Configuration {
             pr.println(isUseExec()?"1":"0");
             pr.println(pathForBrowserExec);
             pr.println(pathForOOoExec);
-            pr.print(getOverwritteFlag()?"1":"0");
+            pr.println(getOverwritteFlag()?"1":"0");
+            pr.println(lookAndFeel);
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -125,9 +142,11 @@ public class Configuration {
     }
     
     public static void restore() {
+        BufferedReader br = null;
         try {
+            lookAndFeel=UIManager.getLookAndFeel().getName();
             FileReader fr = new FileReader(getWorkingPath()+"gdocs.lang");
-            BufferedReader br = new BufferedReader(fr);
+            br = new BufferedReader(fr);
             lang = br.readLine();
             String useProxyStr = br.readLine();
             String proxyServer = br.readLine();
@@ -154,9 +173,19 @@ public class Configuration {
             setPathForOOoExec(pathForOOoExec);
             String overwritteFlagStr = br.readLine();
             setOverwritteFlag("1".equals(overwritteFlagStr));
-            br.close();            
+            String newLookAndFeel = br.readLine();
+            if (newLookAndFeel!=null) {
+                lookAndFeel=newLookAndFeel;
+                changeLookAndFeel(lookAndFeel);
+            }
         } catch (IOException e) {
             // Intentionaly left empty
+        } finally {
+            if (br!=null) {
+                try {
+                    br.close();
+                } catch (IOException e) { }
+            }
         }
         setProxyProperties(isUseProxy(), isProxyAuth());
     }
@@ -247,8 +276,7 @@ public class Configuration {
 	  return str;        
     }
     
-    public static ComboBoxModel getLanguagesModel() {
-        
+    public static ComboBoxModel getLanguagesModel() {        
         File f = new File(getWorkingPath());
         final Pattern p = Pattern.compile("ooo2gd\\_(\\w{2}(\\_\\w{2}){0,1})\\.properties");
         String[] fNames = f.list(new FilenameFilter() {
@@ -272,6 +300,18 @@ public class Configuration {
         }                        
         ComboBoxModel model = new DefaultComboBoxModel(map.keySet().toArray());
         model.setSelectedItem(langsMap.get(lang));
+        return model;
+    }
+    
+    public static ComboBoxModel getLooksAndFeelsModel() {
+        List<String> list = new ArrayList<String>();
+        for (UIManager.LookAndFeelInfo lafInfo:UIManager.getInstalledLookAndFeels()) {
+            list.add(lafInfo.getName());
+        }
+        ComboBoxModel model = new DefaultComboBoxModel(list.toArray());
+        if (lookAndFeel!=null && list.contains(lookAndFeel)) {
+            model.setSelectedItem(lookAndFeel);
+        }
         return model;
     }
     
@@ -477,5 +517,13 @@ public class Configuration {
     
     public static boolean getOverwritteFlag() {
         return overwritteFlag;
+    }
+    
+    public static void setLookAndFeel(String lookAndFeel) {
+        Configuration.lookAndFeel = lookAndFeel;
+    }
+    
+    public String getLookAndFeel() {
+        return Configuration.lookAndFeel;
     }
 }

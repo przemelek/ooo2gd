@@ -465,13 +465,7 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     uploading.setVisible(true);
                     wrapper.login(credentionals);
                     boolean upload = true;
-                    
-                    // File to store is OpenOffice Impress Presentation?
-//                    if (needConversion(pathName,system)) {
-//                        if (pathName.toLowerCase().indexOf(".odp")!=-1) {                        
-//                            upload = convertPresentation(upload);
-//                        }
-//                    }
+
                     if (wrapper.neededConversion(currentFormat)) {
                         OOoFormats destinationFormat = wrapper.convertTo(currentFormat);
                         String msg = null;
