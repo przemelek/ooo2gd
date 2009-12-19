@@ -42,7 +42,6 @@ import org.openoffice.gdocs.util.OOoFormats;
  * @author  rmk
  */
 public class ImportDialog extends JFrame {
-	
   private final class ImportIOListener implements IOListener {
 		private final String url;
                 private boolean openAfterDownload;
@@ -67,6 +66,7 @@ public class ImportDialog extends JFrame {
                                 if (openAfterDownload) {
                                     File docFile = new File(url);
                                     String fName = docFile.getCanonicalPath();
+                                    Configuration.modifyGlobalMapOfFiles(url,docFile.length(),docFile.lastModified());
                                     Util.openInOpenOffice(ImportDialog.this, fName,xFrame);
                                 }
                             } catch (Exception e) {
@@ -194,6 +194,8 @@ public class ImportDialog extends JFrame {
         downloadButton = new javax.swing.JButton();
         openInBrowser = new javax.swing.JButton();
         formatChoosePanel = new javax.swing.JPanel();
+        autoUpdate = new javax.swing.JCheckBox();
+        jPanel5 = new javax.swing.JPanel();
         formatChooserLabel = new javax.swing.JLabel();
         formatComboBox = new javax.swing.JComboBox();
         jSeparator1 = new javax.swing.JSeparator();
@@ -258,8 +260,8 @@ public class ImportDialog extends JFrame {
 
         openButton.setText("Open");
         openButton.setEnabled(false);
-        openButton.setMaximumSize(new java.awt.Dimension(1000, 23));
-        openButton.setPreferredSize(new java.awt.Dimension(119, 23));
+        openButton.setMaximumSize(new java.awt.Dimension(1000, 28));
+        openButton.setPreferredSize(new java.awt.Dimension(119, 28));
         openButton.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         openButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -310,11 +312,24 @@ public class ImportDialog extends JFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         jPanel4.add(openInBrowser, gridBagConstraints);
 
+        formatChoosePanel.setLayout(new java.awt.GridBagLayout());
+
+        autoUpdate.setText("Autoupdate");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        formatChoosePanel.add(autoUpdate, gridBagConstraints);
+
         formatChooserLabel.setText("As");
-        formatChoosePanel.add(formatChooserLabel);
+        jPanel5.add(formatChooserLabel);
 
         formatComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        formatChoosePanel.add(formatComboBox);
+        jPanel5.add(formatComboBox);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        formatChoosePanel.add(jPanel5, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -377,6 +392,9 @@ public class ImportDialog extends JFrame {
         final URI uri;
         if (wrapper.downloadInGivenFormatSupported()) {            
             uri = wrapper.getUriForEntry(entry,(OOoFormats)formatComboBox.getSelectedItem());
+            if (autoUpdate.isSelected()) {
+                Configuration.addToGlobalMapOfFiles(documentUrl,entry.getDocumentLink(),(OOoFormats)formatComboBox.getSelectedItem());
+            }
         } else {
             uri = wrapper.getUriForEntry(entry);
         }
@@ -532,6 +550,7 @@ private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autoUpdate;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton downloadButton;
     private javax.swing.JPanel formatChoosePanel;
@@ -544,6 +563,7 @@ private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;

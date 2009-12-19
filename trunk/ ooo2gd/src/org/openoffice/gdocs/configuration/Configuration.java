@@ -14,7 +14,9 @@ import java.io.FilenameFilter;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +25,9 @@ import java.util.ResourceBundle;
 import java.util.Map.Entry;
 
 import java.util.Properties;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.ComboBoxModel;
@@ -32,9 +37,66 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import org.openoffice.gdocs.ui.dialogs.WaitWindow;
+import org.openoffice.gdocs.util.OOoFormats;
 import org.openoffice.gdocs.util.Util;
+import org.openoffice.gdocs.util.WrapperFactory;
+import org.openoffice.gdocs.util.Wrapper;
 
 public class Configuration {
+
+    private static class FileInfo {
+        private String fName;
+        private String documentLink;
+        private long length;
+        private long lastModified;
+        private OOoFormats format;
+        public FileInfo(String fName,String documentLink,OOoFormats format) {
+            setfName(fName);
+            setDocumentLink(documentLink);
+            setFormat(format);
+        }
+        String getfName() {
+            return fName;
+        }
+        void setfName(String fName) {
+            this.fName = fName;
+        }
+        long getLength() {
+            return length;
+        }
+        void setLength(long length) {
+            this.length = length;
+        }
+        long getLastModified() {
+            return lastModified;
+        }
+        void setLastModified(long lastModified) {
+            this.lastModified = lastModified;
+        }
+        String getDocumentLink() {
+            return documentLink;
+        }
+        void setDocumentLink(String docID) {
+            this.documentLink = docID;
+        }
+        OOoFormats getFormat() {
+            return format;
+        }
+        void setFormat(OOoFormats format) {
+            this.format = format;
+        }
+        @Override
+        public int hashCode() {
+            return fName.hashCode();
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof FileInfo) {
+                FileInfo fi2 = (FileInfo)obj;
+                return this.getfName().equals(fi2.getfName());
+            } else return false;
+        }
+    }
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
@@ -58,6 +120,9 @@ public class Configuration {
     private static String pathForBrowserExec;
     private static boolean overwritteFlag;
     private static String lookAndFeel;
+
+//    static private Map<String,String> globalMapOfFiles = new HashMap<String, String>();
+    static private Set<FileInfo> setOfFiles = new HashSet<FileInfo>();
     
     static {
         // OK, it's ugly method...        
@@ -523,7 +588,78 @@ public class Configuration {
         Configuration.lookAndFeel = lookAndFeel;
     }
     
-    public String getLookAndFeel() {
+    public static String getLookAndFeel() {
         return Configuration.lookAndFeel;
+    }
+
+    public static void addToGlobalMapOfFiles(String documentUrl,String docID,OOoFormats format) {
+        FileInfo fi = new FileInfo(documentUrl,docID,format);
+        boolean addFileToList = true;
+        for (FileInfo fi2:setOfFiles) {
+            if (fi.getDocumentLink().equals(fi2.getDocumentLink()) && !fi.equals(fi2)) {
+                addFileToList = false;
+                String str = "fi.fName="+fi.getfName()+" fi2.fName="+fi2.getfName()+"\nfi.docLink="+fi.getDocumentLink()+"\nfi2.docLink="+fi2.getDocumentLink();
+                log.add(str);
+                JOptionPane.showMessageDialog(null, "Problem!!\nFiles "+documentUrl+" and "+fi2.getfName()+" points to the same element, OOo2GD will synchronize only "+fi2.getfName());
+                break;
+            }
+        }
+        if (addFileToList) {
+            setOfFiles.add(fi);
+        }
+    }
+
+    private static Timer syncTimer;
+
+    private static synchronized void startSyncTimerIfNeeded() {
+        if (syncTimer==null) {
+            syncTimer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    Set<FileInfo> setToWork = Collections.synchronizedSet(setOfFiles);
+                    Wrapper wrapper = WrapperFactory.getWrapperForCredentials(WrapperFactory.GOOGLE_DOCS);
+                    boolean needToUpdateList = false;
+                    for (FileInfo fi:setToWork) {
+                        File file = new File(fi.getfName());
+                        boolean update = false;
+                        if (fi.getLastModified()!=file.lastModified()) update = true;
+                        if (fi.getLength()!=file.length()) update = true;
+                        if (update) {
+                            log.add("need to update file "+fi.getfName()+" with docID="+fi.getDocumentLink()+" with mimeType="+fi.getFormat().getMimeType());
+                            needToUpdateList=true;
+                            try {
+                                wrapper.update(fi.getfName(),fi.getDocumentLink(),fi.getFormat().getMimeType());
+                                fi.setLastModified(file.lastModified());
+                                fi.setLength(file.length());
+                                log.add("updated!");
+                            } catch (Exception e) {
+                                log(e);
+                            }
+
+                        }
+                    }
+                    if (needToUpdateList) {
+                        try {
+                            wrapper.getListOfDocs(false);
+                        } catch (Exception ex) {
+                            log(ex);
+                        }
+                    }
+                }
+            };
+            // 3 minutes
+            syncTimer.scheduleAtFixedRate(task, 0, 1*60*100);
+        }
+    }
+
+    public static void modifyGlobalMapOfFiles(String documnetUrl,long length,long lastModified) {
+        for (FileInfo fi:setOfFiles) {
+            if (fi.getfName()==documnetUrl) {
+                fi.setLastModified(lastModified);
+                fi.setLength(length);
+                startSyncTimerIfNeeded();
+            }
+        }
     }
 }
