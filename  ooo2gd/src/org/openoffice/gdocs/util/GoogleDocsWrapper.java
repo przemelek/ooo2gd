@@ -166,7 +166,11 @@ public class GoogleDocsWrapper implements Wrapper {
             if (!useCachedListIfPossible || listOfDocuments==null) {
                 Configuration.log("Try to get list of docs...");                
 		List<Document> listOfDocuments = new LinkedList<Document>();
-                doc2Entry = new HashMap<Document, DocumentListEntry>();
+                if (doc2Entry==null) {
+                    Configuration.log("Create new doc2Entry");
+                    doc2Entry = new HashMap<Document, DocumentListEntry>();    
+                }
+                doc2Entry.clear();
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
                 List<DocumentListEntry> listOfEntries = feed.getEntries();
@@ -326,16 +330,26 @@ public class GoogleDocsWrapper implements Wrapper {
 
         public boolean update(String path, String docId,String mimeType)  throws Exception {
             List<Document> docs = getListOfDocs(true);
-            Map<String,Document> mapOfDocs = new HashMap<String,Document>();
+//            Map<String,Document> mapOfDocs = new HashMap<String,Document>();
+            Document docToUpdate = null;
             for (Document doc:docs) {
-                mapOfDocs.put(doc.getDocumentLink(),doc);
+//                mapOfDocs.put(doc.getDocumentLink(),doc);
+                if (doc.getDocumentLink().equals(docId)) {
+                    docToUpdate = doc;
+                    break;
+                }
             }
-            Document docToUpdate = mapOfDocs.get(docId);
-            DocumentListEntry entry = doc2Entry.get(docToUpdate);
-            entry.setFile(getFileForPath(path),mimeType);
-            service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
-            getListOfDocs(false);
-            return true;
+//            Document docToUpdate = mapOfDocs.get(docId);
+            if (docToUpdate!=null) {
+                DocumentListEntry entry = doc2Entry.get(docToUpdate);
+                entry.setFile(getFileForPath(path),mimeType);
+                service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
+                getListOfDocs(false);
+                return true;
+            } else {
+                Configuration.log(path+" will not be updated.");
+                return false;
+            }
         }
 
     public boolean downloadInGivenFormatSupported() {
