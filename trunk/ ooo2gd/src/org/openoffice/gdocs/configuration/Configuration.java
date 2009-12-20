@@ -43,7 +43,6 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import org.openoffice.gdocs.util.Wrapper;
 
 public class Configuration {
-
     private static class FileInfo {
         private String fName;
         private String documentLink;
@@ -100,7 +99,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "1.9.1";
+    private static String versionStr = "2.0.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -120,6 +119,8 @@ public class Configuration {
     private static String pathForBrowserExec;
     private static boolean overwritteFlag;
     private static String lookAndFeel;
+    private static boolean defaultAutoUpdate;
+    private static Timer syncTimer;
 
 //    static private Map<String,String> globalMapOfFiles = new HashMap<String, String>();
     static private Set<FileInfo> setOfFiles = new HashSet<FileInfo>();
@@ -196,6 +197,7 @@ public class Configuration {
             pr.println(pathForOOoExec);
             pr.println(getOverwritteFlag()?"1":"0");
             pr.println(lookAndFeel);
+            pr.println(isDefaultAutoUpdate()?"1":"0");
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -243,6 +245,8 @@ public class Configuration {
                 lookAndFeel=newLookAndFeel;
                 changeLookAndFeel(lookAndFeel);
             }
+            String defaultAutoupdateString = br.readLine();
+            setDefaultAutoUpdate("1".equals(defaultAutoupdateString));
         } catch (IOException e) {
             // Intentionaly left empty
         } finally {
@@ -592,6 +596,14 @@ public class Configuration {
         return Configuration.lookAndFeel;
     }
 
+    public static boolean isDefaultAutoUpdate() {
+        return defaultAutoUpdate;
+    }
+
+    public static void setDefaultAutoUpdate(boolean aDefaultAutoUpdate) {
+        defaultAutoUpdate = aDefaultAutoUpdate;
+    }
+
     public static void addToGlobalMapOfFiles(String documentUrl,String docID,OOoFormats format) {
         FileInfo fi = new FileInfo(documentUrl,docID,format);
         boolean addFileToList = true;
@@ -608,8 +620,6 @@ public class Configuration {
             setOfFiles.add(fi);
         }
     }
-
-    private static Timer syncTimer;
 
     private static synchronized void startSyncTimerIfNeeded() {
         if (syncTimer==null) {
