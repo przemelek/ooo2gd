@@ -155,6 +155,7 @@ public class ImportDialog extends JFrame {
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         formatChoosePanel.setVisible(false);        
         formatChooserLabel.setText(Configuration.getResources().getString("As"));
+        autoUpdate.setSelected(Configuration.isDefaultAutoUpdate());
         this.currentDocumentPath = currentDocumentPath;
         Creditionals creditionals = loginPanel1.getCreditionals();
         Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
@@ -315,6 +316,7 @@ public class ImportDialog extends JFrame {
         formatChoosePanel.setLayout(new java.awt.GridBagLayout());
 
         autoUpdate.setText("Autoupdate");
+        autoUpdate.setToolTipText("Update after Save");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;

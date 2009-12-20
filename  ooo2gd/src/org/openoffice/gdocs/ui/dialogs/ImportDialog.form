@@ -218,6 +218,7 @@
                         <Component class="javax.swing.JCheckBox" name="autoUpdate">
                           <Properties>
                             <Property name="text" type="java.lang.String" value="Autoupdate"/>
+                            <Property name="toolTipText" type="java.lang.String" value="Update after Save"/>
                           </Properties>
                           <Constraints>
                             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
