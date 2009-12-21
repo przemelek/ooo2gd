@@ -25,6 +25,7 @@
           <value xml:lang="de">Google Text und Tabellen &amp; Zoho</value>
           <value xml:lang="es">Google Docs &amp; Zoho</value>
           <value xml:lang="it">Google Docs &amp; Zoho</value>
+          <value xml:lang="cs">Dokumenty Google &amp; Zoho </value>
         </prop>
         <node oor:name="Submenu">
           <node oor:name="m1" oor:op="replace">
@@ -47,6 +48,7 @@
               <value xml:lang="de">Export zu Google Text und Tabellen</value>
               <value xml:lang="es">Exportar a Google Docs</value>
               <value xml:lang="it">Esporta in Google Docs</value>
+              <value xml:lang="cs">Exportovat do Dokumentů Google</value>
             </prop>
           </node>          
           <node oor:name="m2" oor:op="replace">
@@ -69,6 +71,7 @@
               <value xml:lang="de">Import aus Google Text und Tabellen</value>
               <value xml:lang="es">Importar desde Google Docs</value>
               <value xml:lang="it">Importa da Google Docs</value>
+              <value xml:lang="cs">Importovat z Dokumentů Google</value>
             </prop>
           </node>          
 
@@ -92,6 +95,7 @@
               <value xml:lang="de">Export zu Zoho</value>
               <value xml:lang="en">Exportar a Zoho</value>
               <value xml:lang="it">Esporta in Zoho</value>
+              <value xml:lang="cs">Exportovat do Zoho</value>
             </prop>
           </node>          
 
@@ -115,6 +119,7 @@
               <value xml:lang="de">Import aus Zoho</value>
               <value xml:lang="es">Importar desde Zoho</value>
               <value xml:lang="it">Importa da Zoho</value>
+              <value xml:lang="cs">Importovat ze Zoho</value>
             </prop>
           </node>          
 
@@ -135,6 +140,7 @@
               <value/>
               <value xml:lang="en">Export with WebDAV</value>
               <value xml:lang="pl">Eksport przez WebDAV</value>
+              <value xml:lang="cs">Exportovat pomocí WebDAV</value>
             </prop>
           </node> 
           
@@ -158,6 +164,7 @@
               <value xml:lang="de">Einstellungen</value>
               <value xml:lang="es">Configuración</value>
               <value xml:lang="it">Configurazione</value>
+              <value xml:lang="cs">Nastavení</value>
             </prop>
           </node>          
           
