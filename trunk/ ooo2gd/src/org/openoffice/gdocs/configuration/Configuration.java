@@ -137,6 +137,8 @@ public class Configuration {
         map.put("Portuguese (Brazilian)","pt_br");
         map.put("Chinese (Simplified)","zh_cn");
         map.put("French","fr");
+        map.put("Czech","cs");
+        map.put("Hungarian","hu");
         map.put("System","system");
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());
