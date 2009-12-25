@@ -145,6 +145,7 @@ public class ImportDialog extends JFrame {
         this.xFrame = frame;
         this.system = system;
         initComponents();
+        this.setSize(600, 450);        
         loginPanel1.setSystem(system);
         getListButton.setText(Configuration.getResources().getString("Get_list"));
         openButton.setText(Configuration.getResources().getString("Open"));
@@ -166,6 +167,7 @@ public class ImportDialog extends JFrame {
                 // OK, this means that we were not able to obtain current docs list
             }
         }
+//        jSplitPane2.setDividerLocation(0.7);
         Configuration.hideWaitWindow();
     }
     
@@ -206,6 +208,7 @@ public class ImportDialog extends JFrame {
         setTitle("Import from Google Docs");
         setFocusTraversalPolicyProvider(true);
         setLocationByPlatform(true);
+        setMinimumSize(new java.awt.Dimension(600, 500));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 closeDialog(evt);
@@ -240,6 +243,7 @@ public class ImportDialog extends JFrame {
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
+        jSplitPane1.setDividerLocation(30);
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
 
         getListButton.setText("Get list");
@@ -250,7 +254,7 @@ public class ImportDialog extends JFrame {
         });
         jSplitPane1.setTopComponent(getListButton);
 
-        jSplitPane2.setDividerLocation(300);
+        jSplitPane2.setDividerLocation(360);
         jSplitPane2.setResizeWeight(1.0);
         jSplitPane2.setFocusCycleRoot(true);
         jSplitPane2.setPreferredSize(new java.awt.Dimension(300, 134));
