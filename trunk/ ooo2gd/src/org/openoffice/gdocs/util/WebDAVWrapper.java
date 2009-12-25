@@ -32,7 +32,7 @@ public class WebDAVWrapper implements Wrapper {
         private static Map<String,Creditionals> map;
         
         private static void readCredetials() {
-            String credentionalsFileName = Configuration.getWorkingPath()+CREDITIONALS_FILE;
+            String credentionalsFileName = Configuration.getConfigFileName(Configuration.getWorkingPath(),CREDITIONALS_FILE);
             map = new HashMap<String, Creditionals>();
             try {            
                 File file = new File(credentionalsFileName);
@@ -73,7 +73,7 @@ public class WebDAVWrapper implements Wrapper {
             sb.append(".");
             try {
                 String coded = Util.xorString(sb.toString(), SECRET_PHRASE);
-                String credentionalsFileName = Configuration.getWorkingPath()+CREDITIONALS_FILE;
+                String credentionalsFileName = Configuration.getConfigFileName(Configuration.getWorkingPath(),CREDITIONALS_FILE);
                 FileWriter fw = new FileWriter(credentionalsFileName);
                 fw.write(coded.toCharArray());
                 fw.close();

@@ -44,10 +44,11 @@ public class Creditionals {
     }
 
     private String getCredentionalsfileName() {
-        String credentionalsFileName = Configuration.getWorkingPath() + CREDITIONALS_FILE;
+        String fileName = CREDITIONALS_FILE;
         if (!("Google Docs".equals(system))) {
-            credentionalsFileName += system.replaceAll(" ", "_");
+            fileName += system.replaceAll(" ", "_");
         }
+        String credentionalsFileName = Configuration.getConfigFileName(Configuration.getWorkingPath(),fileName);
         return credentionalsFileName;
     }
 
