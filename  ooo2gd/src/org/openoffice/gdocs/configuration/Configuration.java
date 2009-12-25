@@ -99,7 +99,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "2.0.0";
+    private static String versionStr = "2.0.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -122,7 +122,6 @@ public class Configuration {
     private static boolean defaultAutoUpdate;
     private static Timer syncTimer;
 
-//    static private Map<String,String> globalMapOfFiles = new HashMap<String, String>();
     static private Set<FileInfo> setOfFiles = new HashSet<FileInfo>();
     
     static {
@@ -176,12 +175,28 @@ public class Configuration {
 //        UnoRuntime.queryInterface(XMultiServiceFactory.class, 
 //                                  xServiceManager.createInstance(sProviderService));        
 //    }
-    
+
+    public static String getConfigFileName(String path, String str) {
+        try {
+            File f = new File(path+str);
+            if (f.exists()) {
+                if (f.renameTo(new File(path+"."+str))) {
+                    str = "."+str;
+                }
+            } else {
+                str = "."+str;
+            }
+        } catch (SecurityException se) {
+
+        }
+        return path+str;
+    }
+
     public static void store() {
     	BufferedWriter bw = null;
     	PrintWriter pr = null;
         try {
-            FileWriter fw = new FileWriter(getWorkingPath()+"gdocs.lang");
+            FileWriter fw = new FileWriter(getConfigFileName(getWorkingPath(),"gdocs.lang"));
             bw = new BufferedWriter(fw);
             pr = new PrintWriter(bw);
             pr.println(lang);
@@ -214,7 +229,7 @@ public class Configuration {
         BufferedReader br = null;
         try {
             lookAndFeel=UIManager.getLookAndFeel().getName();
-            FileReader fr = new FileReader(getWorkingPath()+"gdocs.lang");
+            FileReader fr = new FileReader(getConfigFileName(getWorkingPath(),"gdocs.lang"));
             br = new BufferedReader(fr);
             lang = br.readLine();
             String useProxyStr = br.readLine();
