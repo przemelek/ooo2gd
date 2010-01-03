@@ -33,6 +33,8 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
 import java.awt.Cursor;
+import java.awt.event.KeyEvent;
+import java.lang.reflect.Method;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import org.openoffice.gdocs.util.OOoFormats;
@@ -152,12 +154,23 @@ public class ImportDialog extends JFrame {
         openInBrowser.setText(Configuration.getResources().getString("OPEN_IN_BROWSER"));
         openViaBrowserButton.setText(Configuration.getResources().getString("OPEN_VIA_BROWSER"));
         closeButton.setText(Configuration.getResources().getString("Close"));
+        jLabel2.setText(Configuration.getResources().getString("Filter"));
         jTable1.setModel(new DocumentsTableModel());
         jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         formatChoosePanel.setVisible(false);        
         formatChooserLabel.setText(Configuration.getResources().getString("As"));
         autoUpdate.setSelected(Configuration.isDefaultAutoUpdate());
         this.currentDocumentPath = currentDocumentPath;
+        if (System.getProperty("java.specification.version").compareTo("1.5")>0) {
+            Configuration.log("At least Java 1.6 :-)");
+            try {
+                    Configuration.log("Will try to add sorting to list of documents");
+                    Method method = jTable1.getClass().getMethod("setAutoCreateRowSorter", boolean.class);
+                    method.invoke(jTable1, true);
+                } catch (Exception ex) {
+                    Configuration.log(ex);
+                }
+        }
         Creditionals creditionals = loginPanel1.getCreditionals();
         Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
         if (wrapper.hasList()) {
@@ -202,6 +215,10 @@ public class ImportDialog extends JFrame {
         formatChooserLabel = new javax.swing.JLabel();
         formatComboBox = new javax.swing.JComboBox();
         jSeparator1 = new javax.swing.JSeparator();
+        jPanel6 = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        filterText = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -352,6 +369,29 @@ public class ImportDialog extends JFrame {
 
         jSplitPane2.setRightComponent(jPanel3);
 
+        jPanel6.setLayout(new java.awt.BorderLayout());
+
+        jPanel7.setLayout(new java.awt.BorderLayout());
+
+        jLabel2.setText("Filter:");
+        jLabel2.setEnabled(false);
+        jPanel7.add(jLabel2, java.awt.BorderLayout.WEST);
+
+        filterText.setEnabled(false);
+        filterText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterTextActionPerformed(evt);
+            }
+        });
+        filterText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                filterTextKeyReleased(evt);
+            }
+        });
+        jPanel7.add(filterText, java.awt.BorderLayout.CENTER);
+
+        jPanel6.add(jPanel7, java.awt.BorderLayout.NORTH);
+
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -366,7 +406,9 @@ public class ImportDialog extends JFrame {
         jTable1.setMinimumSize(new java.awt.Dimension(200, 64));
         jScrollPane1.setViewportView(jTable1);
 
-        jSplitPane2.setLeftComponent(jScrollPane1);
+        jPanel6.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        jSplitPane2.setLeftComponent(jPanel6);
 
         jSplitPane1.setBottomComponent(jSplitPane2);
 
@@ -465,16 +507,19 @@ public class ImportDialog extends JFrame {
     private void getListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_getListButtonActionPerformed
         getListButton.setEnabled(false);
         jTable1.setEnabled(false);
+        jLabel2.setEnabled(false);
+        filterText.setEnabled(false);
         final Cursor currentCursor = ImportDialog.this.getCursor();
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-        setButtonsEnable(false, false, false);            
+        setButtonsEnable(false, false, false);
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             public void run() {
                 try {
                     final Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system); 
                     wrapper.login(loginPanel1.getCreditionals());
                     List<Document> documents = wrapper.getListOfDocs(false);
-                    fillListOfDocuments(wrapper,documents);         
+                    fillListOfDocuments(wrapper,documents);
+                    filterText.requestFocusInWindow();
                 } catch (Exception e) {
                     ImportDialog.this.setCursor(currentCursor);
                     e.printStackTrace();            
@@ -485,7 +530,9 @@ public class ImportDialog extends JFrame {
                 finally {
                     ImportDialog.this.setCursor(currentCursor);
                     ImportDialog.this.jTable1.setEnabled(true);
+                    ImportDialog.this.filterText.setEnabled(true);
                     ImportDialog.this.getListButton.setEnabled(true);
+                    ImportDialog.this.jLabel2.setEnabled(true);
                 }
                 ImportDialog.this.repaint();                
             }
@@ -500,6 +547,9 @@ public class ImportDialog extends JFrame {
         }
         jTable1.setModel(dtm);
         jTable1.clearSelection();
+        jLabel2.setEnabled(true);
+        filterText.setEnabled(true);
+        filterText.requestFocusInWindow();
         jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 Document entry = ((DocumentsTableModel) jTable1.getModel()).getEntry(jTable1.getSelectedRow());
@@ -549,6 +599,20 @@ public class ImportDialog extends JFrame {
 private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downloadButtonActionPerformed
         new OpenWrapper(WrapperFactory.getWrapperForCredentials(system),false).open();
 }//GEN-LAST:event_downloadButtonActionPerformed
+
+private void filterTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_filterTextKeyReleased
+    final int keyCode = evt.getKeyCode();
+    if (keyCode!=KeyEvent.VK_DOWN && keyCode!=KeyEvent.VK_UP && keyCode!=KeyEvent.VK_ENTER) {
+        String text = filterText.getText();
+        DocumentsTableModel model = (DocumentsTableModel)jTable1.getModel();
+        model.setFilter(text.toUpperCase());
+        model.fireTableDataChanged();
+    }
+}//GEN-LAST:event_filterTextKeyReleased
+
+private void filterTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterTextActionPerformed
+    // TODO add your handling code here:
+}//GEN-LAST:event_filterTextActionPerformed
     
     public static void main(String[] args) {
         System.out.println(System.getProperty("java.version"));
@@ -559,17 +623,21 @@ private void downloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JCheckBox autoUpdate;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton downloadButton;
+    private javax.swing.JTextField filterText;
     private javax.swing.JPanel formatChoosePanel;
     private javax.swing.JLabel formatChooserLabel;
     private javax.swing.JComboBox formatComboBox;
     private javax.swing.JButton getListButton;
     private org.openoffice.gdocs.util.GoogleDocsWrapper googleDocsWrapper1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;

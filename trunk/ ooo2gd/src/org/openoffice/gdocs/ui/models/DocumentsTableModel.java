@@ -16,6 +16,7 @@ public class DocumentsTableModel extends DefaultTableModel {
     private List<Document> list = new ArrayList<Document>();
     private Wrapper wrapper;
     private int numberOfColumns;
+    private String filter;
     
     public DocumentsTableModel() {
         this(null);
@@ -32,10 +33,12 @@ public class DocumentsTableModel extends DefaultTableModel {
         return type;
     }
     
-    
+    public void setFilter(String str) {
+        this.filter = str;
+    }
     
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Document entry = list.get(rowIndex);
+        Document entry = getList().get(rowIndex);
         Object obj = null;            
         switch (columnIndex) {
             case 0: obj = entry.getTitle(); break;
@@ -51,8 +54,8 @@ public class DocumentsTableModel extends DefaultTableModel {
 
     public int getRowCount() {
         int result = 0;
-        if (list!=null) {
-            result = list.size();
+        if (getList()!=null) {
+            result = getList().size();
         }
         return result;
     }
@@ -70,15 +73,38 @@ public class DocumentsTableModel extends DefaultTableModel {
     }
        
     public void add(Document entry) {
-        list.add(entry);
+        getList().add(entry);
     }
 
     public Document getEntry(int idx) {
         Document document = null;
-        if (idx>=0 && idx<list.size()) {
-            document = list.get(idx);
+        if (idx>=0 && idx<getList().size()) {
+            document = getList().get(idx);
         }
         return document;
+    }
+
+    /**
+     * @return the list
+     */
+    public List<Document> getList() {
+        List<Document> filteredList = list;
+        if (filter!=null && filter.length()!=0) {
+                 filteredList = new ArrayList<Document>();
+                 for (Document doc:list) {
+                     if (doc.getTitle().toUpperCase().contains(filter)) {
+                         filteredList.add(doc);
+                     }
+                 }
+        }
+        return filteredList;
+    }
+
+    /**
+     * @param list the list to set
+     */
+    public void setList(List<Document> list) {
+        this.list = list;
     }
     
 }
