@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -99,7 +100,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "2.0.1";
+    private static String versionStr = "2.1.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -121,6 +122,7 @@ public class Configuration {
     private static String lookAndFeel;
     private static boolean defaultAutoUpdate;
     private static Timer syncTimer;
+    private static boolean reportedOsJavaVersionAndLAF = false;
 
     static private Set<FileInfo> setOfFiles = new HashSet<FileInfo>();
     
@@ -159,22 +161,6 @@ public class Configuration {
             }
         }
     }
-
-//    public void storeConfig() {
-        //com.sun.star.registry.RegistryKeyType                        
-        // get my global service manager  
-
-//    XMultiServiceFactory xServiceManager = (XMultiServiceFactory)UnoRuntime.queryInterface( 
-//            XMultiServiceFactory.class, this.getRemoteServiceManager("uno:socket,host=localhost,port=2083;urp;StarOffice.ServiceManager")); 
-
-//    final String sProviderService = "com.sun.star.configuration.ConfigurationProvider";
-
-    // create the provider and remember it as a XMultiServiceFactory 
-
-//    XMultiServiceFactory xProvider = (XMultiServiceFactory) 
-//        UnoRuntime.queryInterface(XMultiServiceFactory.class, 
-//                                  xServiceManager.createInstance(sProviderService));        
-//    }
 
     public static String getConfigFileName(String path, String str) {
         try {
@@ -380,7 +366,6 @@ public class Configuration {
                 map.put(langName,langCode);
             }
         }
-//        langsMap.clear();
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());
         }                        
@@ -677,6 +662,22 @@ public class Configuration {
             };
             // 3 minutes
             syncTimer.scheduleAtFixedRate(task, 0, 1*60*100);
+        }
+    }
+
+    public static void sendReport() {
+        if (!reportedOsJavaVersionAndLAF) {
+            try {
+                String osVersion = System.getProperty("os.arch")+"|"+System.getProperty("os.name")+"|"+System.getProperty("os.version");
+                String javaVersion = System.getProperty("java.specification.name")+"|"+System.getProperty("java.specification.vendor")+"|"+System.getProperty("java.specification.version")+"|"+System.getProperty("java.version");
+                osVersion=osVersion.replace(" ", "%20");
+                javaVersion=javaVersion.replace(" ", "%20");
+                URL reportUrl = new URL("http://www.przemelek.pl/gdocsReport?os="+osVersion+"&java="+javaVersion);
+                reportUrl.getContent();
+                reportedOsJavaVersionAndLAF=true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
