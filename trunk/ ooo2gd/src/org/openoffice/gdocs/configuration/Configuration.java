@@ -214,6 +214,7 @@ public class Configuration {
     public static void restore() {
         BufferedReader br = null;
         try {
+            setDirectoryToStoreFiles(Configuration.getWorkingPath());
             lookAndFeel=UIManager.getLookAndFeel().getName();
             FileReader fr = new FileReader(getConfigFileName(getWorkingPath(),"gdocs.lang"));
             br = new BufferedReader(fr);
@@ -233,8 +234,9 @@ public class Configuration {
             	setProxyPassword(Util.xorString(proxyPassword, CONFIG_SECRET_PHRASE));
             }
             String directoryToStoreFiles = br.readLine();
-            if ("".equals(directoryToStoreFiles)) directoryToStoreFiles = null;
-            setDirectoryToStoreFiles(directoryToStoreFiles);
+            if (!"".equals(directoryToStoreFiles)) {
+                setDirectoryToStoreFiles(directoryToStoreFiles);
+            }
             String useExecStr = br.readLine();
             setUseExec("1".equals(useExecStr));
             String pathForBrowserExec = br.readLine();
