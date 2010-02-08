@@ -29,6 +29,6 @@ installed properly.
 8) On some systems (I had reports about problems on Ubuntu) version 1.9.1 doesn't want to work, but version 1.9.0 worked well. In this case try to remove file gdocs.lang from your home directory, and try if AddOn started to work.
 
 9) If you are using Linux (example Debian) with IPv6 and you get Error popup: "Problem: Error connecting with login URI" try to use:
-sudo sed -i 's/net.ipv6.bindv6only\ =\ 1/net.ipv6.bindv6only\ =\ 0/' \
-/etc/sysctl.d/bindv6only.conf && sudo invoke-rc.d procps restart
+||sudo sed -i 's/net.ipv6.bindv6only\ =\ 1/net.ipv6.bindv6only\ =\ 0/' \||
+||/etc/sysctl.d/bindv6only.conf && sudo invoke-rc.d procps restart||
 From issue 82 by fmriOC.
