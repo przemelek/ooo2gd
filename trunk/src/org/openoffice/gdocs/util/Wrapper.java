@@ -3,6 +3,8 @@ package org.openoffice.gdocs.util;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public interface Wrapper {
@@ -30,4 +32,5 @@ public interface Wrapper {
     public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(Document entry);
     public URI getUriForEntry(final Document entry, final OOoFormats format) throws URISyntaxException;
     public boolean hasList();
+    public Date parseDate(String date) throws ParseException;
 }

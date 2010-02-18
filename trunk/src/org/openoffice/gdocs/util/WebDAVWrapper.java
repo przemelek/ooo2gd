@@ -15,6 +15,8 @@ import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,6 +263,11 @@ public class WebDAVWrapper implements Wrapper {
     public boolean hasList() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public Date parseDate(String date) throws ParseException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     
 //    public static void main(String[] args) throws Exception {
 //        Wrapper wrapper = new WebDAVWrapper();

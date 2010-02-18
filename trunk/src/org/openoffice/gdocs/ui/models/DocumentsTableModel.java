@@ -4,8 +4,12 @@
 // contact with me: http://przemelek.googlepages.com/kontakt
 package org.openoffice.gdocs.ui.models;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.Document;
@@ -17,6 +21,8 @@ public class DocumentsTableModel extends DefaultTableModel {
     private Wrapper wrapper;
     private int numberOfColumns;
     private String filter;
+    private DateFormat df;
+    private DateFormat parseDf;
     
     public DocumentsTableModel() {
         this(null);
@@ -25,6 +31,7 @@ public class DocumentsTableModel extends DefaultTableModel {
     public DocumentsTableModel(Wrapper wrapper) {
         this.wrapper=wrapper;
         numberOfColumns=2;
+        df = DateFormat.getDateTimeInstance();
     }
 
     @Override
@@ -39,10 +46,17 @@ public class DocumentsTableModel extends DefaultTableModel {
     
     public Object getValueAt(int rowIndex, int columnIndex) {
         Document entry = getList().get(rowIndex);
-        Object obj = null;            
+        Object obj = null;
+        String date = entry.getUpdated();
+        try {
+            date = df.format(wrapper.parseDate(entry.getUpdated()));
+        } catch (ParseException pe) {
+            Configuration.log("Problem with parsing date "+entry.getUpdated());
+        }
+
         switch (columnIndex) {
             case 0: obj = entry.getTitle(); break;
-            case 1: obj = entry.getUpdated(); break;
+            case 1: obj = date; break;
         }
         if (obj==null) obj="";
         return obj;

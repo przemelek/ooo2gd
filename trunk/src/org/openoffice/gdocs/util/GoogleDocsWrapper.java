@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,8 +29,12 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.configuration.Configuration;
@@ -51,9 +56,11 @@ public class GoogleDocsWrapper implements Wrapper {
         private Creditionals creditionals;
         private boolean isLogedIn = false;
         private static List<Document> listOfDocuments;
-        private static Map<Document,DocumentListEntry> doc2Entry = null;        
+        private static Map<Document,DocumentListEntry> doc2Entry = null;
+        private DateFormat parseDf;
         
         public GoogleDocsWrapper() {
+            parseDf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
         }
         
         public DocsService getService() {
@@ -343,8 +350,11 @@ public class GoogleDocsWrapper implements Wrapper {
             if (docToUpdate!=null) {
                 DocumentListEntry entry = doc2Entry.get(docToUpdate);
                 entry.setFile(getFileForPath(path),mimeType);
-                service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
-                getListOfDocs(false);
+                DocumentListEntry updatedEntry = service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
+                Configuration.log("entry==updatedEntry is "+(entry==updatedEntry));
+                System.out.println("entry==updatedEntry is "+(entry==updatedEntry));
+                doc2Entry.put(docToUpdate, updatedEntry);
+                //getListOfDocs(false);
                 return true;
             } else {
                 Configuration.log(path+" will not be updated.");
@@ -389,5 +399,8 @@ public class GoogleDocsWrapper implements Wrapper {
     public boolean hasList() {
         return (listOfDocuments!=null);
     }
-        
+
+    public Date parseDate(String date) throws ParseException {
+        return parseDf.parse(date);
+    }
 }
