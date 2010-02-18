@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -156,6 +157,11 @@ public class ZohoWrapper implements Wrapper {
 	private String ticket = "";
         private Creditionals creditionals;
         private boolean isLogedIn;
+        private DateFormat df;
+
+        public ZohoWrapper() {
+            df = DateFormat.getDateTimeInstance();
+        }
 	
 	public void login(Creditionals creditionals) throws Exception {
             if (!creditionals.equals(this.creditionals) || !isLogedIn) {
@@ -491,8 +497,7 @@ public class ZohoWrapper implements Wrapper {
                 org.openoffice.gdocs.util.Document docEntry = new org.openoffice.gdocs.util.Document();
                 docEntry.setDocumentLink("https://export.writer.zoho.com/api/private/odt/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
-                docEntry.setTitle(doc.getDocumentName()+".odt");  
-                DateFormat df = DateFormat.getDateInstance();                
+                docEntry.setTitle(doc.getDocumentName()+".odt");                  
                 docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
 //                docEntry.setUpdated(new Date(Long.valueOf(doc.getLastModifiedTime())).toLocaleString());
                 entries.add(docEntry);
@@ -506,7 +511,6 @@ public class ZohoWrapper implements Wrapper {
                 docEntry.setDocumentLink("http://sheet.zoho.com/api/private/ods/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
                 docEntry.setTitle(doc.getDocumentName()+".ods");
-                DateFormat df = DateFormat.getDateInstance();  
                 docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
 //                docEntry.setUpdated(new Date(Long.valueOf(doc.getLastModifiedTime())).toLocaleString());
                 entries.add(docEntry);
@@ -521,7 +525,6 @@ public class ZohoWrapper implements Wrapper {
                 docEntry.setDocumentLink("http://sheet.zoho.com/api/private/xls/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
                 docEntry.setTitle(doc.getDocumentName());
-                DateFormat df = DateFormat.getDateInstance();  
                 docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
                 entries.add(docEntry);
             }
@@ -668,7 +671,13 @@ public class ZohoWrapper implements Wrapper {
     public boolean hasList() {
         return (listOfDocuments!=null);
     }
-        
+
+    public Date parseDate(String date) throws ParseException {
+        return df.parse(date);
+    }
+
+
+    
 //	public static void main(String[] args) throws Exception {
 //		ZohoWrapper zohoWrapper = new ZohoWrapper();
 //                Creditionals creds = new Creditionals("", "");

@@ -126,7 +126,7 @@ public class Downloader implements Runnable {
                               IOEvent.getUNKNOWN_SIZE(), 
                               IOEvent.getUNKNOWN_SIZE(),
                               ioex, 
-                              Configuration.getResources().getString("ERROR_IMPORTING_FILE")
+                              Configuration.getResources().getString("ERROR_IMPORTING_FILE")+"\n"+ioex.getLocalizedMessage()
                               )
                              );
     }

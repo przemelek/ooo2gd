@@ -74,7 +74,7 @@ public class ImportDialog extends JFrame {
                             } catch (Exception e) {
                                 Configuration.log(e);
                                 e.printStackTrace();
-                                JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getMessage());
+                                JOptionPane.showMessageDialog(ImportDialog.this,Configuration.getResources().getString("PROBLEM_CANNOT_OPEN")+"\n"+e.getLocalizedMessage());
                             } finally {
                                 window.dispose();
                             }
@@ -423,6 +423,7 @@ public class ImportDialog extends JFrame {
 
     private void donwloadTextDocument(final Document entry, final Wrapper wrapper, final boolean openAfterDownload) throws MalformedURLException, IOException, URISyntaxException, UnsupportedEncodingException, HeadlessException {
         String directory = Configuration.getDirectoryToStoreFiles();
+        if (directory==null) directory = Configuration.getWorkingPath();
         String documentUrl = null;
         String documentTitle = createFileName(wrapper,entry);
         if ("?".equals(directory)) {
