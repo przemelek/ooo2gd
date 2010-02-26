@@ -31,7 +31,7 @@ public class DocumentsTableModel extends DefaultTableModel {
     public DocumentsTableModel(Wrapper wrapper) {
         this.wrapper=wrapper;
         numberOfColumns=2;
-        df = DateFormat.getDateTimeInstance();
+        df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
     @Override
