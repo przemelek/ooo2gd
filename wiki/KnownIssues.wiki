@@ -32,3 +32,5 @@ installed properly.
 ||sudo sed -i 's/net.ipv6.bindv6only\ =\ 1/net.ipv6.bindv6only\ =\ 0/' \||
 ||/etc/sysctl.d/bindv6only.conf && sudo invoke-rc.d procps restart||
 From issue 82 by fmriOC.
+
+10) If you are using new version of Google Docs editor [setting under Settings -> Documents Settings -> Editing -> and checkox "Create new text documents using the latest version of the document editor."] downloading will not work, the same with updating. Downloading will not work for documents created in new editor, updating will not work at all.
