@@ -22,8 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.DateFormat;
 import java.util.LinkedList;
 import org.openoffice.gdocs.configuration.Configuration;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class WebDAVWrapper implements Wrapper {
 
@@ -108,7 +111,14 @@ public class WebDAVWrapper implements Wrapper {
         }
     }
     
-    private String serverPath = "";    
+    private String serverPath = "";
+    private DateFormat df;
+
+    public WebDAVWrapper() {
+        df = DateFormat.getDateTimeInstance();
+    }
+
+
     
     public Downloader getDownloader(URI uri, String documentUrl) throws URISyntaxException, MalformedURLException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -136,14 +146,14 @@ public class WebDAVWrapper implements Wrapper {
         });
     }
     
-    public boolean upload(String path, String documentTitle,String mimeType) throws Exception {
+    public UploadUpdateStatus upload(String path, String documentTitle,String mimeType) throws Exception {
             FileInputStream fis = new FileInputStream(path);
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
             long contentLength = getStream(fis,baos);
             byte[] fileContent =  baos.toByteArray();
             int responseCode = upload(documentTitle, contentLength, fileContent);
             System.out.println(responseCode);
-            return ((responseCode>=200) && (responseCode<300));
+            return new UploadUpdateStatus((responseCode>=200) && (responseCode<300),path);
     }
 
     public boolean checkIfAuthorizationNeeded(String path,String documentTitle) throws Exception {
@@ -158,6 +168,7 @@ public class WebDAVWrapper implements Wrapper {
         int readCount;        
         while((readCount=is.read(buffer))>0) {
             String bufStr = new String(buffer);
+            System.out.println(bufStr);
           out.write(buffer, 0, readCount);
           progress += readCount;
         }
@@ -190,6 +201,25 @@ public class WebDAVWrapper implements Wrapper {
     public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws Exception {
         // PROPFIND
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private Document createDocument(Node node) {
+        Document doc = new Document();
+        NodeList childNodes = node.getChildNodes();
+        for (int idx=0; idx<childNodes.getLength(); idx++) {
+
+        }
+        return doc;
+    }
+
+    private void traverse(NodeList nodeList) {
+        for (int idx=0; idx<nodeList.getLength(); idx++) {
+            Node node = nodeList.item(idx);
+            System.out.println(node.getNodeName());
+            if (node.hasChildNodes()) {
+                traverse(node.getChildNodes());
+            }
+        }
     }
     
     private String getServerPath() {
@@ -244,7 +274,7 @@ public class WebDAVWrapper implements Wrapper {
         return false;
     }
 
-    public boolean update(String path, String docId, String mimeType) {
+    public UploadUpdateStatus update(String path, String docId, String mimeType) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -261,11 +291,14 @@ public class WebDAVWrapper implements Wrapper {
     }
 
     public boolean hasList() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return true;
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Date parseDate(String date) throws ParseException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println(date);
+        return df.parse(date);
+        //return new Date(date);
     }
 
     

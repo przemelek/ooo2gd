@@ -354,7 +354,7 @@ public class ZohoWrapper implements Wrapper {
         return progress;
     }
    
-	private boolean uploadDocumentForUrl(String sourceFileName,String documentName,String url,Map<String,String> parameters) throws IOException {
+	private UploadUpdateStatus uploadDocumentForUrl(String sourceFileName,String documentName,String url,Map<String,String> parameters) throws IOException {
             //String uploadUri = "https://export.writer.zoho.com/api/private/xml/uploadDocument?apikey="+API_KEY+"&ticket="+getTicket();
             String uploadUri = url+"?apikey="+API_KEY+"&ticket="+getTicket();
             URL source = new URL(uploadUri);
@@ -423,14 +423,14 @@ public class ZohoWrapper implements Wrapper {
                 Configuration.log(answer);
                 throw new IOException("Cannot upload file");                
             }
-	    return looksForCorrectAnswer;
+	    return new UploadUpdateStatus(looksForCorrectAnswer,null);
 	}
 
-        private boolean uploadDocument(String sourceFileName,String documentName) throws IOException {
+        private UploadUpdateStatus uploadDocument(String sourceFileName,String documentName) throws IOException {
             return uploadDocumentForUrl(sourceFileName, documentName,"https://export.writer.zoho.com/api/private/xml/uploadDocument",null);
         }        
         
-        private boolean uploadSheet(String sourceFileName,String documentName) throws IOException {
+        private UploadUpdateStatus uploadSheet(String sourceFileName,String documentName) throws IOException {
             // https://sheet.zoho.com/api/private/xml/uploadbook xls|sxc|csv 
             //Map<String,String> parameters = new HashMap<String, String>();
 //            map.put("workbookName",documentName);
@@ -438,7 +438,7 @@ public class ZohoWrapper implements Wrapper {
             return uploadDocumentForUrl(sourceFileName, documentName,"http://sheet.zoho.com/api/private/xml/uploadbook",null);
         }
 
-        private boolean uploadPresentation(String sourceFileName,String documentName) throws IOException {
+        private UploadUpdateStatus uploadPresentation(String sourceFileName,String documentName) throws IOException {
             //Map<String,String> parameters = new HashMap<String, String>();
 //            map.put("workbookName",documentName);
 //            map.put("")
@@ -452,7 +452,7 @@ public class ZohoWrapper implements Wrapper {
             return false;
         }
         
-        public boolean upload(String sourceFileName,String documentName,String mimeType) throws IOException {
+        public UploadUpdateStatus upload(String sourceFileName,String documentName,String mimeType) throws IOException {
             // https://export.writer.zoho.com/api/private/xml/uploadDocument DOC/ODT/RTF
             // https://sheet.zoho.com/api/private/xml/uploadbook xls|sxc|csv            
             // https://show.zoho.com/api/private/xml/uploadpresentation ppt|pps|sxi|odp
@@ -464,7 +464,7 @@ public class ZohoWrapper implements Wrapper {
             } else if (isIn(fileExt,"ppt","pps","sxi","odp")) {
                 return uploadPresentation(sourceFileName, documentName);
             }
-            return false;
+            return new UploadUpdateStatus(false, null);
         }
 
         public boolean checkIfAuthorizationNeeded(String path, String documentTitle) throws Exception {
@@ -602,7 +602,7 @@ public class ZohoWrapper implements Wrapper {
             return false;
         }
 
-        public boolean update(String path, String docId, String mimeType) throws IOException {
+        public UploadUpdateStatus update(String path, String docId, String mimeType) throws IOException {
             docId = docId.substring(0,docId.indexOf("?"));
             docId = docId.substring(docId.lastIndexOf("/")+1);
             String updateUrl = "http://export.writer.zoho.com/api/private/xml/saveDocument/"+docId+"?apikey="+API_KEY+"&ticket="+getTicket();
@@ -657,7 +657,7 @@ public class ZohoWrapper implements Wrapper {
                 Configuration.log(answer);
                 throw new IOException("Cannot update file");                
             }
-	    return looksForCorrectAnswer;            
+	    return new UploadUpdateStatus(looksForCorrectAnswer,null);
         }
 
     public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(org.openoffice.gdocs.util.Document entry) {
