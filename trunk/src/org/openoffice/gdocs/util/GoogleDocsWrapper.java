@@ -29,6 +29,10 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,12 +108,10 @@ public class GoogleDocsWrapper implements Wrapper {
             }
 	}
 	
-	public boolean upload(String path,String documentTitle,String mimeType) throws IOException, ServiceException {
+	public UploadUpdateStatus upload(String path,String documentTitle,String mimeType) throws IOException, ServiceException {
               boolean result = false;
-              File documentFile = getFileForPath(path);               
-              uploadFile(documentFile, documentTitle,mimeType);
-              result=true;
-              return result;
+              File documentFile = getFileForPath(path);
+              return uploadFile(documentFile, documentTitle,mimeType);
 	}
 
         public boolean checkIfAuthorizationNeeded(String path, String documentTitle) throws Exception {
@@ -160,13 +162,14 @@ public class GoogleDocsWrapper implements Wrapper {
             return documentFile;
         }
 
-        private void uploadFile(final File documentFile, final String documentTitle, final String mimeType) throws IOException, MalformedURLException, ServiceException {
+        private UploadUpdateStatus uploadFile(final File documentFile, final String documentTitle, final String mimeType) throws IOException, MalformedURLException, ServiceException {
               DocumentEntry newDocument = new DocumentEntry();
               newDocument.setFile(documentFile,mimeType);
               newDocument.setTitle(new PlainTextConstruct(documentTitle));
               URL documentListFeedUrl = new URL(DOCS_FEED);
               DocumentListEntry uploaded = service.insert(documentListFeedUrl, 
                   newDocument);
+              return new UploadUpdateStatus(true, uploaded.getDocumentLink().getHref());
 	}
 	
         public List<Document> getListOfDocs(boolean useCachedListIfPossible) throws IOException, ServiceException {
@@ -238,10 +241,15 @@ public class GoogleDocsWrapper implements Wrapper {
             type = type.substring(type.lastIndexOf("/")+1);
             String entryLink = entry.getDocumentLink();
             String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
+            System.out.println(uriStr);
             String formatStr;
+            boolean newDoc = uriStr.equals("https://docs.google.com/document/");
             if ("document".equals(type)) {
                 formatStr = format.getFileExtension();
                 uriStr+="feeds/download/documents/Export?docID="+id+"&exportFormat="+formatStr;
+                if (newDoc) {
+                    uriStr = "https://docs.google.com/document/export?format="+formatStr+"&id="+id;
+                }
             } else if ("spreadsheet".equals(type)) {
                 switch (format) {
                     case OpenDocument_Spreadsheet: {
@@ -266,6 +274,7 @@ public class GoogleDocsWrapper implements Wrapper {
 //                uriStr+="feeds/download/presentations/Export?docID="+id+"&exportFormat="+formatStr;
                 uriStr="https://docs.google.com/present/export?format="+formatStr+"&id="+id;
             }
+            System.out.println(uriStr);
             return new URI(uriStr);
         }	
 	
@@ -335,7 +344,7 @@ public class GoogleDocsWrapper implements Wrapper {
             return true;
         }
 
-        public boolean update(String path, String docId,String mimeType)  throws Exception {
+        public UploadUpdateStatus update(String path, String docId,String mimeType)  throws Exception {
             List<Document> docs = getListOfDocs(true);
 //            Map<String,Document> mapOfDocs = new HashMap<String,Document>();
             Document docToUpdate = null;
@@ -349,16 +358,79 @@ public class GoogleDocsWrapper implements Wrapper {
 //            Document docToUpdate = mapOfDocs.get(docId);
             if (docToUpdate!=null) {
                 DocumentListEntry entry = doc2Entry.get(docToUpdate);
+                DocumentListEntry updatedEntry = entry;
                 entry.setFile(getFileForPath(path),mimeType);
-                DocumentListEntry updatedEntry = service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
+
+                entry.getDocumentLink().getHref();
+                String entryLink = entry.getDocumentLink().getHref();
+                String uriStr = entryLink.substring(0,entryLink.lastIndexOf("/")+1).replace("http:","https:");
+                boolean newDoc = uriStr.equals("https://docs.google.com/document/");
+
+                if (newDoc) {
+
+                    // https://docs.google.com/feeds/default/media/document%3A1IgcuvFlxFJ6KkSZPk1bH3T-ZAXC1pxdgi7rmKqbosfw
+                    // https://docs.google.com/feeds/default/media/document%3A<id>
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    FileInputStream fis = new FileInputStream(getFileForPath(path));
+                    byte[] buf = new byte[8192];
+                    int read = -1;
+                    do {
+                        read = fis.read(buf);
+                        baos.write(buf, 0, read);
+                    } while (read==8192);
+                    fis.close();
+
+                    System.out.println(entry.getMediaEditLink().getHref());
+
+                    String id = entry.getId().split("%3A")[1];
+                    
+                    URL uploadUrl = new URL("http://docs.google.com/feeds/default/media/document%3A"+id);
+                    //uploadUrl = new URL(entry.getMediaEditLink().getHref());
+
+                    System.out.println("uri="+uploadUrl.toURI().toString());
+
+                    HttpURLConnection conn = (HttpURLConnection)uploadUrl.openConnection();
+
+                    conn.setRequestMethod("PUT");
+                    //conn.setRequestProperty("Authorization", "GoogleLogin auth="+auth);
+
+                    HttpAuthToken authToken = (HttpAuthToken)service.getAuthTokenFactory().getAuthToken();
+                    String header = authToken.getAuthorizationHeader(uploadUrl, "GET");
+                    conn.setRequestProperty("Authorization", header);
+
+                    conn.setRequestProperty("GData-Version", "3.0");
+                    conn.setRequestProperty("Content-Type", mimeType);
+                    conn.setRequestProperty("Slug", entry.getTitle().getPlainText());
+                    conn.setRequestProperty("If-Match","*");
+
+                    long contentLength = baos.size();
+                    conn.setRequestProperty("Content-Length", ""+contentLength);
+
+                    conn.setDoOutput(true);
+                    conn.connect();
+
+                    conn.getOutputStream().write(baos.toByteArray());
+
+                    BufferedReader br2 = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String line2 = "";
+                    while ((line2=br2.readLine())!=null) {
+                        System.out.println(line2);
+                    }
+
+                } else {
+                    service.getRequestFactory().setHeader("If-Match", "*");
+                    updatedEntry = service.updateMedia(new URL(entry.getEditLink().getHref()), entry);
+                }
+
                 Configuration.log("entry==updatedEntry is "+(entry==updatedEntry));
                 System.out.println("entry==updatedEntry is "+(entry==updatedEntry));
                 doc2Entry.put(docToUpdate, updatedEntry);
                 //getListOfDocs(false);
-                return true;
+                return new UploadUpdateStatus(true, updatedEntry.getDocumentLink().getHref());
             } else {
                 Configuration.log(path+" will not be updated.");
-                return false;
+                return new UploadUpdateStatus(false, null);
             }
         }
 

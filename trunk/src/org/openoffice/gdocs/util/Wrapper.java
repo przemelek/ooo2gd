@@ -8,13 +8,26 @@ import java.util.Date;
 import java.util.List;
 
 public interface Wrapper {
-
+    public static class UploadUpdateStatus {
+        private boolean status;
+        private String docId;
+        public UploadUpdateStatus(boolean status, String docId) {
+            this.status = status;
+            this.docId = docId;
+        }
+        public boolean success() {
+            return this.status;
+        }
+        public String docId() {
+            return docId;
+        }
+    }
     public Downloader getDownloader(URI uri, String documentUrl) throws URISyntaxException, MalformedURLException;
     public URI getUriForEntry(final Document entry) throws URISyntaxException;
     public URI getUriForEntryInBrowser(final Document entry) throws URISyntaxException;
     public void login(Creditionals creditionals) throws Exception;
     public boolean checkIfAuthorizationNeeded(String path,String documentTitle) throws Exception;
-    public boolean upload(String path,String documentTitle,String mimeType) throws Exception;
+    public UploadUpdateStatus upload(String path,String documentTitle,String mimeType) throws Exception;
     public boolean neededConversion(String path);
     public boolean neededConversion(OOoFormats format);
     public OOoFormats convertTo(OOoFormats format);
@@ -27,7 +40,7 @@ public interface Wrapper {
     public List<String> getListOfServersForSelection();
     public Creditionals getCreditionalsForServer(String serverPath);
     public boolean updateSupported();
-    public boolean update(String path,String docId,String mimeType) throws Exception;
+    public UploadUpdateStatus update(String path,String docId,String mimeType) throws Exception;
     public boolean downloadInGivenFormatSupported();
     public List<OOoFormats> getListOfSupportedForDownloadFormatsForEntry(Document entry);
     public URI getUriForEntry(final Document entry, final OOoFormats format) throws URISyntaxException;
