@@ -1,3 +1,11 @@
 #labels Featured
-Current versions of OOo2GD should work with MacOS.
-Whole program was recompiled for Java 5, and from this what I know it works. But I didn't tested it because I have no access to any MacOS machine :-)
+OK, it looks that currently OOo2GD doesn't work on newest MacOS (don't ask me for version, I don't know how versions works in Mac OS ;-) ).
+It will not work in Mac version of OpenOffice.org because Mac version of OpenOffice.org has bug which doesn't let to use AWT/Swing in OO.org extensions. More details here http://www.openoffice.org/issues/show_bug.cgi?id=92926
+
+In NeoOffice it has problem in displaying windows. This problem started probably somewhere near July 2010. I don't have idea what is source of it.
+
+I'm sad but I must say that till I will not find somebody who will be able to try to fix this problem on Mac I cannot guarantee that on your version of Mac OS it will work.
+I know, and I have screens showing it, that it works on some versions of Mac OS, but I'm not able to say which versions are OK, and which aren't.
+
+If you have Mac and want to help, you may try to test on NeoOffice versions from 2.3.1 and go down in version numbers, if you will find version which works for you, please share with this.
+If you have Mac and know Java, contact with me, I will help you in setting environment to develop OOo2GD and maybe we will be able to find solution for problem with displaying windows.
