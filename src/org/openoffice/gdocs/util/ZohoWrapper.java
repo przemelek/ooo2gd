@@ -257,7 +257,7 @@ public class ZohoWrapper implements Wrapper {
         }
 
         private List<ZohoDocument> getListOfZohoPresentations() throws IOException, URISyntaxException, ServiceException, ParserConfigurationException, SAXException {
-            String workbooksListURI = "http://show.zoho.com/api/private/xml/presentations?apikey="+API_KEY+"&ticket="+getTicket();
+            String workbooksListURI = "https://show.zoho.com/api/private/xml/presentations?apikey="+API_KEY+"&ticket="+getTicket();
             return new GetListHandler(workbooksListURI) {
 
             @Override
@@ -278,7 +278,7 @@ public class ZohoWrapper implements Wrapper {
         }
                 
         private List<ZohoDocument> getListOfZohoWorkbooks() throws IOException, URISyntaxException, ServiceException, ParserConfigurationException, SAXException {
-            String workbooksListURI = "http://sheet.zoho.com/api/private/xml/books?apikey="+API_KEY+"&ticket="+getTicket();
+            String workbooksListURI = "https://sheet.zoho.com/api/private/xml/books?apikey="+API_KEY+"&ticket="+getTicket();
             return new GetListHandler(workbooksListURI) {
 
             @Override
@@ -435,14 +435,14 @@ public class ZohoWrapper implements Wrapper {
             //Map<String,String> parameters = new HashMap<String, String>();
 //            map.put("workbookName",documentName);
 //            map.put("")
-            return uploadDocumentForUrl(sourceFileName, documentName,"http://sheet.zoho.com/api/private/xml/uploadbook",null);
+            return uploadDocumentForUrl(sourceFileName, documentName,"https://sheet.zoho.com/api/private/xml/uploadbook",null);
         }
 
         private UploadUpdateStatus uploadPresentation(String sourceFileName,String documentName) throws IOException {
             //Map<String,String> parameters = new HashMap<String, String>();
 //            map.put("workbookName",documentName);
 //            map.put("")
-            return uploadDocumentForUrl(sourceFileName, documentName,"http://show.zoho.com/api/private/xml/uploadpresentation",null);
+            return uploadDocumentForUrl(sourceFileName, documentName,"https://show.zoho.com/api/private/xml/uploadpresentation",null);
         }        
         
         private boolean isIn(String search,String... setOfPossibleValues) {
@@ -508,7 +508,7 @@ public class ZohoWrapper implements Wrapper {
             List<ZohoDocument> list = getListOfZohoWorkbooks();
             for (ZohoDocument doc : list) {
                 org.openoffice.gdocs.util.Document docEntry = new org.openoffice.gdocs.util.Document();                
-                docEntry.setDocumentLink("http://sheet.zoho.com/api/private/ods/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
+                docEntry.setDocumentLink("https://sheet.zoho.com/api/private/ods/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
                 docEntry.setTitle(doc.getDocumentName()+".ods");
                 docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
@@ -522,7 +522,7 @@ public class ZohoWrapper implements Wrapper {
             List<ZohoDocument> list = getListOfZohoPresentations();
             for (ZohoDocument doc : list) {
                 org.openoffice.gdocs.util.Document docEntry = new org.openoffice.gdocs.util.Document();
-                docEntry.setDocumentLink("http://sheet.zoho.com/api/private/xls/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
+                docEntry.setDocumentLink("https://sheet.zoho.com/api/private/xls/download/" + doc.getDocumentId() + "?apikey=" + API_KEY + "&ticket=" + getTicket());
                 docEntry.setId(doc.getDocumentId());
                 docEntry.setTitle(doc.getDocumentName());
                 docEntry.setUpdated(df.format(new Date(Long.valueOf(doc.getLastModifiedTime()))));
@@ -605,7 +605,7 @@ public class ZohoWrapper implements Wrapper {
         public UploadUpdateStatus update(String path, String docId, String mimeType) throws IOException {
             docId = docId.substring(0,docId.indexOf("?"));
             docId = docId.substring(docId.lastIndexOf("/")+1);
-            String updateUrl = "http://export.writer.zoho.com/api/private/xml/saveDocument/"+docId+"?apikey="+API_KEY+"&ticket="+getTicket();
+            String updateUrl = "https://export.writer.zoho.com/api/private/xml/saveDocument/"+docId+"?apikey="+API_KEY+"&ticket="+getTicket();
             URL source = new URL(updateUrl);            
 	    HttpURLConnection.setDefaultAllowUserInteraction(true);
 	    //String fileName = path.substring(sourceFileName.lastIndexOf("\\")+1);	    

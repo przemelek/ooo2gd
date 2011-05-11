@@ -24,6 +24,7 @@ import java.util.List;
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.client.http.HttpAuthToken;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.Category;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
@@ -38,6 +39,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Locale;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -54,7 +57,7 @@ public class GoogleDocsWrapper implements Wrapper {
         // Yo Google! Sad that you didn't publish statistics for 3rd party programs using Google Docs API
         // btw. Cracow office looks nice from inside ;-)
 	public static final String APP_NAME = "RMK-OpenOffice.orgDocsUploader-"+Configuration.getVersionStr();
-	public static final String DOCS_FEED = "http://docs.google.com/feeds/documents/private/full";        
+	public static final String DOCS_FEED = "https://docs.google.com/feeds/documents/private/full";
 	private DocsService service;
         private SpreadsheetService spreadsheetService;
         private Creditionals creditionals;
@@ -183,14 +186,18 @@ public class GoogleDocsWrapper implements Wrapper {
                 doc2Entry.clear();
                 URL documentFeedUrl = new URL(DOCS_FEED); 
                 DocumentListFeed feed = service.getFeed(documentFeedUrl,DocumentListFeed.class);
+                //feed.getC
                 List<DocumentListEntry> listOfEntries = feed.getEntries();
-                int i=0;
                 for (DocumentListEntry entry:listOfEntries) {
                     Document docEntry = new Document();
                     docEntry.setDocumentLink(entry.getDocumentLink().getHref());
                     docEntry.setId(entry.getId());
                     docEntry.setTitle(entry.getTitle().getPlainText());
                     docEntry.setUpdated(entry.getUpdated().toStringRfc822());
+                    for (Category cat:entry.getCategories()) {
+                        docEntry.addFolder(cat.getLabel());
+                    }
+                    //entry.getCategories()
 //                    System.out.println(entry.getTitle().getPlainText());
 //                    AclFeed aclFeed = service.getFeed(new URL(entry.getAclFeedLink().getHref()), AclFeed.class);
 //                    for (AclEntry entryAcl : aclFeed.getEntries()) {
@@ -385,7 +392,7 @@ public class GoogleDocsWrapper implements Wrapper {
 
                     String id = entry.getId().split("%3A")[1];
                     
-                    URL uploadUrl = new URL("http://docs.google.com/feeds/default/media/document%3A"+id);
+                    URL uploadUrl = new URL("https://docs.google.com/feeds/default/media/document%3A"+id);
                     //uploadUrl = new URL(entry.getMediaEditLink().getHref());
 
                     System.out.println("uri="+uploadUrl.toURI().toString());

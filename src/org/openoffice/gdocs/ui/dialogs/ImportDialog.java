@@ -5,6 +5,7 @@
 package org.openoffice.gdocs.ui.dialogs;
 
 import java.awt.HeadlessException;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +34,14 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import com.google.gdata.util.AuthenticationException;
 import com.sun.star.frame.XFrame;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.lang.reflect.Method;
+import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import org.openoffice.gdocs.util.OOoFormats;
 
 /**
@@ -44,6 +49,21 @@ import org.openoffice.gdocs.util.OOoFormats;
  * @author  rmk
  */
 public class ImportDialog extends JFrame {
+
+    private void addFolderLabel(String color, String bgColor, final String folderName, final DocumentsTableModel dtm) {
+        String text = "<html><body><font bgcolor=\"" + bgColor + "\" color=\"" + color + "\">&nbsp;[" + ("".equals(folderName)?"All":folderName) + "]&nbsp;</font></body></html>";
+        JLabel label = new JLabel(text);
+        label.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dtm.setFolderFilter(folderName);
+                dtm.fireTableDataChanged();
+            }
+        });
+        label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        foldersPanel.add(label);
+    }
   private final class ImportIOListener implements IOListener {
 		private final String url;
                 private boolean openAfterDownload;
@@ -147,6 +167,7 @@ public class ImportDialog extends JFrame {
         this.xFrame = frame;
         this.system = system;
         initComponents();
+        foldersPanel.setVisible(false);
         this.setSize(600, 450);        
         loginPanel1.setSystem(system);
         getListButton.setText(Configuration.getResources().getString("Get_list"));
@@ -221,6 +242,7 @@ public class ImportDialog extends JFrame {
         filterText = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        foldersPanel = new javax.swing.JPanel();
 
         setTitle("Import from Google Docs");
         setFocusTraversalPolicyProvider(true);
@@ -407,6 +429,7 @@ public class ImportDialog extends JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jPanel6.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel6.add(foldersPanel, java.awt.BorderLayout.PAGE_END);
 
         jSplitPane2.setLeftComponent(jPanel6);
 
@@ -534,19 +557,32 @@ public class ImportDialog extends JFrame {
                     ImportDialog.this.filterText.setEnabled(true);
                     ImportDialog.this.getListButton.setEnabled(true);
                     ImportDialog.this.jLabel2.setEnabled(true);
-                }
-                ImportDialog.this.repaint();                
+                }                
+                repaint();                
             }
         });
     }//GEN-LAST:event_getListButtonActionPerformed
     
     
     private void fillListOfDocuments(final Wrapper wrapper, List<Document> documents) {
-        DocumentsTableModel dtm = new DocumentsTableModel(wrapper);
+        final DocumentsTableModel dtm = new DocumentsTableModel(wrapper);
         for (Document entry : documents) {
             dtm.add(entry);
         }
         jTable1.setModel(dtm);
+        Map<String,String> folder2color = dtm.getFolders2ColorsMap();
+        if (folder2color.size()>0) {
+            foldersPanel.removeAll();
+            foldersPanel.setVisible(true);
+            foldersPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+            int idx=0;
+            addFolderLabel("black","white","",dtm);
+            for (Map.Entry<String,String> entry:folder2color.entrySet()) {
+                String[] colors = entry.getValue().split("\\|");
+                final String folderName = entry.getKey();
+                addFolderLabel(colors[1],colors[0], folderName, dtm);
+            }
+        }
         jTable1.clearSelection();
         jLabel2.setEnabled(true);
         filterText.setEnabled(true);
@@ -625,6 +661,7 @@ private void filterTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
     private javax.swing.JButton closeButton;
     private javax.swing.JButton downloadButton;
     private javax.swing.JTextField filterText;
+    private javax.swing.JPanel foldersPanel;
     private javax.swing.JPanel formatChoosePanel;
     private javax.swing.JLabel formatChooserLabel;
     private javax.swing.JComboBox formatComboBox;
