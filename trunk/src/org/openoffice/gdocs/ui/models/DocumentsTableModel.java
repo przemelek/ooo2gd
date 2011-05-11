@@ -8,8 +8,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import javax.swing.table.DefaultTableModel;
 import org.openoffice.gdocs.configuration.Configuration;
 import org.openoffice.gdocs.util.Document;
@@ -21,9 +23,14 @@ public class DocumentsTableModel extends DefaultTableModel {
     private Wrapper wrapper;
     private int numberOfColumns;
     private String filter;
+    private String folderFilter;
     private DateFormat df;
     private DateFormat parseDf;
-    
+    private Map<String,String> folder2color = new HashMap<String, String>();
+    private static String[] colors = {"yellow|black","green|white","orange|black","cyan|black","purple|white","red|white"};
+    private int lastColor = 0;
+
+
     public DocumentsTableModel() {
         this(null);
     }
@@ -31,6 +38,9 @@ public class DocumentsTableModel extends DefaultTableModel {
     public DocumentsTableModel(Wrapper wrapper) {
         this.wrapper=wrapper;
         numberOfColumns=2;
+//        if (wrapper!=null && "Google Docs".equals(wrapper.getSystem())) {
+//            numberOfColumns = 3;
+//        }
         df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
@@ -43,7 +53,19 @@ public class DocumentsTableModel extends DefaultTableModel {
     public void setFilter(String str) {
         this.filter = str;
     }
-    
+
+    public void setFolderFilter(String folderFilter) {
+        this.folderFilter = folderFilter;
+    }
+
+    private boolean isOneOf(String str,String... strings) {
+        return java.util.Arrays.asList(strings).contains(str);
+//        for (String s:strings) {
+//            if (s.equals(str)) return true;
+//        }
+//        return false;
+    }
+
     public Object getValueAt(int rowIndex, int columnIndex) {
         Document entry = getList().get(rowIndex);
         Object obj = null;
@@ -53,10 +75,31 @@ public class DocumentsTableModel extends DefaultTableModel {
         } catch (ParseException pe) {
             Configuration.log("Problem with parsing date "+entry.getUpdated());
         }
-
+        String folders = "";
+        if (wrapper!=null && "Google Docs".equals(wrapper.getSystem())) {            
+            for (String folder:entry.getFolders()) {
+                if (folder==null) continue;
+                if (isOneOf(folder,"document","presentation","spreadsheet","viewed")) continue;
+                String color = folder2color.get(folder);
+                if (color==null) {
+                    if (lastColor<colors.length) {
+                        color = colors[lastColor++];                        
+                    } else {
+                        color="gray|white";
+                    }
+                    folder2color.put(folder, color);
+                }
+                String[] fontColors = color.split("\\|");
+                folders+="<i><font bgcolor=\""+fontColors[0]+"\" color=\""+fontColors[1]+"\">&nbsp;"+folder+"&nbsp;</font></i>";
+            }
+        }
+        String name = entry.getTitle();
+        if (!"".equals(folders)) {
+            name="<html><body>"+name+" "+folders;
+        }
         switch (columnIndex) {
-            case 0: obj = entry.getTitle(); break;
-            case 1: obj = date; break;
+            case 0: obj = name; break;
+            case 1: obj = date;
         }
         if (obj==null) obj="";
         return obj;
@@ -87,6 +130,22 @@ public class DocumentsTableModel extends DefaultTableModel {
     }
        
     public void add(Document entry) {
+        String folders = "";
+        if (wrapper!=null && "Google Docs".equals(wrapper.getSystem())) {
+            for (String folder:entry.getFolders()) {
+                if (folder==null) continue;
+                if (isOneOf(folder,"document","presentation","spreadsheet","viewed")) continue;
+                String color = folder2color.get(folder);
+                if (color==null) {
+                    if (lastColor<colors.length) {
+                        color = colors[lastColor++];
+                    } else {
+                        color="gray|white";
+                    }
+                    folder2color.put(folder, color);
+                }
+            }
+        }
         getList().add(entry);
     }
 
@@ -111,6 +170,15 @@ public class DocumentsTableModel extends DefaultTableModel {
                      }
                  }
         }
+        if (folderFilter!=null && folderFilter.length()!=0) {
+            List<Document> newFilteredList = new ArrayList<Document>();
+            for (Document doc:filteredList) {
+                if (doc.getFolders().contains(folderFilter)) {
+                    newFilteredList.add(doc);
+                }
+            }
+            filteredList = newFilteredList;
+        }
         return filteredList;
     }
 
@@ -120,5 +188,8 @@ public class DocumentsTableModel extends DefaultTableModel {
     public void setList(List<Document> list) {
         this.list = list;
     }
-    
+
+    public Map<String,String> getFolders2ColorsMap() {
+        return folder2color;
+    }
 }
