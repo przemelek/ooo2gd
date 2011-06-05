@@ -146,7 +146,7 @@ public class WebDAVWrapper implements Wrapper {
         });
     }
     
-    public UploadUpdateStatus upload(String path, String documentTitle,String mimeType) throws Exception {
+    public UploadUpdateStatus upload(String path, String documentTitle,String mimeType,boolean convert) throws Exception {
             FileInputStream fis = new FileInputStream(path);
 	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
             long contentLength = getStream(fis,baos);
@@ -178,10 +178,6 @@ public class WebDAVWrapper implements Wrapper {
         return progress;
     }
     
-    public boolean neededConversion(String path) {
-        return false;
-    }
-
     public boolean neededConversion(OOoFormats format) {
         return false;
     }
@@ -301,7 +297,14 @@ public class WebDAVWrapper implements Wrapper {
         //return new Date(date);
     }
 
-    
+    public boolean isConversionObligatory() {
+        return true;
+    }
+
+    public boolean isConversionPossible(OOoFormats format) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 //    public static void main(String[] args) throws Exception {
 //        Wrapper wrapper = new WebDAVWrapper();
 //        ((WebDAVWrapper)(wrapper)).setServerPath("http://localhost:8080/webdavek/");

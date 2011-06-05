@@ -40,22 +40,10 @@
               <Component id="loginPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
           </Group>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="244" max="32767" attributes="0"/>
-              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="195" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="145" max="32767" attributes="0"/>
-              <Component id="okButton" min="-2" pref="93" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
-              <Component id="cancelButton" min="-2" pref="96" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
-          </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
               <Component id="documentNamePanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="62" max="32767" attributes="0"/>
+              <EmptySpace pref="46" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -67,14 +55,6 @@
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
               <Component id="documentNamePanel" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -87,30 +67,45 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="serverLabel" min="-2" max="-2" attributes="0"/>
-                      <Component id="docNameLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="docNameLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="autoupdateCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="docNameComboBox" alignment="0" pref="280" max="32767" attributes="0"/>
-                              <Component id="serversComboBox" pref="280" max="32767" attributes="1"/>
-                              <Component id="docName" alignment="0" pref="280" max="32767" attributes="1"/>
+                              <Component id="serverLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="docNameLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="docNameLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="refreshButton" min="-2" pref="30" max="-2" attributes="0"/>
-                              <Component id="serverConfiguration" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="convertCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="autoupdateCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="docNameComboBox" alignment="0" pref="296" max="32767" attributes="0"/>
+                                      <Component id="serversComboBox" pref="296" max="32767" attributes="1"/>
+                                      <Component id="docName" alignment="0" pref="296" max="32767" attributes="1"/>
+                                      <Component id="cancelButton" alignment="1" min="-2" pref="96" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="refreshButton" min="-2" pref="30" max="-2" attributes="0"/>
+                                      <Component id="serverConfiguration" alignment="0" min="-2" pref="30" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                           </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="-2" pref="117" max="-2" attributes="0"/>
+                          <Component id="okButton" min="-2" pref="93" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="214" max="32767" attributes="0"/>
+                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="150" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -137,6 +132,16 @@
                   </Group>
                   <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                   <Component id="autoupdateCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="convertCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -193,36 +198,44 @@
             <Property name="text" type="java.lang.String" value="Autoupdate"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JCheckBox" name="convertCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Convert to Google Docs format"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="convertCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="okButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="OK"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="cancelButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Cancel"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Dialog" size="12" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;font size=&quot;1&quot;&gt;(c) &lt;u&gt;&lt;font color=&quot;blue&quot;&gt;Przemyslaw Rumik&lt;/font&gt;&lt;/u&gt;&lt;/font&gt;&lt;/html&gt;"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel1MouseClicked"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Component class="org.openoffice.gdocs.ui.LoginPanel" name="loginPanel1">
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Dialog" size="12" style="1"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;font size=&quot;1&quot;&gt;(c) &lt;u&gt;&lt;font color=&quot;blue&quot;&gt;Przemyslaw Rumik&lt;/font&gt;&lt;/u&gt;&lt;/font&gt;&lt;/html&gt;"/>
-      </Properties>
-      <Events>
-        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jLabel1MouseClicked"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="okButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="OK"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="okButtonActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="cancelButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Cancel"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>

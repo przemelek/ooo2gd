@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Document {
+    private boolean convertable;
     private String title;
     private String updated;
     private String documentLink;
+    private String editMediaLink;
+    private String contentType;
     private String id;
     private Set<String> folders = new HashSet<String>();
 
@@ -54,5 +57,41 @@ public class Document {
     @Override
     public String toString() {
         return title;
+    }
+
+    public boolean isConvertable() {
+        return convertable;
+    }
+
+    public void setConvertable(boolean convertable) {
+        this.convertable = convertable;
+    }
+
+    /**
+     * @return the editMediaLink
+     */
+    public String getEditMediaLink() {
+        return editMediaLink;
+    }
+
+    /**
+     * @param editMediaLink the editMediaLink to set
+     */
+    public void setEditMediaLink(String editMediaLink) {
+        this.editMediaLink = editMediaLink;
+    }
+
+    /**
+     * @return the contentType
+     */
+    public String getContentType() {
+        return contentType;
+    }
+
+    /**
+     * @param contentType the contentType to set
+     */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

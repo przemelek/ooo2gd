@@ -71,6 +71,7 @@ public class DocumentsTableModel extends DefaultTableModel {
         Object obj = null;
         String date = entry.getUpdated();
         try {
+//            date = df.format(wrapper.parseDate(entry.getUpdated().replace("Z", "-00:00Z")));
             date = df.format(wrapper.parseDate(entry.getUpdated()));
         } catch (ParseException pe) {
             Configuration.log("Problem with parsing date "+entry.getUpdated());

@@ -64,7 +64,8 @@ public enum OOoFormats {
     StarImpress_50_Template("StarImpress 5.0 Template","StarImpress 5.0 Vorlage","vor","application/octet-stream",2),
     StarImpress_40("StarImpress 4.0","StarImpress 4.0","sdd","application/vnd.stardivision.impress",2),
     StarImpress_40_Template("StarImpress 4.0 Template","StarImpress 4.0 Vorlage","vor","application/octet-stream",2),
-    OpenDocument_Drawing_Impress("OpenDocument Drawing (Impress)","impress8_draw","odg","application/vnd.oasis.opendocument.graphics",2);
+    OpenDocument_Drawing_Impress("OpenDocument Drawing (Impress)","impress8_draw","odg","application/vnd.oasis.opendocument.graphics",2),
+    OpenDocument_Drawing2_Impress("OpenDocument Drawing (Impress)","draw8","odg","application/vnd.oasis.opendocument.graphics",2);
     private String formatName;
     private String filterName;
     private String fileExtension;

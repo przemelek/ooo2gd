@@ -452,7 +452,7 @@ public class ZohoWrapper implements Wrapper {
             return false;
         }
         
-        public UploadUpdateStatus upload(String sourceFileName,String documentName,String mimeType) throws IOException {
+        public UploadUpdateStatus upload(String sourceFileName,String documentName,String mimeType,boolean convert) throws IOException {
             // https://export.writer.zoho.com/api/private/xml/uploadDocument DOC/ODT/RTF
             // https://sheet.zoho.com/api/private/xml/uploadbook xls|sxc|csv            
             // https://show.zoho.com/api/private/xml/uploadpresentation ppt|pps|sxi|odp
@@ -547,10 +547,6 @@ public class ZohoWrapper implements Wrapper {
 	private String getTicket() {
 		return this.ticket;
 	}
-
-        public boolean neededConversion(String path) {
-            return false;
-        }
         
         public boolean neededConversion(OOoFormats format) {
             return !(java.util.Arrays.asList(SUPPORTED_FORMATS).contains(format));
@@ -676,8 +672,14 @@ public class ZohoWrapper implements Wrapper {
         return df.parse(date);
     }
 
+    public boolean isConversionObligatory() {
+        return true;
+    }
 
-    
+     public boolean isConversionPossible(OOoFormats format) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 //	public static void main(String[] args) throws Exception {
 //		ZohoWrapper zohoWrapper = new ZohoWrapper();
 //                Creditionals creds = new Creditionals("", "");

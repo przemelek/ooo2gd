@@ -44,6 +44,7 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import org.openoffice.gdocs.util.Wrapper;
 
 public class Configuration {
+
     private static class FileInfo {
         private String fName;
         private String documentLink;
@@ -100,7 +101,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "2.4.0";
+    private static String versionStr = "3.0.0";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -121,6 +122,7 @@ public class Configuration {
     private static boolean overwritteFlag;
     private static String lookAndFeel;
     private static boolean defaultAutoUpdate;
+    private static boolean convertToGoogleDocsFormat;
     private static Timer syncTimer;
     private static boolean reportedOsJavaVersionAndLAF = false;
 
@@ -201,6 +203,7 @@ public class Configuration {
             pr.println(getOverwritteFlag()?"1":"0");
             pr.println(lookAndFeel);
             pr.println(isDefaultAutoUpdate()?"1":"0");
+            pr.println(isConvertToGoogleDocsFormat()?"1":"0");
         } catch (Exception e) {
             // Intentionaly left empty
         } finally {
@@ -252,6 +255,8 @@ public class Configuration {
             }
             String defaultAutoupdateString = br.readLine();
             setDefaultAutoUpdate("1".equals(defaultAutoupdateString));
+            String convertToGoogleDocsFormatString = br.readLine();
+            setConvertToGoogleDocsFormat("1".equals(convertToGoogleDocsFormatString));
         } catch (IOException e) {
             // Intentionaly left empty
         } finally {
@@ -691,5 +696,13 @@ public class Configuration {
                 startSyncTimerIfNeeded();
             }
         }
+    }
+
+    public static boolean isConvertToGoogleDocsFormat() {
+        return convertToGoogleDocsFormat;
+    }
+
+    public static void setConvertToGoogleDocsFormat(boolean aConvertToGoogleDocsFormat) {
+        convertToGoogleDocsFormat = aConvertToGoogleDocsFormat;
     }
 }

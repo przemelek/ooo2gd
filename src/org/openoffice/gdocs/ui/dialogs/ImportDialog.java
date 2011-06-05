@@ -448,7 +448,10 @@ public class ImportDialog extends JFrame {
         String directory = Configuration.getDirectoryToStoreFiles();
         if (directory==null) directory = Configuration.getWorkingPath();
         String documentUrl = null;
-        String documentTitle = createFileName(wrapper,entry);
+        String documentTitle = entry.getTitle();
+        if (entry.getDocumentLink().indexOf("file")==-1) {
+            documentTitle = createFileName(wrapper,entry);
+        }
         if ("?".equals(directory)) {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setSelectedFile(new File(documentTitle));
@@ -462,13 +465,20 @@ public class ImportDialog extends JFrame {
         }
         documentUrl = Util.findAvailableFileName(documentUrl);
         final URI uri;
-        if (wrapper.downloadInGivenFormatSupported()) {            
-            uri = wrapper.getUriForEntry(entry,(OOoFormats)formatComboBox.getSelectedItem());
-            if (autoUpdate.isSelected()) {
-                Configuration.addToGlobalMapOfFiles(documentUrl,entry.getDocumentLink(),(OOoFormats)formatComboBox.getSelectedItem());
-            }
+        if ("Google Docs".equals(wrapper.getSystem()) && entry.getId().indexOf("file")!=-1) {
+            uri = new URI(entry.getDocumentLink());
+                if (autoUpdate.isSelected()) {
+                    Configuration.addToGlobalMapOfFiles(documentUrl,entry.getDocumentLink(),Util.getFormatForMimeType(entry.getContentType()));
+                }
         } else {
-            uri = wrapper.getUriForEntry(entry);
+            if (wrapper.downloadInGivenFormatSupported()) {
+                uri = wrapper.getUriForEntry(entry,(OOoFormats)formatComboBox.getSelectedItem());
+                if (autoUpdate.isSelected()) {
+                    Configuration.addToGlobalMapOfFiles(documentUrl,entry.getDocumentLink(),(OOoFormats)formatComboBox.getSelectedItem());
+                }
+            } else {
+                uri = wrapper.getUriForEntry(entry);
+            }
         }
         downloadURI(documentUrl, uri, wrapper, openAfterDownload);
     }
@@ -476,7 +486,7 @@ public class ImportDialog extends JFrame {
     private String createFileName(final Wrapper wrapper,final Document entry) {
         String documentTitle = entry.getTitle().replaceAll("\\?", "").replaceAll("\\*", "").replace(File.separatorChar, '_').replace('/', '_');
         String fileExtension = "";
-        if (wrapper.downloadInGivenFormatSupported()) {
+        if (wrapper.downloadInGivenFormatSupported() && entry.isConvertable()) {
              fileExtension = ((OOoFormats)formatComboBox.getSelectedItem()).getFileExtension();
         } else {
             boolean isDoc = entry.getId().indexOf("/document%3A") != -1;
@@ -490,7 +500,7 @@ public class ImportDialog extends JFrame {
                 fileExtension="ods";
             }
         }
-        if (!documentTitle.toLowerCase().endsWith("."+fileExtension)) {
+        if (!documentTitle.toLowerCase().endsWith("."+fileExtension) && (fileExtension.length()>0)) {
                 documentTitle += "."+fileExtension;
         }        
         return documentTitle;
@@ -590,16 +600,27 @@ public class ImportDialog extends JFrame {
         jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 Document entry = ((DocumentsTableModel) jTable1.getModel()).getEntry(jTable1.getSelectedRow());
-                formatChoosePanel.setVisible(false);
+//                formatChoosePanel.setVisible(false);
+                formatChoosePanel.setVisible(true);
+                formatChooserLabel.setVisible(false);
+                formatComboBox.setVisible(false);
+                openViaBrowserButton.setEnabled(false);
+                openInBrowser.setEnabled(false);
+                boolean enabled = false;
                 if (wrapper.downloadInGivenFormatSupported()) {
                     List<OOoFormats> list = wrapper.getListOfSupportedForDownloadFormatsForEntry(entry);
                     if (list.size() > 0) {
-                        formatChoosePanel.setVisible(true);
+//                        formatChoosePanel.setVisible(true);
+                        enabled = true;
+                        formatChooserLabel.setVisible(true);
+                        formatComboBox.setVisible(true);
                         formatComboBox.setModel(new DefaultComboBoxModel(list.toArray()));
+                        openViaBrowserButton.setEnabled(true);
+                        openInBrowser.setEnabled(true);
                     }
                 }
                 if (entry != null) {
-                    ImportDialog.this.setButtonsEnable(true, true, true);
+                    ImportDialog.this.setButtonsEnable(true, enabled, enabled);
                 } else {
                     ImportDialog.this.setButtonsEnable(false, false, false);
                 }

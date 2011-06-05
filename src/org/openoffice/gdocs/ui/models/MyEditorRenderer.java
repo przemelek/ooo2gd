@@ -18,24 +18,37 @@ import javax.swing.event.DocumentListener;
 import org.openoffice.gdocs.util.Document;
 
 public class MyEditorRenderer extends JComponent implements ComboBoxEditor {
+    public interface ChangeListener {
+        void selectionChangedTo(Object item);
+    }
     private JLabel label = new JLabel("[new]");
     private JTextField editor = new JTextField();
-    private Object item;                     
+    private Object item;
+    private ChangeListener changeListener;
     private DocumentListener docListener = new DocumentListener() {
                
                public void insertUpdate(DocumentEvent e) {
                    label.setText("[new]");
                    item = editor.getText();
+                   if (changeListener!=null) {
+                       changeListener.selectionChangedTo(item);
+                   }
                }
 
                public void removeUpdate(DocumentEvent e) {
                    label.setText("[new]");
                    item = editor.getText();
+                   if (changeListener!=null) {
+                       changeListener.selectionChangedTo(item);
+                   }
                }
 
                public void changedUpdate(DocumentEvent e) {
                    label.setText("[new]");
                    item = editor.getText();
+                   if (changeListener!=null) {
+                       changeListener.selectionChangedTo(item);
+                   }
                }
            };
     private MouseListener mouseListener = new MouseAdapter() {
@@ -48,9 +61,10 @@ public class MyEditorRenderer extends JComponent implements ComboBoxEditor {
            
        };
            
-    public MyEditorRenderer() {
+    public MyEditorRenderer(ChangeListener listener) {
         //setOpaque(true);                         
         //setBackground(Color.WHITE);
+        this.changeListener=listener;
         label.setBackground(Color.WHITE);
         this.setLayout(new BorderLayout());
 //        label.setFont(new Font(Font.SERIF,Font.PLAIN,9));
@@ -89,6 +103,9 @@ public class MyEditorRenderer extends JComponent implements ComboBoxEditor {
        } else if (anObject instanceof Document) {
            str = ((Document)anObject).getTitle();
            label.setText("[update]");
+       }
+       if (changeListener!=null) {
+           changeListener.selectionChangedTo(item);
        }
        editor.setText(str);                        
        editor.addMouseListener(mouseListener);
