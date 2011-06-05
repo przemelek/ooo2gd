@@ -14,11 +14,16 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import org.openoffice.gdocs.configuration.Configuration;
 
 public class Util {
+
+        private static Map<String, OOoFormats> mime2OOoFormat;
+
         public static String xorString(String input,String key) {
             char[] keyChars = key.toCharArray();
             char[] inputChars = input.toCharArray();
@@ -172,8 +177,12 @@ public class Util {
         }
         
         public static String findAvailableFileName(String destFileURI) {
-            String destFileName = destFileURI.substring(0,destFileURI.lastIndexOf("."));
-            String destFileExt = destFileURI.substring(destFileURI.lastIndexOf(".")+1);
+            String destFileName = destFileURI;
+            String destFileExt = "";
+            if (destFileURI.lastIndexOf(".")!=-1) {
+                destFileName = destFileURI.substring(0,destFileURI.lastIndexOf("."));
+                destFileExt = destFileURI.substring(destFileURI.lastIndexOf(".")+1);
+            }
             int count = 1;      
             File f;
             while ((f=new File(destFileURI)).exists() && !Configuration.getOverwritteFlag()) {
@@ -265,7 +274,16 @@ public class Util {
                 Configuration.store();
             } catch (IOException ioe) {
                 JOptionPane.showMessageDialog(parent, "Problem: "+ioe.getMessage(),"Problem",JOptionPane.ERROR_MESSAGE);
+            }            
+        }
+
+        public static OOoFormats getFormatForMimeType(String mimeType) {
+            if (mime2OOoFormat==null) {
+                mime2OOoFormat=new HashMap<String, OOoFormats>();
+                for (OOoFormats format:OOoFormats.values()) {
+                    mime2OOoFormat.put(format.getMimeType(), format);
+                }
             }
-            
+            return mime2OOoFormat.get(mimeType);
         }
 }

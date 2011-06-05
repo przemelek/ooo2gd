@@ -8,6 +8,7 @@ import com.sun.star.beans.PropertyValue;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,14 +34,22 @@ import org.openoffice.gdocs.util.WrapperFactory;
 import com.sun.star.frame.XFrame;
 import com.sun.star.frame.XModel;
 import com.sun.star.uno.UnoRuntime;
+import java.awt.Color;
+import java.awt.Rectangle;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 import org.openoffice.gdocs.util.OOoFormats;
 
 /**
  *
  * @author  rmk
  */
-public class UploadDialog extends javax.swing.JFrame {
+public class UploadDialog extends javax.swing.JFrame implements MyEditorRenderer.ChangeListener {
                            
     private String pathName;
     private boolean getNameFromComboBox = false;
@@ -54,11 +63,13 @@ public class UploadDialog extends javax.swing.JFrame {
         xFrame = frame;
         this.pathName = pathName;
         this.system = system;        
-        initComponents();
+        initComponents();        
         if (!"Google Docs".equals(system)) {
-            autoupdateCheckBox.setVisible(false);            
+            autoupdateCheckBox.setVisible(false);
+            convertCheckBox.setVisible(false);
         } else {
             autoupdateCheckBox.setSelected(Configuration.isDefaultAutoUpdate());
+            convertCheckBox.setSelected(Configuration.isConvertToGoogleDocsFormat());
         }
         this.setVisible(false);
         okButton.setText(Configuration.getResources().getString("OK"));
@@ -96,17 +107,29 @@ public class UploadDialog extends javax.swing.JFrame {
                 if (wrapper.updateSupported()) {
                     refreshListOfDocumentsInDocNameComboBox(wrapper,true);
                 }
+
+//                if (!wrapper.isConversionObligatory()) {
+//                    autoupdateCheckBox.setVisible(false);
+//                    convertCheckBox.setVisible(false);
+//                } else {
+//                    autoupdateCheckBox.setSelected(Configuration.isDefaultAutoUpdate());
+//                    if (wrapper.isConversionPossible(getFormatOfDocument())) {
+//                        convertCheckBox.setSelected(Configuration.isConvertToGoogleDocsFormat());
+//                    }
+//                }
+
                 UploadDialog.this.setVisible(true);
                 UploadDialog.this.toFront();
                 Configuration.hideWaitWindow();
             }
-        });        
+        });
+
     }
 
     @Override
     public void setVisible(boolean b) {
         if (wrapper==null) b = false;
-        super.setVisible(b);        
+        super.setVisible(b);
     }
     
     
@@ -127,8 +150,8 @@ public class UploadDialog extends javax.swing.JFrame {
             }
 
             if (hasList && docsList!=null) {
-                docNameComboBox.setRenderer(new MyCellRenderer());                                
-                docNameComboBox.setEditor(new MyEditorRenderer());                 
+                docNameComboBox.setRenderer(new MyCellRenderer());
+                docNameComboBox.setEditor(new MyEditorRenderer(this));
                 docNameLabel1.setVisible(false);
                 docName.setVisible(false);
                 docNameLabel2.setVisible(true);
@@ -184,10 +207,11 @@ public class UploadDialog extends javax.swing.JFrame {
         docNameComboBox = new javax.swing.JComboBox();
         refreshButton = new javax.swing.JButton();
         autoupdateCheckBox = new javax.swing.JCheckBox();
-        loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
-        jLabel1 = new javax.swing.JLabel();
+        convertCheckBox = new javax.swing.JCheckBox();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        loginPanel1 = new org.openoffice.gdocs.ui.LoginPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Export to Google Docs");
@@ -232,29 +256,69 @@ public class UploadDialog extends javax.swing.JFrame {
 
         autoupdateCheckBox.setText("Autoupdate");
 
+        convertCheckBox.setText("Convert to Google Docs format");
+        convertCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertCheckBoxActionPerformed(evt);
+            }
+        });
+
+        okButton.setText("OK");
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                okButtonActionPerformed(evt);
+            }
+        });
+
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 12));
+        jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout documentNamePanelLayout = new org.jdesktop.layout.GroupLayout(documentNamePanel);
         documentNamePanel.setLayout(documentNamePanelLayout);
         documentNamePanelLayout.setHorizontalGroup(
             documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(documentNamePanelLayout.createSequentialGroup()
-                .addContainerGap()
                 .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(serverLabel)
-                    .add(docNameLabel1)
-                    .add(docNameLabel2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(autoupdateCheckBox)
                     .add(documentNamePanelLayout.createSequentialGroup()
+                        .addContainerGap()
                         .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(docNameComboBox, 0, 280, Short.MAX_VALUE)
-                            .add(serversComboBox, 0, 280, Short.MAX_VALUE)
-                            .add(docName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                            .add(serverLabel)
+                            .add(docNameLabel1)
+                            .add(docNameLabel2))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(refreshButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(serverConfiguration, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                            .add(convertCheckBox)
+                            .add(autoupdateCheckBox)
+                            .add(documentNamePanelLayout.createSequentialGroup()
+                                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(docNameComboBox, 0, 296, Short.MAX_VALUE)
+                                    .add(serversComboBox, 0, 296, Short.MAX_VALUE)
+                                    .add(docName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, cancelButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(refreshButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(serverConfiguration, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                    .add(documentNamePanelLayout.createSequentialGroup()
+                        .add(117, 117, 117)
+                        .add(okButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 93, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, documentNamePanelLayout.createSequentialGroup()
+                .addContainerGap(214, Short.MAX_VALUE)
+                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(150, 150, 150))
         );
         documentNamePanelLayout.setVerticalGroup(
             documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -274,30 +338,17 @@ public class UploadDialog extends javax.swing.JFrame {
                         .add(docNameComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .add(docNameLabel2)))
                 .add(3, 3, 3)
-                .add(autoupdateCheckBox))
+                .add(autoupdateCheckBox)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(convertCheckBox)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(documentNamePanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(okButton)
+                    .add(cancelButton))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
-
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
-        jLabel1.setText("<html><font size=\"1\">(c) <u><font color=\"blue\">Przemyslaw Rumik</font></u></font></html>");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
-            }
-        });
-
-        okButton.setText("OK");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
-
-        cancelButton.setText("Cancel");
-        cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cancelButtonActionPerformed(evt);
-            }
-        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -305,22 +356,12 @@ public class UploadDialog extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 496, Short.MAX_VALUE)
+                .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
                 .addContainerGap())
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(47, Short.MAX_VALUE)
+                .addContainerGap(60, Short.MAX_VALUE)
                 .add(loginPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(41, 41, 41))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(244, Short.MAX_VALUE)
-                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(195, 195, 195))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(145, Short.MAX_VALUE)
-                .add(okButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 93, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(93, 93, 93)
-                .add(cancelButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(93, 93, 93))
             .add(layout.createSequentialGroup()
                 .add(29, 29, 29)
                 .add(documentNamePanel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -333,14 +374,7 @@ public class UploadDialog extends javax.swing.JFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(3, 3, 3)
-                .add(documentNamePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(okButton)
-                    .add(cancelButton))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jLabel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(documentNamePanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -374,22 +408,8 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Util.startNewThread(Configuration.getClassLoader(), new Runnable() {
             public void run() {
                 try {
-                    OOoFormats currentFormat = null;
-                    if (xFrame!=null) {
-                        try {
-                            XModel xDoc = (XModel) UnoRuntime.queryInterface(
-                            XModel.class, xFrame.getController().getModel());
-                            PropertyValue[] properties = xDoc.getArgs();
-                            for (PropertyValue property:properties) {
-                                if ("FilterName".equals(property.Name)) {
-                                    currentFormat = Util.findFormatForFilterName((String)property.Value);
-                                    break;
-                                }
-                            }                        
-                        } catch (Exception e) {
-                            // we will ignore this
-                        }
-                    }
+                    boolean convertToGoogleDocsFormat = convertCheckBox.isEnabled() && convertCheckBox.isSelected();
+                    OOoFormats currentFormat = getFormatOfDocument();
                     Creditionals credentionals;                    
                     if (wrapper.isServerSelectionNeeded()) {
                         String serverPath = (String)serversComboBox.getEditor().getItem();
@@ -469,7 +489,7 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     wrapper.login(credentionals);
                     boolean upload = true;
 
-                    if (wrapper.neededConversion(currentFormat)) {
+                    if (wrapper.neededConversion(currentFormat) && (wrapper.isConversionObligatory() || convertToGoogleDocsFormat)) {
                         OOoFormats destinationFormat = wrapper.convertTo(currentFormat);
                         String msg = null;
                         switch (currentFormat.getHandlerType()) {
@@ -495,8 +515,8 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                         if (updateInsteadOfCreatingNew) {
                             Document docToUpdate = ((Document)docNameComboBox.getSelectedItem());
                             operationStatus = wrapper.update(pathName, docToUpdate.getDocumentLink(), mimeType);
-                        } else {
-                            operationStatus = wrapper.upload(pathName,docName,mimeType);
+                        } else {                            
+                            operationStatus = wrapper.upload(pathName,docName,mimeType,convertToGoogleDocsFormat);
                         }
                         boolean success = false;
                         if (operationStatus!=null) {
@@ -559,10 +579,10 @@ private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 				return upload;
 			}
 
-            private boolean needConversion(String pathName, String system) {
-                Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
-                return wrapper.neededConversion(pathName);
-            }
+//            private boolean needConversion(String pathName, String system) {
+//                Wrapper wrapper = WrapperFactory.getWrapperForCredentials(system);
+//                return wrapper.neededConversion(pathName);
+//            }
         });
 }//GEN-LAST:event_okButtonActionPerformed
 
@@ -583,6 +603,10 @@ private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     refreshListOfDocumentsInDocNameComboBox(WrapperFactory.getWrapperForCredentials(system),false);
 }//GEN-LAST:event_refreshButtonActionPerformed
 
+private void convertCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertCheckBoxActionPerformed
+    // TODO add your handling code here:
+}//GEN-LAST:event_convertCheckBoxActionPerformed
+
     
     public boolean getUpload() {
         return upload;
@@ -599,6 +623,7 @@ private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox autoupdateCheckBox;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JCheckBox convertCheckBox;
     private javax.swing.JTextField docName;
     private javax.swing.JComboBox docNameComboBox;
     private javax.swing.JLabel docNameLabel1;
@@ -620,5 +645,42 @@ private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN
         dialog.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         dialog.setVisible(true);        
     }
-    
+
+    public void selectionChangedTo(Object item) {
+        if (!wrapper.isConversionObligatory()) {
+            if (item instanceof String) {
+                convertCheckBox.setVisible(true);
+                convertCheckBox.setEnabled(wrapper.isConversionPossible(getFormatOfDocument()));
+                if (!wrapper.isConversionPossible(getFormatOfDocument())) {
+                    convertCheckBox.setSelected(false);
+                } else {
+                    convertCheckBox.setSelected(Configuration.isConvertToGoogleDocsFormat());
+                }
+
+            } else {
+                convertCheckBox.setVisible(false);
+                convertCheckBox.setEnabled(false);
+            }
+        }
+    }
+
+            private OOoFormats getFormatOfDocument() {
+                OOoFormats currentFormat = null;
+                if (xFrame != null) {
+                    try {
+                        XModel xDoc = (XModel) UnoRuntime.queryInterface(
+                            XModel.class, xFrame.getController().getModel());
+                        PropertyValue[] properties = xDoc.getArgs();
+                        for (PropertyValue property : properties) {
+                            if ("FilterName".equals(property.Name)) {
+                                currentFormat = Util.findFormatForFilterName((String) property.Value);
+                                break;
+                            }
+                        }
+                    } catch (Exception e) {
+                        // we will ignore this
+                    }
+                }
+                return currentFormat;
+            }
 }
