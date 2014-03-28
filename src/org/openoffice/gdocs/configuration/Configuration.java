@@ -101,7 +101,7 @@ public class Configuration {
 
     private static final int MAX_SIZE_OF_LOG = 1000;    
     private static final String CONFIG_SECRET_PHRASE = "p@cpo(#";
-    private static String versionStr = "3.0.0";
+    private static String versionStr = "3.0.1";
     private static List<String> log = new ArrayList<String>();
     private static boolean useProxy;
     private static boolean proxyAuth;
@@ -142,6 +142,7 @@ public class Configuration {
         map.put("French","fr");
         map.put("Czech","cs");
         map.put("Hungarian","hu");
+        map.put("Ukrainian","uk");
         map.put("System","system");
         for (Entry<String, String> entry : map.entrySet()) {
             langsMap.put(entry.getValue(),entry.getKey());

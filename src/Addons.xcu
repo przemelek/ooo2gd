@@ -3,9 +3,9 @@
   <node oor:name="AddonUI">
     <node oor:name="OfficeMenuBarMerging">
     <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">
-       <prop oor:name="ImageIdentifier" oor:type="xs:string">
+<!--       <prop oor:name="ImageIdentifier" oor:type="xs:string">
            <value/>
-       </prop>         
+       </prop>         -->
        <node oor:name="S1" oor:op="replace">
           <prop oor:name="MergePoint">
             <value>.uno:PickList\.uno:SaveAll</value>
@@ -169,9 +169,9 @@
     </node>
     <node oor:name="OfficeToolBar">               
       <node oor:name="org.openoffice.gdocs.gdocs" oor:op="replace">          
-        <prop oor:name="UIName" oor:type="xs:string">
+<!--        <prop oor:name="UIName" oor:type="xs:string">
             <value>Google Docs</value>
-        </prop>           
+        </prop>           -->
       <node oor:name="m1" oor:op="replace">
         <prop oor:name="URL" oor:type="xs:string">
           <value>org.openoffice.gdocs.gdocs:Export to Google Docs</value>

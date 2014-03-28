@@ -26,11 +26,11 @@ import java.util.Arrays;
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.client.http.HttpAuthToken;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
-import com.google.gdata.data.Category;
+//import com.google.gdata.data.Category;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
-import com.google.gdata.data.docs.DocumentListFeed;
+//import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.util.AuthenticationException;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -40,11 +40,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+//import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Locale;
-import java.util.Map;
+//import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.*;
 import org.openoffice.gdocs.configuration.Configuration;
@@ -177,7 +177,7 @@ public class GoogleDocsWrapper implements Wrapper {
             if (path.split("\\.").length>2) {
                 String ext = path.substring(path.lastIndexOf("."));                
                 String name = path.substring(path.lastIndexOf("\\")+1,path.lastIndexOf("."));
-                name = name.replaceAll("\\.","_");
+                name = name.replaceAll("[^\\w]","_");
                 File tmpFile = File.createTempFile(name,ext);
                 tmpFile.deleteOnExit();          
                 InputStream in = new FileInputStream(documentFile);
@@ -634,6 +634,18 @@ public class GoogleDocsWrapper implements Wrapper {
         boolean b = Arrays.asList(UNCONVERTABLE_FORMATS).contains(format);
         return !b && a;
     }
+
+
+//    public static final void main(String... s) throws FileNotFoundException, IOException {
+////        GoogleDocsWrapper gdw = new GoogleDocsWrapper();
+////        gdw.getFileForPath("/home/benjamin_long/Documents/RAMBLINGS.odt");
+//        String name = "A.b.;_a1223422.oxt";
+//        String name1 = name.replaceAll("[^a-z,A-Z,0-9,_]","_");
+//        String name2 = name.replaceAll("[^\\w]","_");
+//        System.out.println(name);
+//        System.out.println(name1);
+//        System.out.println(name2);
+//    }
 
 
 }
