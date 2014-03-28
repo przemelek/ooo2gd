@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description xmlns="http://openoffice.org/extensions/description/2006" xmlns:xlink="http://www.w3.org/1999/xlink">
     <identifier value="org.openoffice.gdocs.oxt"/>
-    <version value="3.0.0"/>
+    <version value="3.0.1"/>
     <update-information>
         <src xlink:href="http://www.przemelek.pl/gdocs.update.xml"/>
     </update-information>
@@ -16,3 +16,4 @@
     </publisher>
 </description>
 <!--Created with OpenOffice.org API plug-in for NetBeans Version 2.0.6-->
+<!--Created with Apache OpenOffice API plug-in for NetBeans Version 2.0.6.000205-->
